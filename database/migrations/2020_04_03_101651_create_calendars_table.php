@@ -15,7 +15,13 @@ class CreateCalendarsTable extends Migration
     {
         Schema::create('calendars', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->unsignedBigInteger('id_property');
+
+            $table->foreign('id_property')
+                ->references('id')->on('properties')
+                ->onDelete('cascade');
         });
     }
 

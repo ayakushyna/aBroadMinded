@@ -15,7 +15,20 @@ class CreateFeedbacksTable extends Migration
     {
         Schema::create('feedbacks', function (Blueprint $table) {
             $table->id();
+            $table->unsignedTinyInteger('score');
+            $table->string('title', 256);
+            $table->text('body');
             $table->timestamps();
+            $table->unsignedBigInteger('id_profile');
+            $table->unsignedBigInteger('id_property');
+
+            $table->foreign('id_profile')
+                ->references('id')->on('profiles')
+                ->onDelete('cascade');
+
+            $table->foreign('id_property')
+                ->references('id')->on('properties')
+                ->onDelete('cascade');
         });
     }
 
