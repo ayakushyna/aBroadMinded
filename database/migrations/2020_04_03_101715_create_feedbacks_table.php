@@ -19,14 +19,14 @@ class CreateFeedbacksTable extends Migration
             $table->string('title', 256);
             $table->text('body');
             $table->timestamps();
-            $table->unsignedBigInteger('id_profile');
-            $table->unsignedBigInteger('id_property');
+            $table->unsignedBigInteger('profile_id');
+            $table->unsignedBigInteger('property_id');
 
-            $table->foreign('id_profile')
+            $table->foreign('profile_id')
                 ->references('id')->on('profiles')
                 ->onDelete('cascade');
 
-            $table->foreign('id_property')
+            $table->foreign('property_id')
                 ->references('id')->on('properties')
                 ->onDelete('cascade');
         });

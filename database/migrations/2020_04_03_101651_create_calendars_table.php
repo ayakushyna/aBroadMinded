@@ -17,9 +17,9 @@ class CreateCalendarsTable extends Migration
             $table->id();
             $table->date('start_date');
             $table->date('end_date');
-            $table->unsignedBigInteger('id_property');
+            $table->unsignedBigInteger('property_id');
 
-            $table->foreign('id_property')
+            $table->foreign('property_id')
                 ->references('id')->on('properties')
                 ->onDelete('cascade');
         });

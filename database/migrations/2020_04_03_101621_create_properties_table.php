@@ -33,19 +33,19 @@ class CreatePropertiesTable extends Migration
             $table->unsignedTinyInteger('max_guests');
             $table->boolean('active')->default(true);
             $table->timestamps();
-            $table->unsignedBigInteger('id_city');
-            $table->unsignedBigInteger('id_profile');
-            $table->unsignedBigInteger('id_property_type');
+            $table->unsignedBigInteger('city_id');
+            $table->unsignedBigInteger('profile_id');
+            $table->unsignedBigInteger('property_type_id');
 
-            $table->foreign('id_city')
+            $table->foreign('city_id')
                 ->references('id')->on('cities')
                 ->onDelete('cascade');
 
-            $table->foreign('id_profile')
+            $table->foreign('profile_id')
                 ->references('id')->on('profiles')
                 ->onDelete('cascade');
 
-            $table->foreign('id_property_type')
+            $table->foreign('property_type_id')
                 ->references('id')->on('property_types')
                 ->onDelete('cascade');
 });

@@ -22,9 +22,9 @@ class CreateProfilesTable extends Migration
             $table->date('birthday');
             $table->boolean('active')->default(true);
             $table->timestamps();
-            $table->unsignedBigInteger('id_city');
+            $table->unsignedBigInteger('city_id');
 
-            $table->foreign('id_city')
+            $table->foreign('city_id')
                 ->references('id')->on('cities')
                 ->onDelete('cascade');
         });
