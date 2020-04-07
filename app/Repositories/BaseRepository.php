@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Repositories\Interfaces\BaseRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 
 class BaseRepository implements BaseRepositoryInterface
 {
@@ -14,6 +15,10 @@ class BaseRepository implements BaseRepositoryInterface
      */
     private $model;
 
+    /**
+     * BaseRepository constructor.
+     * @param Model $model
+     */
     public function __construct(Model $model)
     {
         $this->model = $model;
@@ -21,23 +26,43 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function all()
     {
-        return Model::all();
+        return $this->model->all();
     }
 
     public function findById($id)
     {
-        return Model::where('id', $id)->firstOrFail();
+        return $this->model->findOrFail($id);
     }
 
-    public function update($id)
+    public function create(array $data)
     {
-        $model = Model::where('id', $id)->firstOrFail();
+        return $this->model->create($data);
+    }
 
-        $model->update(request());
+    public function update(array $data, $id)
+    {
+        $record = $this->model->findOrFail($id);
+        return $record->update($data);
     }
 
     public function delete($id)
     {
-        Model::where('id', $id)->delete();
+        return $this->model->destroy($id);
+    }
+
+    public function getModel()
+    {
+        return $this->model;
+    }
+
+    public function setModel($model)
+    {
+        $this->model = $model;
+        return $this;
+    }
+
+    public function with($relations)
+    {
+        return $this->model->with($relations);
     }
 }
