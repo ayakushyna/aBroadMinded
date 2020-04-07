@@ -9,6 +9,39 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Property extends Model
 {
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'properties';
+
+    /**
+     * @var array
+     */
+    protected $fillable = [
+        'title',
+        'description',
+        'address',
+        'price',
+        'host_type',
+        'air_condition',
+        'children',
+        'hair_dryer',
+        'parties',
+        'pets',
+        'smoking',
+        'tv',
+        'wifi',
+        'max_bedrooms',
+        'max_beds',
+        'max_guests',
+        'active',
+        'city_id',
+        'profile_id',
+        'property_type_id',
+    ];
+
+    /**
      * @return BelongsTo
      */
     public function property_type()

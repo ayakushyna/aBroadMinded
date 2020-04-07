@@ -9,6 +9,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class State extends Model
 {
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'states';
+
+    /**
      * @return BelongsTo
      */
     public function country()

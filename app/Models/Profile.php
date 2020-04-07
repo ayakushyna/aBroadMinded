@@ -9,6 +9,26 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Profile extends Model
 {
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'profiles';
+
+    /**
+     * @var array
+     */
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'nickname',
+        'gender',
+        'birthday',
+        'active',
+        'city_id'
+    ];
+
+    /**
      * @return BelongsTo
      */
     public function city()

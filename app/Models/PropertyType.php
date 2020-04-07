@@ -8,6 +8,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class PropertyType extends Model
 {
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'property_types';
+
+    /**
      * @return HasMany
      */
     public function properties()
