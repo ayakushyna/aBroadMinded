@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Support\Facades\DB;
 
 $factory->define(Profile::class, function (Faker $faker) {
-    $cities_ids = DB::table('cities')->pluck('id');
+    $cities_ids = DB::table('cities')->pluck('id')->toArray();;
 
     return [
         'gender' => $faker->randomElement(['female' ,'male']),

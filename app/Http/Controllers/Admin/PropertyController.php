@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\BaseController;
 use App\Repositories\Interfaces\PropertyRepositoryInterface;
 use Illuminate\Http\Request;
 

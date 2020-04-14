@@ -11,9 +11,9 @@ use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Support\Facades\DB;
 
 $factory->define(Property::class, function (Faker $faker) {
-    $cities_ids = DB::table('cities')->pluck('id');
-    $profiles_ids = DB::table('profiles')->pluck('id');
-    $property_types_ids = DB::table('property_types')->pluck('id');
+    $cities_ids = DB::table('cities')->pluck('id')->toArray();;
+    $profiles_ids = DB::table('profiles')->pluck('id')->toArray();;
+    $property_types_ids = DB::table('property_types')->pluck('id')->toArray();;
 
     return [
         'title' => $faker->title,
