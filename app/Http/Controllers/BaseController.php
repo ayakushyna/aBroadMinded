@@ -26,12 +26,10 @@ class BaseController extends Controller
     public function index()
     {
         $records = $this->baseRepository->all();
-        return view("$this->name.index", compact(['records']));
-    }
-
-    public function create()
-    {
-        return view("$this->name.create");
+        //return view("$this->name.index", compact(['records']));
+        return response()->json([
+            'data' => $records
+        ], 200);
     }
 
     public function store(Request $request)
@@ -43,13 +41,6 @@ class BaseController extends Controller
     public function show($id)
     {
         return view("$this->name.show", compact([
-            'record' => $this->baseRepository->findById($id)
-        ]));
-    }
-
-    public function edit($id)
-    {
-        return view("$this->name.edit", compact([
             'record' => $this->baseRepository->findById($id)
         ]));
     }
