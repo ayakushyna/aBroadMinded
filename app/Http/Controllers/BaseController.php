@@ -9,8 +9,9 @@ use Illuminate\Http\Request;
 
 class BaseController extends Controller
 {
-    private $baseRepository;
-    private $name;
+    protected $baseRepository;
+    protected $name;
+    protected $validateRequest;
 
     /**
      * BaseController constructor.
@@ -34,6 +35,7 @@ class BaseController extends Controller
 
     public function store(Request $request)
     {
+        app($this->validateRequest);
         $this->baseRepository->create($request->only($this->baseRepository->getModel()->fillable));
         return redirect(route("$this->name.index"));
     }
@@ -47,6 +49,7 @@ class BaseController extends Controller
 
     public function update(Request $request,$id)
     {
+        app($this->validateRequest);
         $this->baseRepository->update($request->only($this->baseRepository->getModel()->fillable), $id);
         return redirect(route("$this->name.index"));
     }

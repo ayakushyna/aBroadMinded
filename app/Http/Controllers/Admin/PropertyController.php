@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\PropertyRequest;
 use App\Repositories\Interfaces\PropertyRepositoryInterface;
 use Illuminate\Http\Request;
 
 class PropertyController extends BaseController
 {
+    protected $validateRequest = PropertyRequest::class;
     /**
      * PropertyController constructor.
      * @param PropertyRepositoryInterface $propertyRepository
