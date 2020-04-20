@@ -12,4 +12,9 @@ class ProfileRepository extends BaseRepository implements ProfileRepositoryInter
     {
         parent::__construct($profile);
     }
+
+    public function getByUserId($id)
+    {
+        return $this->model->where('user_id', $id)->get();
+    }
 }

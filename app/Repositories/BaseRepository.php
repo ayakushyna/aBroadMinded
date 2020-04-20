@@ -13,7 +13,7 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * @var Model
      */
-    private $model;
+    protected $model;
 
     /**
      * BaseRepository constructor.
@@ -26,7 +26,7 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function all()
     {
-        return $this->model->all();
+        return $this->model->paginate(10);
     }
 
     public function findById($id)

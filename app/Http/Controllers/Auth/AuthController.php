@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegistrationFormRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -22,21 +23,25 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $input = $request->only('email', 'password');
-        $token = null;
-
-        if (!$token = JWTAuth::attempt($input)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid Email or Password',
-            ], 401);
+        $credentials = $request->only('email', 'password');
+        if ($token = $this->guard()->attempt($credentials)) {
+            return response()->json(['status' => 'success'], 200)->header('Authorization', $token);
         }
+        return response()->json(['error' => 'login_error'], 401);
+    }
 
+    /**
+     * Get authenticated user
+     */
+    public function user(Request $request)
+    {
+        $user = User::find(Auth::user()->id);
         return response()->json([
-            'success' => true,
-            'token' => $token,
+            'status' => 'success',
+            'data' => $user
         ]);
     }
+
 
     /**
      * @param Request $request
@@ -65,6 +70,20 @@ class AuthController extends Controller
     }
 
     /**
+     * Refresh JWT token
+     */
+    public function refresh()
+    {
+        if ($token = $this->guard()->refresh()) {
+            return response()
+                ->json(['status' => 'successs'], 200)
+                ->header('Authorization', $token);
+        }
+        return response()->json(['error' => 'refresh_token_error'], 401);
+    }
+
+
+    /**
      * @param RegistrationFormRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -85,4 +104,13 @@ class AuthController extends Controller
             'data'      =>  $user
         ], 200);
     }
+
+    /**
+     * Return auth guard
+     */
+    private function guard()
+    {
+        return Auth::guard();
+    }
+
 }
