@@ -1,10 +1,12 @@
 <?php
 
+
 namespace App\Http\Requests;
+
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class FeedbackRequest extends FormRequest
+class PropertyTypeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,11 +26,7 @@ class FeedbackRequest extends FormRequest
     public function rules()
     {
         return [
-            'score' => 'required|integer|min:1|max:5',
-            'title' => 'required|string|max:255',
-            'body' => 'nullable|text',
-            'profile_id' => 'required|integer|exists:App\Models\Profile,id',
-            'property_id' => 'required|integer|exists:App\Models\Property,id',
+            'name' => 'required|max:255',
         ];
     }
 }

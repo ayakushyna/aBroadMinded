@@ -25,7 +25,7 @@ class PropertyRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
+            'description' => 'nullable|text',
             'address' => 'required|string|max:255',
             'price' => 'required|integer',
             'host_type' => 'required|in:entire place,private room,shared room',
