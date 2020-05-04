@@ -24,13 +24,13 @@ class ProfileRequest extends FormRequest
     public function rules()
     {
         return [
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'nickname' => 'required|string|unique:profiles|max:255',
-            'gender' => 'required|in:female,male',
-            'birthday' => 'required|date',
+            'first_name' => 'nullable|string|max:255',
+            'last_name' => 'nullable|string|max:255',
+            'gender' => 'nullable|in:female,male,undefined',
+            'birthday' => 'nullable|date',
             'active' => 'required|boolean',
-            'city_id' => 'required|integer|exists:App\Models\City,id',
+            'city_id' => 'nullable|integer|exists:App\Models\City,id',
+            'user_id' => 'required|integer|exists:App\Models\User,id',
         ];
     }
 }

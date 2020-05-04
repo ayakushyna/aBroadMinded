@@ -20,15 +20,26 @@ class Authenticate extends Middleware
         }
     }
 
-    // Override handle method
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param Closure $next
+     * @param mixed ...$guards
+     * @return \Illuminate\Http\JsonResponse|mixed
+     * @throws \Illuminate\Auth\AuthenticationException
+     */
     public function handle($request, Closure $next, ...$guards)
     {
-        if ($this->authenticate($request, $guards) === 'authentication_failed') {
-            return response()->json(['error'=>'Unauthorized'],400);
+        if ($this->authenticate($request, $guards) === 'authentication_error') {
+            return response()->json(['error'=>'Unauthorized']);
         }
         return $next($request);
     }
-    // Override authentication method
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param array $guards
+     * @return string|void
+     */
     protected function authenticate($request, array $guards)
     {
         if (empty($guards)) {
@@ -39,6 +50,6 @@ class Authenticate extends Middleware
                 return $this->auth->shouldUse($guard);
             }
         }
-        return 'authentication_failed';
+        return 'authentication_error';
     }
 }

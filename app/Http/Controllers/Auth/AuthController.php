@@ -15,7 +15,7 @@ class AuthController extends Controller
     /**
      * @var bool
      */
-    public $loginAfterSignUp = true;
+    public bool $loginAfterSignUp = false;
 
     /**
      * @param Request $request
@@ -24,10 +24,15 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-        if ($token = $this->guard()->attempt($credentials)) {
-            return response()->json(['status' => 'success'], 200)->header('Authorization', $token);
+        if ( ! $token = JWTAuth::attempt($credentials)) {
+            return response()->json([
+                'status' => 'error',
+                'error' => 'invalid.credentials',
+                'msg' => 'Invalid Credentials.'
+            ], 400);
         }
-        return response()->json(['error' => 'login_error'], 401);
+        return response()->json(['status' => 'success'])
+            ->header('Authorization', $token);
     }
 
     /**
@@ -44,29 +49,15 @@ class AuthController extends Controller
 
 
     /**
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Validation\ValidationException
      */
-    public function logout(Request $request)
+    public function logout()
     {
-        $this->validate($request, [
-            'token' => 'required'
-        ]);
-
-        try {
-            JWTAuth::invalidate($request->token);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'User logged out successfully'
-            ]);
-        } catch (JWTException $exception) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Sorry, the user cannot be logged out'
-            ], 500);
-        }
+        JWTAuth::invalidate();
+        return response()->json([
+            'status' => 'success',
+            'msg' => 'Logged out Successfully.'
+        ], 200);
     }
 
     /**
@@ -90,7 +81,7 @@ class AuthController extends Controller
     public function register(RegistrationFormRequest $request)
     {
         $user = new User();
-        $user->name = $request->name;
+        $user->nickname = $request->nickname;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
         $user->save();
@@ -100,8 +91,8 @@ class AuthController extends Controller
         }
 
         return response()->json([
-            'success'   =>  true,
-            'data'      =>  $user
+            'status' => 'success',
+            'items'      =>  $user
         ], 200);
     }
 

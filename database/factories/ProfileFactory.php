@@ -16,7 +16,6 @@ $factory->define(Profile::class, function (Faker $faker) {
         'gender' => $faker->randomElement(['female' ,'male']),
         'first_name' => $faker->firstName,
         'last_name' => $faker->lastName,
-        'nickname' => $faker->name,
         'birthday' => $faker->date(),
         'city_id' => $faker->randomElement($cities_ids),
         'user_id' => $faker->randomElement($users_ids)
