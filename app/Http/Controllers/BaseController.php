@@ -9,54 +9,66 @@ use Illuminate\Http\Request;
 
 class BaseController extends Controller
 {
-    protected $baseRepository;
-    protected $name;
-    protected $validateRequest;
+    protected BaseRepositoryInterface $baseRepository;
+    protected string $name;
+    protected string $validateRequest;
 
-    /**
-     * BaseController constructor.
-     * @param String $name
-     * @param BaseRepositoryInterface $baseRepository
-     */
-    public function __construct(String $name, BaseRepositoryInterface $baseRepository)
+    public function __construct(BaseRepositoryInterface $baseRepository)
     {
-        $this->name = $name;
-        $this->baseRepository = $baseRepository;
+        $this->baseRepository = $baseRepository ;
     }
 
     public function index()
     {
-        $records = $this->baseRepository->all();
-        //return view("$this->name.index", compact(['records']));
+        $data = $this->baseRepository->all();
+
+        $fields = [
+            'primary_fields' =>  $this->baseRepository->getPrimaryFields(),
+            'secondary_fields' => $this->baseRepository->getSecondaryFields()
+        ];
+
+        $data = $data->toArray();
+        $items = $data['data'];
+
+        unset($data['data']);
+        $pagination = $data;
+
         return response()->json([
-            'data' => $records
+            'name' => $this->name,
+            'items' => $items,
+            'pagination' => $pagination,
+            'fields' => $fields
         ], 200);
     }
 
     public function store(Request $request)
     {
         app($this->validateRequest);
-        $this->baseRepository->create($request->only($this->baseRepository->getModel()->fillable));
-        return redirect(route("$this->name.index"));
+
+        return response()->json([
+            'items' => $this->baseRepository->create($request->only($this->baseRepository->getModel()->fillable))
+        ], 200);
     }
 
     public function show($id)
     {
-        return view("$this->name.show", compact([
-            'record' => $this->baseRepository->findById($id)
-        ]));
+        $data = $this->baseRepository->findById($id);
+
+        return response()->json(
+            [
+                'items' => $data
+            ], 200);
     }
 
     public function update(Request $request,$id)
     {
         app($this->validateRequest);
-        $this->baseRepository->update($request->only($this->baseRepository->getModel()->fillable), $id);
-        return redirect(route("$this->name.index"));
+
+        return $this->baseRepository->update($request->only($this->baseRepository->getModel()->fillable), $id);
     }
 
     public function destroy($id)
     {
         $this->baseRepository->delete($id);
-        return redirect(route("$this->name.index"));
     }
 }

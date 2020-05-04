@@ -11,23 +11,24 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ProfileController extends BaseController
 {
-    protected $validateRequest = ProfileRequest::class;
+    protected string $name = 'profile';
+    protected string $validateRequest = ProfileRequest::class;
     /**
      * ProfileController constructor.
      * @param ProfileRepositoryInterface $profileRepository
      */
     public function __construct(ProfileRepositoryInterface $profileRepository)
     {
-        parent::__construct('profiles', $profileRepository);
+        parent::__construct($profileRepository);
     }
 
-    public function index()
+    public function getGender()
     {
-        $user = Auth::user();
-        if ($user->isAdmin() || $user->isManager()) {
-            return $this->baseRepository->all();
-        }
-        $userId = $user->id;
-        return $this->baseRepository->getByUserId($userId);
+        $data = $this->baseRepository->getGender();
+
+        return  response()->json(
+            [
+                'items' => $data
+            ], 200);
     }
 }

@@ -9,13 +9,14 @@ use App\Repositories\Interfaces\BookingRepositoryInterface;
 
 class BookingController extends BaseController
 {
-    protected $validateRequest = BookingRequest::class;
+    protected string $name = 'booking';
+    protected string $validateRequest = BookingRequest::class;
     /**
      * BookingController constructor.
      * @param BookingRepositoryInterface $bookingRepository
      */
     public function __construct(BookingRepositoryInterface $bookingRepository)
     {
-        parent::__construct('bookings', $bookingRepository);
+        parent::__construct($bookingRepository);
     }
 }

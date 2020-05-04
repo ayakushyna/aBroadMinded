@@ -9,13 +9,14 @@ use Illuminate\Http\Request;
 
 class FeedbackController extends BaseController
 {
-    protected $validateRequest = FeedbackRequest::class;
+    protected string $name = 'feedback';
+    protected string $validateRequest = FeedbackRequest::class;
     /**
      * FeedbackController constructor.
      * @param FeedbackRepositoryInterface $feedbackRepository
      */
     public function __construct(FeedbackRepositoryInterface $feedbackRepository)
     {
-        parent::__construct('feedbacks', $feedbackRepository);
+        parent::__construct($feedbackRepository);
     }
 }

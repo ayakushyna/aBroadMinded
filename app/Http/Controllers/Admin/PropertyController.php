@@ -9,13 +9,24 @@ use Illuminate\Http\Request;
 
 class PropertyController extends BaseController
 {
-    protected $validateRequest = PropertyRequest::class;
+    protected string $name = 'property';
+    protected string $validateRequest = PropertyRequest::class;
     /**
      * PropertyController constructor.
      * @param PropertyRepositoryInterface $propertyRepository
      */
     public function __construct(PropertyRepositoryInterface $propertyRepository)
     {
-        parent::__construct('properties', $propertyRepository);
+        parent::__construct($propertyRepository);
+    }
+
+    public function getHostTypes()
+    {
+        $data = $this->baseRepository->getHostTypes();
+
+        return  response()->json(
+            [
+                'items' => $data
+            ], 200);
     }
 }
