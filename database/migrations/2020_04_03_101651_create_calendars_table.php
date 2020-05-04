@@ -17,6 +17,7 @@ class CreateCalendarsTable extends Migration
             $table->id();
             $table->date('start_date');
             $table->date('end_date');
+            $table->timestamps();
             $table->unsignedBigInteger('property_id');
 
             $table->foreign('property_id')

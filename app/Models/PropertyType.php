@@ -14,6 +14,11 @@ class PropertyType extends Model
      */
     protected $table = 'property_types';
 
+    public $timestamps = false;
+
+    protected $fillable = [
+        'name'
+    ];
     /**
      * @return HasMany
      */

@@ -24,9 +24,6 @@ class Booking extends Model
         'children',
         'price',
         'status',
-        'children',
-        'price',
-        'status',
         'profile_id',
         'property_id'
     ];

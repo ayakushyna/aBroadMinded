@@ -16,17 +16,22 @@ class Profile extends Model
      */
     protected $table = 'profiles';
 
+    const GENDER = [
+        'undefined',
+        'female',
+        'male'
+    ];
     /**
      * @var array
      */
     protected $fillable = [
         'first_name',
         'last_name',
-        'nickname',
         'gender',
         'birthday',
         'active',
-        'city_id'
+        'city_id',
+        'user_id'
     ];
 
     /**

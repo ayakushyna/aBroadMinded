@@ -17,7 +17,7 @@ class CreateFeedbacksTable extends Migration
             $table->id();
             $table->unsignedTinyInteger('score');
             $table->string('title', 256);
-            $table->text('body');
+            $table->text('body')->nullable();
             $table->timestamps();
             $table->unsignedBigInteger('profile_id');
             $table->unsignedBigInteger('property_id');
