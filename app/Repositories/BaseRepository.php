@@ -10,18 +10,12 @@ use Illuminate\Http\Request;
 
 class BaseRepository implements BaseRepositoryInterface
 {
-    /**
-     * @var Model
-     */
+
     protected $model;
 
-    /**
-     * BaseRepository constructor.
-     * @param Model $model
-     */
-    public function __construct(Model $model)
+    public function __construct()
     {
-        $this->model = $model;
+        $this->model = new $this->model();
     }
 
     public function all()
@@ -42,6 +36,7 @@ class BaseRepository implements BaseRepositoryInterface
     public function update(array $data, $id)
     {
         $record = $this->model->findOrFail($id);
+
         return $record->update($data);
     }
 
@@ -58,7 +53,18 @@ class BaseRepository implements BaseRepositoryInterface
     public function setModel($model)
     {
         $this->model = $model;
+
         return $this;
+    }
+
+    public function getPrimaryFields()
+    {
+        return $this->model->getFillable();
+    }
+
+    public function getSecondaryFields()
+    {
+        return [];
     }
 
     public function with($relations)

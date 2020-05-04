@@ -9,8 +9,5 @@ use App\Repositories\Interfaces\FeedbackRepositoryInterface;
 
 class FeedbackRepository extends BaseRepository implements FeedbackRepositoryInterface
 {
-    public function __construct(Feedback $feedback)
-    {
-        parent::__construct($feedback);
-    }
+    protected $model = Feedback::class;
 }

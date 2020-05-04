@@ -17,4 +17,8 @@ interface BaseRepositoryInterface
     public function update(array $data, $id);
 
     public function delete($id);
+
+    public function getPrimaryFields();
+
+    public function getSecondaryFields();
 }

@@ -8,13 +8,15 @@ use App\Repositories\Interfaces\ProfileRepositoryInterface;
 
 class ProfileRepository extends BaseRepository implements ProfileRepositoryInterface
 {
-    public function __construct(Profile $profile)
-    {
-        parent::__construct($profile);
-    }
+    protected $model = Profile::class;
 
     public function getByUserId($id)
     {
         return $this->model->where('user_id', $id)->get();
+    }
+
+    public function getGender()
+    {
+        return $this->model::GENDER;
     }
 }
