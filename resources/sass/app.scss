@@ -1,3 +1,4 @@
+@import '~normalize.css/normalize.css';
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Nunito');
 
@@ -6,3 +7,23 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+html, body {
+    height: 100%;
+}
+
+a , a:hover, a.dropdown-toggle:link {
+    color: $white;
+}
+a:link {
+    color: $black;
+}
+*{
+    outline: none;
+    border: 0;
+    background-color: transparent;
+}
+
+ul.dropdown-menu , a.dropdown-item ,a.dropdown-item:hover, a.dropdown-item:focus  {
+    background-color: $dark ;
+}

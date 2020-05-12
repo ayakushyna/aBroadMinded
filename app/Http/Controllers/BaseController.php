@@ -18,14 +18,13 @@ class BaseController extends Controller
         $this->baseRepository = $baseRepository ;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $data = $this->baseRepository->all();
+        $params = $this->toArray($request);
 
-        $fields = [
-            'primary_fields' =>  $this->baseRepository->getPrimaryFields(),
-            'secondary_fields' => $this->baseRepository->getSecondaryFields()
-        ];
+        $data = $this->baseRepository->all($params['filters'], $params['sortings']);
+
+        $fields = $this->baseRepository->getFieldsInfo();
 
         $data = $data->toArray();
         $items = $data['data'];
@@ -37,8 +36,17 @@ class BaseController extends Controller
             'name' => $this->name,
             'items' => $items,
             'pagination' => $pagination,
-            'fields' => $fields
+            'fields' => $fields,
+            'params' => $params,
         ], 200);
+    }
+
+    public function toArray(Request $request)
+    {
+        return [
+            'filters' => json_decode($request->filters, true)?? [],
+            'sortings' => json_decode($request->sortings, true)?? []
+        ];
     }
 
     public function store(Request $request)

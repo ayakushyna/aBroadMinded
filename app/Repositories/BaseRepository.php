@@ -12,15 +12,62 @@ class BaseRepository implements BaseRepositoryInterface
 {
 
     protected $model;
+    protected array $operators = ["=", "<", ">", "<=", ">=", "<>", "!="];
+    protected array $filterItems;
+    protected array $sortItems;
 
     public function __construct()
     {
         $this->model = new $this->model();
     }
 
-    public function all()
+    public function all(array $filterItems = [],array $sortItems = [])
     {
-        return $this->model->paginate(10);
+        $this->$filterItems = $filterItems;
+        $query = $this->applyFilter($this->model, $filterItems);
+
+        $this->$sortItems = $sortItems;
+        $query = $this->applySorting($query, $sortItems);
+        return $query->paginate(10);
+    }
+
+    public function applyFilter($query = null, array $filterItems = [])
+    {
+        if($query != null && $filterItems){
+            foreach ($filterItems as $filter)
+            {
+                $value = $filter['value'];
+                if(in_array($filter['comparator'], $this->operators)){
+                    $query = $query->where($filter['key'], $filter['comparator'], $value);
+                }
+                else {
+                    $query = $query->where($filter['key'], $filter['comparator'], "%$value%");
+                }
+
+            }
+        }
+        return $query;
+    }
+
+    public function applySorting($query = null, array $sortItems = [])
+    {
+        if($query != null && $sortItems){
+
+            $this->sortOrder($sortItems);
+
+            foreach ($sortItems as $sort)
+            {
+                $query = $query->orderBy($sort['key'], $sort['direction']);
+            }
+        }
+        return $query;
+    }
+
+    private function sortOrder(array &$array = [])
+    {
+        usort($array, function ($first, $second){
+            return $first['order'] - $second['order'];
+        });
     }
 
     public function findById($id)
@@ -57,14 +104,9 @@ class BaseRepository implements BaseRepositoryInterface
         return $this;
     }
 
-    public function getPrimaryFields()
+    public function getFieldsInfo()
     {
         return $this->model->getFillable();
-    }
-
-    public function getSecondaryFields()
-    {
-        return [];
     }
 
     public function with($relations)

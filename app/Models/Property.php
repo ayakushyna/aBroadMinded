@@ -46,30 +46,27 @@ class Property extends Model
         'property_type_id',
     ];
 
-    const PRIMARY_FIELDS = [
-        'title',
-        'description',
-        'address',
-        'price',
-        'host_type',
-        'city',
-        'owner',
-        'property_type',
-        'active',
-    ];
-
-    const SECONDARY_FIELDS = [
-        'max_bedrooms',
-        'max_beds',
-        'max_guests',
-        'air_condition',
-        'children',
-        'hair_dryer',
-        'parties',
-        'pets',
-        'smoking',
-        'tv',
-        'wifi'
+    const FIELDS_INFO = [
+        ['key'=> 'title', 'label' => 'Title', 'sortable' => true, 'comparator' => 'like'],
+        ['key'=> 'description', 'label' => 'Description', 'sortable' => true, 'comparator' => 'like'],
+        ['key'=> 'address', 'label' => 'Address', 'sortable' => true, 'comparator' => 'like'],
+        ['key'=> 'price', 'label' => 'Price', 'sortable' => true, 'min' => 0, 'comparator' => '<='],
+        ['key'=> 'host_type', 'label' => 'Host Type', 'sortable' => false, 'comparator' => 'like'],
+        ['key'=> 'city', 'label' => 'City', 'sortable' => true, 'comparator' => 'like'],
+        ['key'=> 'fullname', 'label' => 'Owner', 'sortable' => true, 'comparator' => 'like'],
+        ['key'=> 'property_type', 'label' => 'Property Type', 'sortable' => false, 'comparator' => 'like'],
+        ['key'=> 'active', 'label' => 'Active', 'sortable' => false, 'comparator' => '='],
+        ['key'=> 'max_bedrooms','label' => 'Max Bedrooms', 'comparator' => '>=', 'min' => 0, 'secondary' => true],
+        ['key'=> 'max_beds', 'label' => 'Max Beds', 'comparator' => '>=', 'min' => 0, 'secondary' => true],
+        ['key'=> 'max_guests', 'label' => 'Max Guests', 'comparator' => '>=', 'min' => 0, 'secondary' => true],
+        ['key'=> 'air_condition', 'label' => 'Air Condition', 'comparator' => '=', 'secondary' => true],
+        ['key'=> 'children', 'label' => 'Children', 'comparator' => '=', 'secondary' => true],
+        ['key'=> 'hair_dryer', 'label' => 'Hair Dryer', 'comparator' => '=', 'secondary' => true],
+        ['key'=> 'parties', 'label' => 'Parties', 'comparator' => '=', 'secondary' => true],
+        ['key'=> 'pets', 'label' => 'Pets', 'comparator' => '=', 'secondary' => true],
+        ['key'=> 'smoking', 'label' => 'Smoking', 'comparator' => '=', 'secondary' => true],
+        ['key'=> 'tv', 'label' => 'TV', 'comparator' => '=', 'secondary' => true],
+        ['key'=> 'wifi', 'label' => 'Wi-Fi', 'comparator' => '=', 'secondary' => true],
     ];
 
     /**

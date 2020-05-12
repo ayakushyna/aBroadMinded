@@ -8,7 +8,11 @@ use Illuminate\Http\Request;
 
 interface BaseRepositoryInterface
 {
-    public function all();
+    public function all(array $filterItems, array $sortItems);
+
+    public function applyFilter($query, array $filterItems);
+
+    public function applySorting($query, array $sortItems);
 
     public function findById($id);
 
@@ -18,7 +22,5 @@ interface BaseRepositoryInterface
 
     public function delete($id);
 
-    public function getPrimaryFields();
-
-    public function getSecondaryFields();
+    public function getFieldsInfo();
 }
