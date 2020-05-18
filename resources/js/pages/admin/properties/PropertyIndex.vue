@@ -1,12 +1,12 @@
 <template>
     <div class="container-fluid">
         <div class="form-group">
-            <router-link :to="{path: $route.fullPath + '/create'}" :name="this.name" class="btn btn-primary">Create new {{ name }}</router-link>
+            <router-link :to="{path: $route.fullPath + '/create'}" :name="this.name" class="btn btn-primary">Add new {{ name }}</router-link>
         </div>
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3>Property List</h3>
+                <h3>{{ capitalLetter(name) }} List</h3>
                 <b-button class="mb-3" v-b-toggle.collapse-filters> Filters </b-button>
                 <b-collapse id="collapse-filters">
                     <b-card class="mb-3" header="Filters">
@@ -66,6 +66,7 @@
             </div>
             <div class="panel-body">
                 <BTable striped hover responsive
+                        border fixed
                         no-local-sorting
                         :items="table.items"
                         :fields="table.primary_fields">
@@ -106,10 +107,20 @@
 
                     <template v-slot:row-details="row" v-if="table.secondary_fields.length">
                         <b-card>
-                            <b-row class="mb-2" v-for="field in table.secondary_fields" v-bind:key="field.key">
-                                <b-col sm="3" class="text-sm-right"><b>{{ field.label }}:</b></b-col>
-                                <b-col sm="3">{{ row.item[field.key] }}</b-col>
+                            <b-row >
+                                <template v-for="i in [0,1,2]">
+                                    <b-col class="mb-2" >
+                                                <b-row v-for="(field,index) in table.secondary_fields" v-bind:key="field.key">
+                                                    <template v-if="index < (table.secondary_fields.length/3) * (i+1)
+                                                    && index >= (table.secondary_fields.length/3) * i">
+                                                    <b-col sm="3" class="text-sm-right"><b>{{ field.label }}:</b></b-col>
+                                                    <b-col sm="3">{{ row.item[field.key] }}</b-col>
+                                                    </template>
+                                                </b-row>
+                                    </b-col>
+                                </template>
                             </b-row>
+
                             <b-button size="sm" @click="row.toggleDetails">Hide Details</b-button>
                         </b-card>
                     </template>
@@ -159,6 +170,16 @@
             this.fetchData();
         },
         methods: {
+            capitalLetter(str)
+            {
+                str = str.split(" ");
+
+                for (let i = 0, x = str.length; i < x; i++) {
+                    str[i] = str[i][0].toUpperCase() + str[i].substr(1);
+                }
+
+                return str.join(" ");
+            },
             indexOfKey(array, key){
                 for(let i in array) {
                     if(array[i].key === key)
@@ -213,6 +234,8 @@
             },
             onFilter(){
                 console.log("filtering...")
+                console.log(this.fields.length)
+                this.filters=[]
 
                 for(let i in this.fields){
                     if(this.fields[i].filter.checked)
@@ -245,6 +268,9 @@
                                 fields[i] = {...fields[i], filter: {checked:false , value:""}, sorting: {sorted: false, direction: true}}
                             }
                             this.fields = fields;
+
+                            console.log(fields)
+                            console.log(this.table.items)
 
                             this.setFilters(response.data.params.filters);
                             this.setSortings(response.data.params.sortings);

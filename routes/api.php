@@ -14,24 +14,36 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-/*
-Route::group(['prefix' => 'auth.jwt'], function() {
-        Route::post('register', 'Auth\AuthController@register');
-        Route::post('login', 'Auth\AuthController@login');
-        Route::get('refresh', 'Auth\AuthController@refresh');
-        Route::group(['middleware' => 'auth:api'], function(){
-            Route::get('user', 'Auth\AuthController@user');
-            Route::post('logout', 'Auth\AuthController@logout');
-        });
+Route::prefix('auth')->group(function () {
+    // Below mention routes are public, user can access those without any restriction.
+    // Create New User
+    Route::post('register', 'Auth\AuthController@register');
+    // Login User
+    Route::post('login', 'Auth\AuthController@login');
+
+    // Refresh the JWT Token
+    Route::get('refresh', 'Auth\AuthController@refresh');
+
+    // Below mention routes are available only for the authenticated users.
+    Route::middleware('auth:api')->group(function () {
+        // Get user info
+        Route::get('user', 'Auth\AuthController@user');
+        // Logout user from application
+        Route::post('logout', 'Auth\AuthController@logout');
+    });
 });
-*/
 
-//Route::group(['middleware' => 'auth.jwt'], function () {
-    Route::post('auth/register', 'Auth\AuthController@register');
-
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::get('profiles/{profile}/properties', 'Admin\ProfileController@getProperties');
+    Route::get('profiles/{profile}/bookings', 'Admin\ProfileController@getBookings');
+    Route::get('profiles/{profile}/feedbacks', 'Admin\ProfileController@getFeedbacks');
     Route::get('profiles/gender', 'Admin\ProfileController@getGender');
     Route::apiResource('profiles', 'Admin\ProfileController');
 
+    Route::get('properties/{property}/profiles', 'Admin\PropertyController@getProfiles');
+    Route::get('properties/{property}/bookings', 'Admin\PropertyController@getBookings');
+    Route::get('properties/{property}/feedbacks', 'Admin\PropertyController@getFeedbacks');
+    Route::get('properties/{property}/calendars', 'Admin\PropertyController@getCalendars');
     Route::get('properties/host_types', 'Admin\PropertyController@getHostTypes');
     Route::apiResource('properties', 'Admin\PropertyController');
 
@@ -48,7 +60,6 @@ Route::group(['prefix' => 'auth.jwt'], function() {
     Route::get('states/{state}/country', 'Admin\GeoController@getCountryByState');
     Route::get('states/{state}/cities', 'Admin\GeoController@getCitiesByState');
     Route::get('cities/{city}/state', 'Admin\GeoController@getStateByCity');
-
-//});
+});
 
 

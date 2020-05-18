@@ -13,8 +13,6 @@ class BaseRepository implements BaseRepositoryInterface
 
     protected $model;
     protected array $operators = ["=", "<", ">", "<=", ">=", "<>", "!="];
-    protected array $filterItems;
-    protected array $sortItems;
 
     public function __construct()
     {
@@ -23,10 +21,7 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function all(array $filterItems = [],array $sortItems = [])
     {
-        $this->$filterItems = $filterItems;
         $query = $this->applyFilter($this->model, $filterItems);
-
-        $this->$sortItems = $sortItems;
         $query = $this->applySorting($query, $sortItems);
         return $query->paginate(10);
     }
@@ -106,7 +101,7 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function getFieldsInfo()
     {
-        return $this->model->getFillable();
+        return $this->model::FIELDS_INFO;
     }
 
     public function with($relations)

@@ -21,6 +21,9 @@ import FeedbackIndex from "./pages/admin/feedbacks/FeedbackIndex";
 import BookingIndex from "./pages/admin/bookings/BookingIndex";
 import PropertyIndex from "./pages/admin/properties/PropertyIndex";
 import ProfileIndex from "./pages/admin/profiles/ProfileIndex";
+import PropertyTypeEdit from "./pages/admin/property_types/PropertyTypeEdit";
+import ProfileShow from "./pages/admin/profiles/ProfileShow";
+import PropertyShow from "./pages/admin/properties/PropertyShow";
 
 //paths
 const paths = {
@@ -44,11 +47,17 @@ const routes = [
     {
         path: '/',
         name: 'Home',
-        component: Home
+        component: Home,
+        meta: {
+            auth: undefined
+        }
     }, {
         path: '/dashboard',
         name: 'Dashboard',
-        component: Dashboard
+        component: Dashboard,
+        meta: {
+            auth: true
+        }
     },{
         path: '/auth/register',
         name: 'Register',
@@ -68,7 +77,7 @@ const routes = [
         name: 'ProfileIndex',
         component: ProfileIndex,
         meta: {
-            auth: false,
+            auth: undefined,
             api: paths.profiles
         }
     },{
@@ -76,7 +85,7 @@ const routes = [
         name: 'UserCreate',
         component: UserCreate,
         meta: {
-            auth: false,
+            auth: true,
             api: {
                 profiles: paths.profiles,
                 register: paths.register,
@@ -87,7 +96,7 @@ const routes = [
         name: 'UserEdit',
         component: UserEdit,
         meta: {
-            auth: false,
+            auth: true,
             api: {
                 profiles: paths.profiles,
                 register: paths.register,
@@ -98,7 +107,7 @@ const routes = [
         name: 'ProfileEdit',
         component: ProfileEdit,
         meta: {
-            auth: false,
+            auth: true,
             api: {
                 profiles: paths.profiles,
                 users:  paths.users,
@@ -109,11 +118,23 @@ const routes = [
             }
         }
     }, {
+        path: '/profiles/:id',
+        name: 'ProfileShow',
+        component: ProfileShow,
+        meta: {
+            auth: undefined,
+            api: {
+                profiles: paths.profiles,
+                properties:  paths.properties,
+                bookings: paths.bookings
+            }
+        }
+    }, {
         path: '/properties',
         name: 'PropertyIndex',
         component: PropertyIndex,
         meta: {
-            auth: false,
+            auth: undefined,
             api:  paths.properties
         }
     },{
@@ -121,7 +142,7 @@ const routes = [
         name: 'PropertyCreate',
         component: PropertyCreate,
         meta: {
-            auth: false,
+            auth: true,
             api: {
                 properties:  paths.properties,
                 cities:  paths.cities,
@@ -137,7 +158,7 @@ const routes = [
         name: 'PropertyEdit',
         component: PropertyEdit,
         meta: {
-            auth: false,
+            auth: true,
             api: {
                 properties:  paths.properties,
                 cities:  paths.cities,
@@ -149,11 +170,24 @@ const routes = [
             }
         }
     },{
+        path: '/properties/:id',
+        name: 'PropertyShow',
+        component: PropertyShow,
+        meta: {
+            auth: undefined,
+            api: {
+                properties:  paths.properties,
+                bookings: paths.bookings,
+                feedbacks: paths.feedbacks,
+                calendars: paths.calendars
+            }
+        }
+    },{
         path: '/bookings',
         name: 'BookingIndex',
         component: BookingIndex,
         meta: {
-            auth: false,
+            auth: undefined,
             api:  paths.bookings
         }
     },{
@@ -161,7 +195,7 @@ const routes = [
         name: 'BookingCreate',
         component: BookingCreate,
         meta: {
-            auth: false,
+            auth: true,
             api: {
                 bookings:  paths.bookings,
                 profiles:  paths.profiles,
@@ -173,7 +207,7 @@ const routes = [
         name: 'BookingEdit',
         component: BookingEdit,
         meta: {
-            auth: false,
+            auth: true,
             api: {
                 bookings:  paths.bookings,
                 profiles:  paths.profiles,
@@ -185,7 +219,7 @@ const routes = [
         name: 'FeedbackIndex',
         component: FeedbackIndex,
         meta: {
-            auth: false,
+            auth: undefined,
             api: paths.feedbacks
         }
     },{
@@ -193,7 +227,7 @@ const routes = [
         name: 'FeedbackCreate',
         component: FeedbackCreate,
         meta: {
-            auth: false,
+            auth: true,
             api: {
                 feedbacks: paths.feedbacks,
                 profiles: paths.profiles,
@@ -205,7 +239,7 @@ const routes = [
         name: 'FeedbackEdit',
         component: FeedbackEdit,
         meta: {
-            auth: false,
+            auth: true,
             api: {
                 feedbacks: paths.feedbacks,
                 profiles: paths.profiles,
@@ -217,7 +251,7 @@ const routes = [
         name: 'CalendarCreate',
         component: CalendarCreate,
         meta: {
-            auth: false,
+            auth: true,
             api: {
                 calendars:  paths.calendars,
                 properties: paths.properties,
@@ -228,7 +262,7 @@ const routes = [
         name: 'CalendarEdit',
         component: CalendarEdit,
         meta: {
-            auth: false,
+            auth: true,
             api: {
                 calendars:  paths.calendars,
                 properties: paths.properties,
@@ -239,7 +273,7 @@ const routes = [
         name: 'PropertyTypeIndex',
         component: PropertyTypeIndex,
         meta: {
-            auth: false,
+            auth: undefined,
             api:   paths.property_types,
         }
     },{
@@ -247,12 +281,22 @@ const routes = [
         name: 'PropertyTypeCreate',
         component: PropertyTypeCreate,
         meta: {
-            auth: false,
+            auth: true,
             api: {
                 property_types: paths.property_types,
             }
         }
-    },]
+    }, {
+        path: '/property_types/:id',
+        name: 'PropertyTypeEdit',
+        component: PropertyTypeEdit,
+        meta: {
+            auth: true,
+            api: {
+                property_types: paths.property_types,
+            }
+        }
+    }]
 const router = new VueRouter({
     history: true,
     mode: 'history',

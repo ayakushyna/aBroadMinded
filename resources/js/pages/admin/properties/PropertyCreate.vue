@@ -1,14 +1,14 @@
 <template>
-    <div>
+    <div class="container">
         <div class="form-group">
-            <router-link :to="{name: 'PropertyIndex'}" class="btn btn-outline-info">Back</router-link>
+            <router-link :to="{name: 'PropertyIndex'}" class="btn btn-outline-primary">Back</router-link>
         </div>
 
         <div class="panel panel-default">
             <div class="panel-heading"><h2>Create new property</h2></div>
             <div class="panel-body">
         <b-form @submit.prevent="onSubmit" @reset="onReset" v-if="show">
-            <b-row>
+            <b-row class="d-flex justify-content-between">
                 <b-col>
                     <b-form-group id="input-group-title" label="Title:" label-for="input-title">
                         <b-form-input

@@ -16,10 +16,10 @@ $factory->define(Property::class, function (Faker $faker) {
     $property_types_ids = DB::table('property_types')->pluck('id')->toArray();;
 
     return [
-        'title' => $faker->title,
+        'title' => $faker->word,
         'description' => $faker->text,
-        'address' => $faker->address,
-        'price'=> $faker->numberBetween(1, 100000),
+        'address' => $faker->streetAddress,
+        'price'=> $faker->numberBetween(1, 1000),
         'host_type' =>  $faker->randomElement(['entire place','private room','shared room']),
         'air_condition' => $faker->boolean,
         'children' => $faker->boolean,

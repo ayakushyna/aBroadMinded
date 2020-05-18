@@ -26,7 +26,7 @@ class FeedbackRequest extends FormRequest
         return [
             'score' => 'required|integer|min:1|max:5',
             'title' => 'required|string|max:255',
-            'body' => 'nullable|text',
+            'body' => 'nullable|string',
             'profile_id' => 'required|integer|exists:App\Models\Profile,id',
             'property_id' => 'required|integer|exists:App\Models\Property,id',
         ];

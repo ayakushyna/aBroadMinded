@@ -10,7 +10,7 @@ use App\Repositories\Interfaces\PropertyTypeRepositoryInterface;
 
 class PropertyTypeController extends BaseController
 {
-    protected string $name = 'property_type';
+    protected string $name = 'property type';
     protected string $validateRequest = PropertyTypeRequest::class;
 
     public function __construct(PropertyTypeRepositoryInterface $propertyTypeRepository)

@@ -1,16 +1,14 @@
 <template>
-    <div class="d-flex justify-content-between">
+    <div class="d-flex align-content-stretch position-relative">
 
-        <div class="mb-md-n5 position-relative d-flex align-content-stretch">
-            <sidebar></sidebar>
-        </div>
+        <sidebar></sidebar>
 
-        <div class="container">
-                <div class="panel-heading">
+        <div class="container-fluid pl-0 pr-0" >
+                <div class="panel-heading mb-2">
                     <navbar></navbar>
                 </div>
 
-                <div class="panel-body">
+                <div class="panel-body p-sm-5 align-self-stretch">
                     <transition>
                         <router-view :key="$route.fullPath"> </router-view>
                     </transition>
@@ -30,21 +28,3 @@
         }
     }
 </script>
-
-<style lang="scss">
-    a {
-        color: black;
-    }
-    a:link {
-        color: black;
-    }
-    a:hover {
-        color: purple;
-    }
-
-    *{
-        outline: none;
-        border: 0;
-        background-color: transparent;
-    }
-</style>

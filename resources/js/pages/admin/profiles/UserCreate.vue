@@ -1,11 +1,11 @@
 <template>
-    <div>
+    <div class="container">
         <div class="form-group">
-            <router-link :to="{name: 'ProfileIndex'}" class="btn btn-outline-info">Back</router-link>
+            <router-link :to="{name: 'ProfileIndex'}" class="btn btn-outline-primary">Back</router-link>
         </div>
 
         <div class="panel panel-default">
-            <div class="panel-heading"><h2>Create new profile</h2></div>
+            <div class="panel-heading"><h2>Create new user</h2></div>
             <div class="panel-body">
                 <b-form @submit.prevent="onSubmit" @reset="onReset" v-if="show">
 

@@ -19,6 +19,11 @@ class PropertyType extends Model
     protected $fillable = [
         'name'
     ];
+
+    const FIELDS_INFO = [
+        ['key'=> 'name',   'label' => 'Name',   'comparator' => 'like',       'sortable' => true],
+        ['key'=> 'count',  'label' => 'Count',  'comparator' => ['>=', '<='], 'sortable' => true,  'min' => 0, 'max' => 10],
+    ];
     /**
      * @return HasMany
      */

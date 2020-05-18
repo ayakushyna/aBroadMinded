@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div class="container">
         <div class="form-group">
-            <router-link :to="{name: 'ProfileIndex'}" class="btn btn-outline-info">Back</router-link>
+            <router-link :to="{name: 'ProfileIndex'}" class="btn btn-outline-primary">Back</router-link>
         </div>
 
         <div class="panel panel-default">

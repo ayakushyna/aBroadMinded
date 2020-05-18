@@ -25,6 +25,14 @@ class Feedback extends Model
         'property_id'
     ];
 
+    const FIELDS_INFO = [
+        ['key'=> 'title',    'label' => 'Title',          'comparator' => 'like',       'sortable' => true],
+        ['key'=> 'body',     'label' => 'Body',           'comparator' => 'like',       'sortable' => true],
+        ['key'=> 'score',    'label' => 'Score',          'comparator' => ['>=', '<='], 'sortable' => true,  'min' => 0, 'max' => 5],
+        ['key'=> 'fullname', 'label' => 'User',           'comparator' => 'like',       'sortable' => true],
+        ['key'=> 'property', 'label' => 'Property Title', 'comparator' => 'like',       'sortable' => true]
+    ];
+
     /**
      * @return BelongsTo
      */

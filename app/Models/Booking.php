@@ -28,6 +28,17 @@ class Booking extends Model
         'property_id'
     ];
 
+    const FIELDS_INFO = [
+        ['key'=> 'start_date', 'label' => 'Start Date',     'comparator' => '=',           'sortable' => true, 'type' => 'date'],
+        ['key'=> 'end_date',   'label' => 'End Date',       'comparator' => '=',           'sortable' => true, 'type' => 'date'],
+        ['key'=> 'adults',     'label' => 'Adults',         'comparator' => ['>=', '<='],  'sortable' => true,  'min' => 0, 'max' => 10],
+        ['key'=> 'children',   'label' => 'Children',       'comparator' => ['>=', '<='],  'sortable' => true,  'min' => 0, 'max' => 10],
+        ['key'=> 'price',      'label' => 'Price',          'comparator' => ['>=', '<='],  'sortable' => true,  'min' => 0, 'max' => 10],
+        ['key'=> 'status',     'label' => 'Status',         'comparator' => '=',           'sortable' => true, 'type' => 'bool'],
+        ['key'=> 'fullname',   'label' => 'Client',         'comparator' => 'like',        'sortable' => true],
+        ['key'=> 'property',   'label' => 'Property Title', 'comparator' => 'like',        'sortable' => true]
+    ];
+
     /**
      * @return BelongsTo
      */

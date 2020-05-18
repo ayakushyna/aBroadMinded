@@ -23,6 +23,12 @@ class Calendar extends Model
         'property_id'
     ];
 
+    const FIELDS_INFO = [
+        ['key'=> 'start_date', 'label' => 'Start Date',     'comparator' => '=',    'sortable' => true, 'type' => 'date'],
+        ['key'=> 'end_date',   'label' => 'End Date',       'comparator' => '=',    'sortable' => true, 'type' => 'date'],
+        ['key'=> 'property',   'label' => 'Property Title', 'comparator' => 'like', 'sortable' => true]
+    ];
+
     /**
      * @return BelongsTo
      */

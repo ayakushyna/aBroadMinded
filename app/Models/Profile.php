@@ -34,6 +34,15 @@ class Profile extends Model
         'user_id'
     ];
 
+    const FIELDS_INFO = [
+        ['key'=> 'first_name',  'label' => 'First Name', 'comparator' => 'like', 'sortable' => true],
+        ['key'=> 'last_name',   'label' => 'Last Name',  'comparator' => 'like', 'sortable' => true],
+        ['key'=> 'gender',      'label' => 'Gender',     'comparator' => '=',    'sortable' => true, 'enum'=> 'gender'],
+        ['key'=> 'birthday',    'label' => 'Birthday',   'comparator' => '=',    'sortable' => true, 'type' => 'date'],
+        ['key'=> 'active',      'label' => 'Active',     'comparator' => '=',    'sortable' => true, 'type' => 'bool'],
+        ['key'=> 'city',        'label' => 'City',       'comparator' => 'like', 'sortable' => true]
+    ];
+
     /**
      * @return BelongsTo
      */
