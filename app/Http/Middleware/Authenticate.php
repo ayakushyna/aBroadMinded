@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Illuminate\Support\Facades\DB;
 
 class Authenticate extends Middleware
 {
@@ -15,6 +16,7 @@ class Authenticate extends Middleware
         }
         return $next($request);
     }
+
     // Override authentication method
     protected function authenticate($request, array $guards)
     {

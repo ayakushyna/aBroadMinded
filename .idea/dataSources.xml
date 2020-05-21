@@ -7,5 +7,11 @@
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://localhost:5432/lar_mgr</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="auth@localhost" uuid="d0d2f3c0-8118-4dc8-b2a7-991f5b0fd0a8">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:5432/auth</jdbc-url>
+    </data-source>
   </component>
 </project>

@@ -5,65 +5,99 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegistrationFormRequest;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use Tymon\JWTAuth\Exceptions\JWTException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
     /**
      * Register a new user
+     * @param RegistrationFormRequest $request
+     * @return JsonResponse
      */
-    public function register(Request $request)
+    public function register(RegistrationFormRequest $request)
     {
-        $v = Validator::make($request->all(), [
-            'name' => 'required|min:3',
-            'email' => 'required|email|unique:users',
-            'password'  => 'required|min:3|confirmed',
-        ]);
-        if ($v->fails())
-        {
-            return response()->json([
-                'status' => 'error',
-                'errors' => $v->errors()
-            ], 422);
-        }
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = bcrypt($request->password);
-        $user->save();
+        $validated = $request->validated();
+
+        $nickname = $request->nickname;
+        $email = $request->email;
+        $password = bcrypt($request->password);
+
+        DB::connection('pgsql_auth')->table('users')->insert([
+                'nickname' => $nickname ,
+                'email' => $email,
+                'password' => $password]
+        );
+
         return response()->json(['status' => 'success'], 200);
     }
+
     /**
      * Login user and return a token
+     * @param Request $request
+     * @return JsonResponse
      */
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
-        if ($token = $this->guard()->attempt($credentials)) {
+        $login = $request->login;
+        $password = $request->password;
+
+        if ($token = $this->guard()->attempt(['email' => $login, 'password' => $password])) {
+            $this->setDefaultConnection();
+
             return response()->json(['status' => 'success'], 200)->header('Authorization', $token);
+        }
+
+        if ($token = $this->guard()->attempt(['nickname' => $login, 'password' => $password])) {
+            $this->setDefaultConnection();
+
+            return response()->json(['status' => 'success'], 200)->header('Authorization', $token);
+
         }
         return response()->json(['error' => 'login_error'], 401);
     }
+
+    public function setDefaultConnection()
+    {
+        $user = User::find(Auth::user()->id);
+
+        if($user->isRoot()){
+            DB::setDefaultConnection('pgsql_root');
+        }
+        else if($user->isAdmin()){
+            DB::setDefaultConnection('pgsql_admin');
+        }
+        else{
+            DB::setDefaultConnection('pgsql_user');
+        }
+
+    }
+
     /**
      * Logout User
      */
     public function logout()
     {
         $this->guard()->logout();
+        DB::setDefaultConnection('pgsql_guest');
+
         return response()->json([
             'status' => 'success',
             'msg' => 'Logged out Successfully.'
         ], 200);
     }
+
     /**
      * Get authenticated user
+     * @param Request $request
+     * @return JsonResponse
      */
     public function user(Request $request)
     {
         $user = User::find(Auth::user()->id);
+
         return response()->json([
             'status' => 'success',
             'data' => $user

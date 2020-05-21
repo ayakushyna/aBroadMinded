@@ -24,9 +24,9 @@ class RegistrationFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'nickname' => 'required|string|unique:users',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:6'
+            'nickname' => 'required|string|unique:pgsql_auth.public.users',
+            'email' => 'required|email|unique:pgsql_auth.public.users',
+            'password' => 'required|string|min:5|same:password_confirmation'
         ];
     }
 }
