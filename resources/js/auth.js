@@ -15,7 +15,7 @@ const config = {
     registerData: {
         url: 'auth/register',
         method: 'POST',
-        redirect: '/login'
+        redirect: false
     },
     loginData: {
         url: 'auth/login',
@@ -37,7 +37,7 @@ const config = {
     refreshData: {
         url: 'auth/refresh',
         method: 'GET',
-        enabled: true,
+        enabled: false,
         interval: 30
     }
 }

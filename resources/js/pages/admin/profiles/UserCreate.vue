@@ -76,21 +76,20 @@
                     password: '',
                     password_confirmation: '',
                     nickname: '',
-                    user_id: null,
                     profile_id: null,
                 },
                 show: true
             }
         },
         methods: {
-            createProfile(){
+            createProfile(id){
                 axios.post(this.$route.meta.api.profiles, {
+                    id: id,
                     first_name: '',
                     last_name: '',
                     birthday: '',
                     gender: '',
                     city_id: '' ,
-                    user_id: this.form.user_id,
                     active: true
                 })
                     .then(response => {

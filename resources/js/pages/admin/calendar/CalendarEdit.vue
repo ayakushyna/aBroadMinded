@@ -81,7 +81,7 @@
                     })
             },
             async getProperties() {
-                await axios.get(this.$route.meta.api.properties)
+                await axios.get(this.$route.meta.api.properties + '/list')
                     .then((response) => {
                         this.properties = response.data.items;
                     })

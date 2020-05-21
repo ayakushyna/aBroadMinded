@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container mt-5">
         <div class="row justify-content-md-center">
             <div class="col-6">
                 <div class="card card-default">
@@ -11,14 +11,14 @@
                         </div>
                         <form autocomplete="off" @submit.prevent="login" method="post">
                             <div class="form-group">
-                                <label for="email">E-mail</label>
-                                <input type="email" id="email" class="form-control" placeholder="user@example.com" v-model="email" required>
+                                <label for="login">E-mail or nickname</label>
+                                <input id="login" class="form-control" placeholder="user@example.com" v-model="login_data" required>
                             </div>
                             <div class="form-group">
                                 <label for="password">Password</label>
                                 <input type="password" id="password" class="form-control" v-model="password" required>
                             </div>
-                            <button type="submit" class="btn btn-primary">Signin</button>
+                            <button type="submit" class="btn btn-primary">Sign In</button>
                         </form>
                     </div>
                 </div>
@@ -30,7 +30,7 @@
     export default {
         data() {
             return {
-                email: null,
+                login_data: null,
                 password: null,
                 success: false,
                 has_error: false,
@@ -46,7 +46,7 @@
                 let redirect = this.$auth.redirect()
                 this.$auth.login({
                     data: {
-                        email: this.email,
+                        login: this.login_data,
                         password: this.password
                     },
                     success: function() {
@@ -56,7 +56,7 @@
                     },
                     error: function() {
                         this.has_error = true
-                        this.error = res.response.data.error
+                        this.error = response.data.error
                     },
                     rememberMe: true,
                     fetchUser: true

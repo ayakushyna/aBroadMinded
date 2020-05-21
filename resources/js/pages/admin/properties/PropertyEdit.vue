@@ -242,7 +242,7 @@
         },
         methods: {
             async getProfiles() {
-                await axios.get(this.$route.meta.api.profiles)
+                await axios.get(this.$route.meta.api.profiles+ '/list')
                     .then((response) => {
                         this.profiles = response.data.items;
                     })

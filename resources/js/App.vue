@@ -1,18 +1,22 @@
 <template>
-    <div class="d-flex align-content-stretch position-relative">
+    <div class="d-flex align-content-stretch min-vh-100">
+        <sidebar class="min-vh-100" v-if="$auth.check()"></sidebar>
 
-        <sidebar></sidebar>
+        <div class="pl-0 pr-0 container-fluid position-relative min-vh-100">
 
-        <div class="container-fluid pl-0 pr-0" >
-                <div class="panel-heading mb-2">
-                    <navbar></navbar>
-                </div>
+            <div class="mb-2">
+                <navbar></navbar>
+            </div>
 
-                <div class="panel-body p-sm-5 align-self-stretch">
+            <div class="p-sm-5 min-vh-100 align-self-stretch" >
                     <transition>
                         <router-view :key="$route.fullPath"> </router-view>
                     </transition>
-                </div>
+            </div>
+
+            <div class="mt-2">
+                <Footer></Footer>
+            </div>
         </div>
     </div>
 </template>
@@ -20,11 +24,14 @@
 <script>
     import Sidebar from "./pages/admin/Sidebar";
     import Navbar from "./components/Navbar";
+    import Footer from "./components/Footer";
+
 
     export default {
         components: {
             Navbar,
-            Sidebar
+            Sidebar,
+            Footer
         }
     }
 </script>

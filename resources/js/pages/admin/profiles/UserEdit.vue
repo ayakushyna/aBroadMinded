@@ -81,8 +81,6 @@
             }
         },
         created() {
-            this.getCountries();
-            this.getGender();
             this.getUser();
         },
         methods: {

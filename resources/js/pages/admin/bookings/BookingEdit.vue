@@ -40,9 +40,10 @@
                                     color="purple"
                                     v-model='form.range'
                                     is-inline
+                                    :columns="$screens({ lg: 2 }, 1)"
+                                    :min-date="new Date()"
                                     :disabled-dates='{ weekdays: [1, 7] }'
                                 >
-
                                 </date-picker>
                             </b-form-group>
 
@@ -135,13 +136,13 @@
         },
         methods: {
             async getProfiles() {
-                await axios.get(this.$route.meta.api.profiles)
+                await axios.get(this.$route.meta.api.profiles + '/list')
                     .then((response) => {
                         this.profiles = response.data.items;
                     })
             },
             async getProperties() {
-                await axios.get(this.$route.meta.api.properties)
+                await axios.get(this.$route.meta.api.properties + '/list')
                     .then((response) => {
                         this.properties = response.data.items;
                     })

@@ -1,4 +1,4 @@
-<template>
+ <template>
     <div class="container">
         <div class="form-group">
             <router-link :to="{name: 'FeedbackIndex'}" class="btn btn-outline-primary">Back</router-link>

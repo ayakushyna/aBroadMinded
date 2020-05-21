@@ -60,19 +60,28 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-lg-12 mt-4">
             <div>
                 <b-card no-body>
                     <b-tabs pills card vertical>
-                        <b-tab title="Bookings">
-                            <PropertyTable show="bookings"></PropertyTable>
+                        <b-tab title="Feedbacks" active>
+                            <Table pageEdit="FeedbackEdit"
+                                   :api="{ get: this.$route.meta.api.properties + '/'+ this.$route.params.id + '/feedbacks' ,
+                                           delete: this.$route.meta.api.feedbacks }"
+                            ></Table>
                         </b-tab>
-                        <b-tab title="Feedbacks">
-                            <PropertyTable show="feedbacks"></PropertyTable>
+                        <b-tab title="Bookings" v-if="adminOrSelf()">
+                            <Table pageEdit="BookingEdit"
+                                   :api="{ get: this.$route.meta.api.properties + '/'+ this.$route.params.id + '/bookings' ,
+                                           delete: this.$route.meta.api.bookings }"
+                            ></Table>
                         </b-tab>
-                        <b-tab title="Calendars" active>
-                            <PropertyTable show="calendars"></PropertyTable>
+                        <b-tab title="Calendars" >
+                            <Table pageEdit="CalendarEdit"
+                                   :api="{ get: this.$route.meta.api.properties + '/'+ this.$route.params.id + '/calendars' ,
+                                           delete: this.$route.meta.api.calendars }"
+                            ></Table>
                         </b-tab>
                     </b-tabs>
                 </b-card>
@@ -91,16 +100,14 @@
         BRow, BCol, BFormCheckboxGroup, BFormCheckbox, BFormGroup, BFormSelect,
     } from 'bootstrap-vue'
 
-
-
-
     import axios from 'axios'
-    import PropertyTable from "./PropertyTable";
+    import Table from "../../../components/Table";
 
     export default {
 
         data() {
             return {
+                profile_id: '',
                 profile: '',
                 title: '',
                 description: '',
@@ -120,12 +127,18 @@
             this.fetchData();
         },
         methods: {
+            adminOrSelf(){
+                console.log(this.$auth.user())
+                console.log(this.$route.params)
+                console.log(this.$auth.user().id === this.$route.params.id || this.$auth.user().role === 'admin' || this.$auth.user().role === 'root')
+                return this.$auth.user().id === this.$route.params.id || this.$auth.user().role === 'admin' || this.$auth.user().role === 'root';
+            },
             fetchData() {
                 try {
                     axios.get(this.$route.meta.api.properties + '/' + this.$route.params.id)
                         .then(response => {
                             let items = response.data.items;
-
+                            this.profile_id = items.profile_id;
                             this.profile = items.fullname;
                             this.title= items.title;
                             this.description= items.description;
@@ -160,7 +173,7 @@
             BButton,
             BCard,
             BRow, BCol,
-            PropertyTable,
+            Table,
             BFormCheckboxGroup, BFormCheckbox, BFormGroup,
         },
         directives: {
