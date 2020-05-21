@@ -25,22 +25,22 @@ class Profile extends Model
      * @var array
      */
     protected $fillable = [
+        'id',
         'first_name',
         'last_name',
         'gender',
         'birthday',
         'active',
-        'city_id',
-        'user_id'
+        'city_id'
     ];
 
     const FIELDS_INFO = [
         ['key'=> 'first_name',  'label' => 'First Name', 'comparator' => 'like', 'sortable' => true],
         ['key'=> 'last_name',   'label' => 'Last Name',  'comparator' => 'like', 'sortable' => true],
-        ['key'=> 'gender',      'label' => 'Gender',     'comparator' => '=',    'sortable' => true, 'enum'=> 'gender'],
+        ['key'=> 'gender',      'label' => 'Gender',     'comparator' => 'like', 'sortable' => true],
+        ['key'=> 'city',        'label' => 'City',       'comparator' => 'like', 'sortable' => true],
         ['key'=> 'birthday',    'label' => 'Birthday',   'comparator' => '=',    'sortable' => true, 'type' => 'date'],
         ['key'=> 'active',      'label' => 'Active',     'comparator' => '=',    'sortable' => true, 'type' => 'bool'],
-        ['key'=> 'city',        'label' => 'City',       'comparator' => 'like', 'sortable' => true]
     ];
 
     /**
@@ -75,11 +75,11 @@ class Profile extends Model
         return $this->hasMany(Property::class);
     }
 
-    /**
-     * @return HasOne
-     */
-    public function user()
-    {
-        return $this->hasOne(User::class);
-    }
+//    /**
+//     * @return HasOne
+//     */
+//    public function user()
+//    {
+//        return $this->hasOne(User::class);
+//    }
 }

@@ -12,6 +12,8 @@ class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
 
+    protected $connection = 'pgsql_auth';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -59,33 +61,26 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function setPassword($password)
-    {
-        if (!empty($password)) {
-            $this->attributes['password'] = bcrypt($password);
-        }
-    }
+//    /**
+//     * @return HasOne
+//     */
+//    public function profile()
+//    {
+//        return $this->hasOne(Profile::class);
+//    }
 
-    /**
-     * @return HasOne
-     */
-    public function profile()
+    public function isRoot() : bool
     {
-        return $this->hasOne(Profile::class);
+        return $this->role == 'root';
     }
 
     public function isAdmin() : bool
     {
-        return $this->roles == 'admin';
-    }
-
-    public function isManager() : bool
-    {
-        return $this->roles == 'manager';
+        return $this->role == 'admin';
     }
 
     public function isUser() : bool
     {
-        return $this->roles == 'user';
+        return $this->role == 'user';
     }
 }

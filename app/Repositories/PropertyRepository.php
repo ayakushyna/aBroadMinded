@@ -38,6 +38,13 @@ class PropertyRepository extends BaseRepository implements PropertyRepositoryInt
         return $query->paginate(5);
     }
 
+    public function getList(){
+        return DB::table('properties')->select(
+            'properties.id',
+            'properties.title'
+        )->get();
+    }
+
     public function getProfilesName()
     {
         return DB::table('profiles')

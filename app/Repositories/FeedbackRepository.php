@@ -19,10 +19,10 @@ class FeedbackRepository extends BaseRepository implements FeedbackRepositoryInt
 
         $query = DB::table('feedbacks')
             ->leftJoinSub($profiles_name, 'profiles_name', function ($join) {
-                $join->on('feedbacks.profile_id', '=', 'profiles_name.id');
+                $join->on('feedbacks.booking_id', '=', 'profiles_name.booking_id');
             })
             ->leftJoinSub($properties_name, 'properties_name', function ($join) {
-                $join->on('feedbacks.property_id', '=', 'properties_name.id');
+                $join->on('feedbacks.booking_id', '=', 'properties_name.booking_id');
             })
             ->select('feedbacks.*',
                 'profiles_name.fullname',
@@ -38,28 +38,34 @@ class FeedbackRepository extends BaseRepository implements FeedbackRepositoryInt
     public function getPropertiesName()
     {
         return DB::table('properties')
+            ->leftJoin('bookings', 'properties.id', '=', 'bookings.property_id')
             ->select(
-                'properties.id',
+                'bookings.id as booking_id',
+                'bookings.profile_id',
+                'bookings.property_id',
                 'properties.title as property'
             )
             ->whereExists(function ($query) {
                 $query->select(DB::raw(1))
                     ->from('feedbacks')
-                    ->whereRaw('feedbacks.property_id = properties.id');
+                    ->whereRaw('feedbacks.booking_id = bookings.id');
             });
     }
 
     public function getProfilesName()
     {
         return DB::table('profiles')
+            ->leftJoin('bookings', 'profiles.id', '=', 'bookings.profile_id')
             ->select(
-                'profiles.id',
+                'bookings.id as booking_id',
+                'bookings.profile_id',
+                'bookings.property_id',
                 DB::raw("CONCAT(profiles.first_name, ' ', profiles.last_name) as fullname")
             )
             ->whereExists(function ($query) {
                 $query->select(DB::raw(1))
                     ->from('feedbacks')
-                    ->whereRaw('feedbacks.profile_id = profiles.id');
+                    ->whereRaw('feedbacks.booking_id = bookings.id');
             });
     }
 
@@ -69,12 +75,13 @@ class FeedbackRepository extends BaseRepository implements FeedbackRepositoryInt
 
         $query = DB::table('feedbacks')
             ->leftJoinSub($properties_name, 'properties_name', function ($join) {
-                $join->on('feedbacks.property_id', '=', 'properties_name.id');
+                $join->on('feedbacks.booking_id', '=', 'properties_name.booking_id');
             })
             ->select('feedbacks.*',
+                'properties_name.profile_id',
                 'properties_name.property'
             )
-            ->where('profile_id', '=', $id);;
+            ->where('properties_name.profile_id', '=', $id);;
 
         $query = $this->applyFilter($query, $filterItems);
         $query = $this->applySorting($query, $sortItems);
@@ -88,12 +95,13 @@ class FeedbackRepository extends BaseRepository implements FeedbackRepositoryInt
 
         $query = DB::table('feedbacks')
             ->leftJoinSub($profiles_name, 'profiles_name', function ($join) {
-                $join->on('feedbacks.profile_id', '=', 'profiles_name.id');
+                $join->on('feedbacks.booking_id', '=', 'profiles_name.booking_id');
             })
             ->select('feedbacks.*',
+                'profiles_name.property_id',
                 'profiles_name.fullname'
             )
-            ->where('property_id', '=', $id);;
+            ->where('profiles_name.property_id', '=', $id);;
 
         $query = $this->applyFilter($query, $filterItems);
         $query = $this->applySorting($query, $sortItems);

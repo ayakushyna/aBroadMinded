@@ -30,6 +30,14 @@ class ProfileRepository extends BaseRepository implements ProfileRepositoryInter
         return $query->paginate(10);
     }
 
+    public function getList(){
+        return DB::table('profiles')->select(
+            'profiles.id',
+            'profiles.first_name',
+            'profiles.last_name'
+        )->get();;
+    }
+
     public function findById($id)
     {
         return DB::table('profiles')

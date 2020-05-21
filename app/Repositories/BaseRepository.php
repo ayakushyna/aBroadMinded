@@ -7,6 +7,7 @@ namespace App\Repositories;
 use App\Repositories\Interfaces\BaseRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BaseRepository implements BaseRepositoryInterface
 {
@@ -32,10 +33,15 @@ class BaseRepository implements BaseRepositoryInterface
             foreach ($filterItems as $filter)
             {
                 $value = $filter['value'];
-                if(in_array($filter['comparator'], $this->operators)){
+                if (is_array($filter['comparator'])){
+                    foreach ($filter['comparator'] as $key => $comparator) {
+                        $query = $query->where($filter['key'], $comparator, $value[$key]);
+                    }
+                }
+                else if(in_array($filter['comparator'], $this->operators)){
                     $query = $query->where($filter['key'], $filter['comparator'], $value);
                 }
-                else {
+                else{
                     $query = $query->where($filter['key'], $filter['comparator'], "%$value%");
                 }
 

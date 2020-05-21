@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\ProfileRequest;
@@ -21,6 +21,16 @@ class ProfileController extends BaseController
     public function __construct(ProfileRepositoryInterface $profileRepository)
     {
         parent::__construct($profileRepository);
+    }
+
+    public function getList()
+    {
+        $data = $this->baseRepository->getList();
+
+        return  response()->json(
+            [
+                'items' => $data
+            ], 200);
     }
 
     public function getGender()

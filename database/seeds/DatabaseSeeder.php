@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PropertyTypeTableSeeder::class);
         $this->call(ProfileTableSeeder::class);
         $this->call(PropertyTableSeeder::class);
-        $this->call(FeedbackTableSeeder::class);
         $this->call(BookingTableSeeder::class);
+        $this->call(FeedbackTableSeeder::class);
     }
 }

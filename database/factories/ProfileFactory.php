@@ -9,15 +9,15 @@ use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Support\Facades\DB;
 
 $factory->define(Profile::class, function (Faker $faker) {
-    $cities_ids = DB::table('cities')->pluck('id')->toArray();;
-    $users_ids = DB::table('users')->pluck('id')->toArray();;
+    $cities_ids = DB::table('cities')->pluck('id')->toArray();
+    $users_ids = DB::connection('pgsql_auth')->table('users')->pluck('id')->toArray();
 
     return [
+        'id' => $faker->unique()->randomElement($users_ids),
         'gender' => $faker->randomElement(['female' ,'male']),
         'first_name' => $faker->firstName,
         'last_name' => $faker->lastName,
         'birthday' => $faker->date(),
-        'city_id' => $faker->randomElement($cities_ids),
-        'user_id' => $faker->randomElement($users_ids)
+        'city_id' => $faker->randomElement($cities_ids)
     ];
 });

@@ -34,32 +34,35 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
-    Route::get('profiles/{profile}/properties', 'Admin\ProfileController@getProperties');
-    Route::get('profiles/{profile}/bookings', 'Admin\ProfileController@getBookings');
-    Route::get('profiles/{profile}/feedbacks', 'Admin\ProfileController@getFeedbacks');
-    Route::get('profiles/gender', 'Admin\ProfileController@getGender');
-    Route::apiResource('profiles', 'Admin\ProfileController');
+    Route::get('profiles/list', 'Api\ProfileController@getList');
+    Route::get('profiles/{profile}/properties', 'Api\ProfileController@getProperties');
+    Route::get('profiles/{profile}/bookings', 'Api\ProfileController@getBookings');
+    Route::get('profiles/{profile}/feedbacks', 'Api\ProfileController@getFeedbacks');
+    Route::get('profiles/gender', 'Api\ProfileController@getGender');
+    Route::apiResource('profiles', 'Api\ProfileController');
 
-    Route::get('properties/{property}/profiles', 'Admin\PropertyController@getProfiles');
-    Route::get('properties/{property}/bookings', 'Admin\PropertyController@getBookings');
-    Route::get('properties/{property}/feedbacks', 'Admin\PropertyController@getFeedbacks');
-    Route::get('properties/{property}/calendars', 'Admin\PropertyController@getCalendars');
-    Route::get('properties/host_types', 'Admin\PropertyController@getHostTypes');
-    Route::apiResource('properties', 'Admin\PropertyController');
+    Route::get('properties/list', 'Api\PropertyController@getList');
+    Route::get('properties/{property}/profiles', 'Api\PropertyController@getProfiles');
+    Route::get('properties/{property}/bookings', 'Api\PropertyController@getBookings');
+    Route::get('properties/{property}/feedbacks', 'Api\PropertyController@getFeedbacks');
+    Route::get('properties/{property}/calendars', 'Api\PropertyController@getCalendars');
+    Route::get('properties/host_types', 'Api\PropertyController@getHostTypes');
+    Route::apiResource('properties', 'Api\PropertyController');
 
-    Route::apiResource('property_types', 'Admin\PropertyTypeController');
+    Route::apiResource('property_types', 'Api\PropertyTypeController');
+    Route::apiResource('calendars', 'Api\CalendarController');
+    Route::apiResource('bookings', 'Api\BookingController');
+    Route::apiResource('feedbacks', 'Api\FeedbackController');
 
-    Route::apiResource('calendars', 'Admin\CalendarController');
-
-    Route::apiResource('bookings', 'Admin\BookingController');
-
-    Route::apiResource('feedbacks', 'Admin\FeedbackController');
-
-    Route::get('countries', 'Admin\GeoController@getCountries');
-    Route::get('countries/{country}/states', 'Admin\GeoController@getStatesByCountry');
-    Route::get('states/{state}/country', 'Admin\GeoController@getCountryByState');
-    Route::get('states/{state}/cities', 'Admin\GeoController@getCitiesByState');
-    Route::get('cities/{city}/state', 'Admin\GeoController@getStateByCity');
+    Route::get('countries', 'Api\GeoController@getCountries');
+    Route::get('countries/{country}/states', 'Api\GeoController@getStatesByCountry');
+    Route::get('states/{state}/country', 'Api\GeoController@getCountryByState');
+    Route::get('states/{state}/cities', 'Api\GeoController@getCitiesByState');
+    Route::get('cities/{city}/state', 'Api\GeoController@getStateByCity');
 });
+
+
+Route::get('profiles/', 'Api\ProfileController@index');
+Route::get('properties/', 'Api\PropertyController@index');
 
 

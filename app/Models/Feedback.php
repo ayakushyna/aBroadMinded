@@ -21,8 +21,7 @@ class Feedback extends Model
         'score',
         'title',
         'body',
-        'profile_id',
-        'property_id'
+        'booking_id',
     ];
 
     const FIELDS_INFO = [

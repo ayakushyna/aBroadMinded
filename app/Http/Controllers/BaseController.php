@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Repositories\Interfaces\BaseRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BaseController extends Controller
 {

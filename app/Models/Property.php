@@ -50,15 +50,14 @@ class Property extends Model
         ['key'=> 'title',         'label' => 'Title',         'comparator' => 'like',       'sortable' => true],
         ['key'=> 'description',   'label' => 'Description',   'comparator' => 'like',       'sortable' => true],
         ['key'=> 'address',       'label' => 'Address',       'comparator' => 'like',       'sortable' => true],
-        ['key'=> 'price',         'label' => 'Price',         'comparator' => ['>=', '<='], 'sortable' => true, 'min' => 0, 'max' => 10],
-        ['key'=> 'host_type',     'label' => 'Host Type',     'comparator' => 'like',       'sortable' => true, 'enum'=> 'host_type'],
+        ['key'=> 'host_type',     'label' => 'Host Type',     'comparator' => 'like',       'sortable' => true],
         ['key'=> 'city',          'label' => 'City',          'comparator' => 'like',       'sortable' => true],
         ['key'=> 'fullname',      'label' => 'Owner',         'comparator' => 'like',       'sortable' => true],
         ['key'=> 'name',          'label' => 'Property Type', 'comparator' => 'like',       'sortable' => true],
-        ['key'=> 'active',        'label' => 'Active',        'comparator' => '=',          'sortable' => true, 'type' => 'bool'],
         ['key'=> 'max_bedrooms',  'label' => 'Max Bedrooms',  'comparator' => ['>=', '<='], 'secondary' => true, 'min' => 0, 'max' => 10],
         ['key'=> 'max_beds',      'label' => 'Max Beds',      'comparator' => ['>=', '<='], 'secondary' => true, 'min' => 0, 'max' => 10],
         ['key'=> 'max_guests',    'label' => 'Max Guests',    'comparator' => ['>=', '<='], 'secondary' => true, 'min' => 0, 'max' => 10],
+        ['key'=> 'price',         'label' => 'Price',         'comparator' => ['>=', '<='], 'sortable' => true,  'min' => 0, 'max' => 10000],
         ['key'=> 'air_condition', 'label' => 'Air Condition', 'comparator' => '=',          'secondary' => true, 'type' => 'bool'],
         ['key'=> 'children',      'label' => 'Children',      'comparator' => '=',          'secondary' => true, 'type' => 'bool'],
         ['key'=> 'hair_dryer',    'label' => 'Hair Dryer',    'comparator' => '=',          'secondary' => true, 'type' => 'bool'],
@@ -67,6 +66,7 @@ class Property extends Model
         ['key'=> 'smoking',       'label' => 'Smoking',       'comparator' => '=',          'secondary' => true, 'type' => 'bool'],
         ['key'=> 'tv',            'label' => 'TV',            'comparator' => '=',          'secondary' => true, 'type' => 'bool'],
         ['key'=> 'wifi',          'label' => 'Wi-Fi',         'comparator' => '=',          'secondary' => true, 'type' => 'bool'],
+        ['key'=> 'active',        'label' => 'Active',        'comparator' => '=',          'sortable' => true, 'type' => 'bool'],
     ];
 
     /**

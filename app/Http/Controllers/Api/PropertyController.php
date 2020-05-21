@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\PropertyRequest;
@@ -22,6 +22,16 @@ class PropertyController extends BaseController
     public function __construct(PropertyRepositoryInterface $propertyRepository)
     {
         parent::__construct($propertyRepository);
+    }
+
+    public function getList()
+    {
+        $data = $this->baseRepository->getList();
+
+        return  response()->json(
+            [
+                'items' => $data
+            ], 200);
     }
 
     public function getHostTypes()
