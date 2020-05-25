@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="form-group">
-            <router-link :to="{name: 'BookingIndex'}" class="btn btn-outline-primary">Back</router-link>
+            <b-button @click="$router.go(-1)" variant="outline-primary">Back</b-button>
         </div>
 
         <div class="panel panel-default">
@@ -10,85 +10,84 @@
                 <b-form @submit.prevent="onSubmit" @reset="onReset" v-if="show">
                     <b-row>
                         <b-col>
-                            <b-form-group id="input-group-profile" label="Profile:" label-for="input-profile" class="justify-content-md-left">
-                                <b-form-select
-                                    id="input-profile"
-                                    v-model="form.profile_id"
-                                    required
-                                    class="col-sm-6">
-                                    <option v-for="profile in profiles" v-bind:value="profile.id">
-                                        {{ profile.first_name }} {{ profile.last_name }}
-                                    </option>
-                                </b-form-select>
-                            </b-form-group>
-
-                            <b-form-group id="input-group-properties" label="Property:" label-for="input-properties">
-                                <b-form-select
-                                    id="input-properties"
-                                    v-model="form.property_id"
-                                    required
-                                    class="col-sm-6">
-                                    <option v-for="property in properties" v-bind:value="property.id">
-                                        {{ property.title }}
-                                    </option>
-                                    ></b-form-select>
-                            </b-form-group>
 
                             <b-form-group id="input-group-range" label="Date range:" label-for="input-range">
-                                <date-picker
-                                    mode='range'
-                                    color="purple"
-                                    v-model='form.range'
-                                    is-inline
-                                    :columns="$screens({ lg: 2 }, 1)"
-                                    :min-date="new Date()"
-                                    :disabled-dates='{ weekdays: [1, 7] }'
-                                >
-                                </date-picker>
+                                <el-date-picker
+                                    v-model="form.range"
+                                    type="daterange"
+                                    align="right"
+                                    start-placeholder="Start Date"
+                                    end-placeholder="End Date">
+                                </el-date-picker>
+
+                                <div v-if="errors.start_date || errors.end_date">
+                                    <ul class="alert alert-danger">
+                                        <li v-for="(value, key, index) in errors.start_date">{{ value }}</li>
+                                        <li v-for="(value, key, index) in errors.end_date">{{ value }}</li>
+                                    </ul>
+                                </div>
                             </b-form-group>
 
                         </b-col>
 
                         <b-col>
 
-                            <b-form-group id="input-group-adults" label="Adults:" label-for="input-adults">
+                            <b-form-group class="col-sm-4" id="input-group-adults" label="Adults:" label-for="input-adults">
                                 <b-form-input
                                     id="input-adults"
                                     v-model="form.adults"
                                     type="number"
                                     required
                                     placeholder="Enter number of adults"
-                                    class="col-sm-4"
                                     min="1"
-                                    max="50"
+                                    max="20"
                                     step="1">
                                     ></b-form-input>
+
+                                <div v-if="errors.adults">
+                                    <ul class="alert alert-danger">
+                                        <li v-for="(value, key, index) in errors.adults">{{ value }}</li>
+                                    </ul>
+                                </div>
                             </b-form-group>
 
-                            <b-form-group id="input-group-children" label="Max children:" label-for="input-children">
+                            <b-form-group class="col-sm-4" id="input-group-children" label="Children:" label-for="input-children">
                                 <b-form-input
                                     id="input-children"
                                     v-model="form.children"
                                     type="number"
                                     required
                                     placeholder="Enter number of children"
-                                    class="col-sm-4"
-                                    min="1"
-                                    max="50"
+                                    min="0"
+                                    max="20"
                                     step="1">
                                     ></b-form-input>
+
+                                <div v-if="errors.children">
+                                    <ul class="alert alert-danger">
+                                        <li v-for="(value, key, index) in errors.children">{{ value }}</li>
+                                    </ul>
+                                </div>
                             </b-form-group>
 
-                            <b-form-group id="input-group-price" label="Price per night:" label-for="input-price">
+                            <b-form-group class="col-sm-4" id="input-group-price" label="Price per night:" label-for="input-price">
                                 <b-form-input
                                     id="input-price"
                                     v-model="form.price"
                                     type="number"
                                     required
+                                    min="1"
+                                    max="1000000"
                                     placeholder="Enter price"
-                                    class="col-sm-4">
-                                    ></b-form-input>
+                                ></b-form-input>
+
+                                <div v-if="errors.price">
+                                    <ul class="alert alert-danger">
+                                        <li v-for="(value, key, index) in errors.price">{{ value }}</li>
+                                    </ul>
+                                </div>
                             </b-form-group>
+
                         </b-col>
                     </b-row>
 
@@ -123,30 +122,16 @@
                     profile_id: null,
                     property_id: null,
                 },
-                profiles: [],
-                properties:[],
                 statuses:[],
+                has_error: false,
+                errors: {},
                 show: true
             }
         },
         created() {
-            this.getProfiles();
-            this.getProperties();
             this.getBooking();
         },
         methods: {
-            async getProfiles() {
-                await axios.get(this.$route.meta.api.profiles + '/list')
-                    .then((response) => {
-                        this.profiles = response.data.items;
-                    })
-            },
-            async getProperties() {
-                await axios.get(this.$route.meta.api.properties + '/list')
-                    .then((response) => {
-                        this.properties = response.data.items;
-                    })
-            },
             async getBooking() {
                 await axios.get(this.$route.meta.api.bookings + '/' + this.$route.params.id)
                     .then((response) => {
@@ -161,6 +146,9 @@
                     });
             },
             onSubmit(evt) {
+                this.has_error = false;
+                this.errors = {}
+
                 axios.put(this.$route.meta.api.bookings + '/' + this.$route.params.id, {
                     start_date: this.form.range['start'],
                     end_date: this.form.range['end'],
@@ -186,10 +174,10 @@
                 this.form.adults = '';
                 this.form.children = '';
                 this.form.price = '';
-                this.form.profile_id = null;
-                this.form.property_id = null;
                 // Trick to reset/clear native browser form validation state
                 this.show = false
+                this.has_error = false;
+                this.errors = {}
                 this.$nextTick(() => {
                     this.show = true
                 })

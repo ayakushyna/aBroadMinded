@@ -16,7 +16,9 @@
                                     <dt>Location:</dt>
                                     <dd>{{address}}, {{ city }}</dd>
                                     <dt>Owner:</dt>
-                                    <dd>{{ profile }}</dd>
+                                    <dd>
+                                        <router-link class="nav-link"  :to="{name: 'ProfileShow', params: {id: profile_id}}"> {{ fullname }} </router-link>
+                                    </dd>
                                     <dt>Property Type:</dt>
                                     <dd>{{ property_type }}</dd>
                                     <dt>Host Type:</dt>
@@ -56,6 +58,10 @@
                                 </b-form-group>
                             </b-col>
                         </b-row>
+
+                        <b-row class="m-3 align" v-if="!isSelf">
+                            <b-button variant="primary" class="mr-3" :to="$auth.user()? {name: 'BookingCreate', props: {booking_id: id, profile_id: $auth.user().id}} : {name: 'Login'}" >Book</b-button>
+                        </b-row>
                     </div>
                 </div>
             </div>
@@ -64,21 +70,27 @@
         <div class="col-lg-12 mt-4">
             <div>
                 <b-card no-body>
-                    <b-tabs pills card vertical>
+                    <b-tabs pills card vertical
+                            active-nav-item-class="primary">
                         <b-tab title="Feedbacks" active>
-                            <Table pageEdit="FeedbackEdit"
+                            <Table name="Feedback"
+                                   pageEdit="FeedbackEdit"
                                    :api="{ get: this.$route.meta.api.properties + '/'+ this.$route.params.id + '/feedbacks' ,
                                            delete: this.$route.meta.api.feedbacks }"
                             ></Table>
                         </b-tab>
-                        <b-tab title="Bookings" v-if="adminOrSelf()">
-                            <Table pageEdit="BookingEdit"
+                        <b-tab title="Bookings" v-if="isAdmin || isSelf">
+                            <Table name="Booking"
+                                   :hasShow=true
+                                   pageShow="BookingShow"
+                                   pageEdit="BookingEdit"
                                    :api="{ get: this.$route.meta.api.properties + '/'+ this.$route.params.id + '/bookings' ,
                                            delete: this.$route.meta.api.bookings }"
                             ></Table>
                         </b-tab>
-                        <b-tab title="Calendars" >
-                            <Table pageEdit="CalendarEdit"
+                        <b-tab title="Calendars" v-if="isAdmin || isSelf">
+                            <Table name="Calendar"
+                                   pageEdit="CalendarEdit"
                                    :api="{ get: this.$route.meta.api.properties + '/'+ this.$route.params.id + '/calendars' ,
                                            delete: this.$route.meta.api.calendars }"
                             ></Table>
@@ -107,8 +119,9 @@
 
         data() {
             return {
+                id: '',
                 profile_id: '',
-                profile: '',
+                fullname: '',
                 title: '',
                 description: '',
                 city: '',
@@ -126,20 +139,24 @@
         created() {
             this.fetchData();
         },
-        methods: {
-            adminOrSelf(){
-                console.log(this.$auth.user())
-                console.log(this.$route.params)
-                console.log(this.$auth.user().id === this.$route.params.id || this.$auth.user().role === 'admin' || this.$auth.user().role === 'root')
-                return this.$auth.user().id === this.$route.params.id || this.$auth.user().role === 'admin' || this.$auth.user().role === 'root';
+        computed: {
+            isAdmin: function() {
+                return this.$auth.user() && (this.$auth.user().role === 'admin' || this.$auth.user().role === 'root');
             },
+            isSelf: function() {
+                return this.$auth.user() &&  (this.$auth.user().id === this.profile_id);
+            },
+        },
+        methods: {
             fetchData() {
                 try {
                     axios.get(this.$route.meta.api.properties + '/' + this.$route.params.id)
                         .then(response => {
                             let items = response.data.items;
+
+                            this.id = items.id;
                             this.profile_id = items.profile_id;
-                            this.profile = items.fullname;
+                            this.fullname = items.fullname;
                             this.title= items.title;
                             this.description= items.description;
                             this.address= items.address;

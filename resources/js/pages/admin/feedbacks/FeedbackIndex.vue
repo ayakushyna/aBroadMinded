@@ -1,10 +1,7 @@
 <template>
     <div class="container-fluid">
-        <div class="form-group" v-if="($auth.user().role === 'root')">
-            <router-link :to="{path: $route.fullPath + '/create'}" :name="this.name" class="btn btn-primary">Add new feedback</router-link>
-        </div>
-
-        <Table :pageEdit="pageEdit"
+        <Table :name="name"
+               :pageEdit="pageEdit"
                :api="api"
         ></Table>
     </div>
@@ -14,6 +11,7 @@
     export default {
         data(){
             return {
+                name: 'Feedback',
                 pageEdit: 'FeedbackEdit',
                 api: {
                     get: this.$route.meta.api,

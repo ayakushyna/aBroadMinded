@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="form-group">
-            <router-link :to="{name: 'PropertyIndex'}" class="btn btn-outline-primary">Back</router-link>
+            <b-button @click="$router.go(-1)" variant="outline-primary">Back</b-button>
         </div>
 
         <div class="panel panel-default">
@@ -18,6 +18,12 @@
                             required
                             placeholder="Enter title"
                         ></b-form-input>
+
+                        <div v-if="errors.title">
+                            <ul class="alert alert-danger">
+                                <li v-for="(value, key, index) in errors.title">{{ value }}</li>
+                            </ul>
+                        </div>
                     </b-form-group>
 
                     <b-form-group id="input-group-description" label="Description:" label-for="input-description">
@@ -28,6 +34,12 @@
                             rows="4"
                             max-rows="3"
                         ></b-form-textarea>
+
+                        <div v-if="errors.description">
+                            <ul class="alert alert-danger">
+                                <li v-for="(value, key, index) in errors.description">{{ value }}</li>
+                            </ul>
+                        </div>
                     </b-form-group>
 
                     <b-form-group id="input-group-country" label="Country:" label-for="input-country">
@@ -66,6 +78,12 @@
                                 {{ city.name }}
                             </option>
                         </b-form-select>
+
+                        <div v-if="errors.city_id">
+                            <ul class="alert alert-danger">
+                                <li v-for="(value, key, index) in errors.city_id">{{ value }}</li>
+                            </ul>
+                        </div>
                     </b-form-group>
 
                     <b-form-group id="input-group-address" label="Address:" label-for="input-address">
@@ -76,6 +94,12 @@
                             required
                             placeholder="Enter address">
                         </b-form-input>
+
+                        <div v-if="errors.address">
+                            <ul class="alert alert-danger">
+                                <li v-for="(value, key, index) in errors.address">{{ value }}</li>
+                            </ul>
+                        </div>
                     </b-form-group>
 
                     <b-form-group id="input-group-price" label="Price:" label-for="input-price">
@@ -87,6 +111,12 @@
                             placeholder="Enter price"
                             class="col-sm-4">
                             ></b-form-input>
+
+                        <div v-if="errors.price">
+                            <ul class="alert alert-danger">
+                                <li v-for="(value, key, index) in errors.price">{{ value }}</li>
+                            </ul>
+                        </div>
                     </b-form-group>
                 </b-col>
 
@@ -101,6 +131,12 @@
                                 {{ profile.first_name }} {{ profile.last_name }}
                             </option>
                         </b-form-select>
+
+                        <div v-if="errors.profile_id">
+                            <ul class="alert alert-danger">
+                                <li v-for="(value, key, index) in errors.profile_id">{{ value }}</li>
+                            </ul>
+                        </div>
                     </b-form-group>
 
                     <b-form-group id="input-group-property_type" label="Property Type:" label-for="input-property_type">
@@ -113,6 +149,12 @@
                                 {{ type.name }}
                             </option>
                         ></b-form-select>
+
+                        <div v-if="errors.property_type_id">
+                            <ul class="alert alert-danger">
+                                <li v-for="(value, key, index) in errors.property_type_id">{{ value }}</li>
+                            </ul>
+                        </div>
                     </b-form-group>
 
                     <b-form-group id="input-group-host_type" label="Host Type:" label-for="input-host_type">
@@ -123,6 +165,12 @@
                             required
                             class="col-sm-6">
                         ></b-form-select>
+
+                        <div v-if="errors.host_type">
+                            <ul class="alert alert-danger">
+                                <li v-for="(value, key, index) in errors.host_type">{{ value }}</li>
+                            </ul>
+                        </div>
                     </b-form-group>
 
                     <b-form-group id="input-group-max_guests" label="Max guests:" label-for="input-max_guests">
@@ -137,6 +185,12 @@
                             max="50"
                             step="1">
                         ></b-form-input>
+
+                        <div v-if="errors.max_guests">
+                            <ul class="alert alert-danger">
+                                <li v-for="(value, key, index) in errors.max_guests">{{ value }}</li>
+                            </ul>
+                        </div>
                     </b-form-group>
 
                     <b-form-group id="input-group-max_bedrooms" label="Max bedrooms:" label-for="input-max_bedrooms">
@@ -151,6 +205,12 @@
                             max="50"
                             step="1">
                         ></b-form-input>
+
+                        <div v-if="errors.max_bedrooms">
+                            <ul class="alert alert-danger">
+                                <li v-for="(value, key, index) in errors.max_bedrooms">{{ value }}</li>
+                            </ul>
+                        </div>
                     </b-form-group>
 
                     <b-form-group id="input-group-max_beds" label="Max beds:" label-for="input-max_beds">
@@ -165,6 +225,12 @@
                             max="50"
                             step="1">
                         ></b-form-input>
+
+                        <div v-if="errors.max_beds">
+                            <ul class="alert alert-danger">
+                                <li v-for="(value, key, index) in errors.max_beds">{{ value }}</li>
+                            </ul>
+                        </div>
                     </b-form-group>
 
                     <b-form-group id="input-group-permissions" label="Permissions:">
@@ -228,6 +294,8 @@
                 cities:[],
                 property_types:[],
                 host_types:[],
+                has_error: false,
+                errors: {},
                 show: true
             }
         },
@@ -276,6 +344,9 @@
                     })
             },
             onSubmit(evt) {
+                this.has_error = false;
+                this.errors = {}
+
                 axios.post(this.$route.meta.api.properties, {
                     profile_id: this.form.profile_id,
                     title: this.form.title,
@@ -302,8 +373,10 @@
                         this.$router.push({name: 'PropertyIndex'})
                         // console.log(response.data)
                     ))
-                    .catch(error => console.log(error))
-                    .finally(() => this.loading = false)
+                    .catch(error => {
+                        this.has_error = true;
+                        this.errors = error.response.data.errors;
+                    })
             },
             onReset(evt) {
                 evt.preventDefault()
@@ -325,6 +398,8 @@
                 this.form.utilities= [];
                 // Trick to reset/clear native browser form validation state
                 this.show = false
+                this.has_error = false;
+                this.errors = {}
                 this.$nextTick(() => {
                     this.show = true
                 })

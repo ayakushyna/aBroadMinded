@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="form-group">
-            <router-link :to="{name: 'PropertyTypeIndex'}" class="btn btn-outline-primary">Back</router-link>
+            <b-button @click="$router.go(-1)" variant="outline-primary">Back</b-button>
         </div>
 
         <div class="panel panel-default">
@@ -18,6 +18,12 @@
                             placeholder="Enter name"
                             class="col-sm-6">
                             ></b-form-input>
+
+                        <div v-if="errors.name">
+                            <ul class="alert alert-danger">
+                                <li v-for="(value, key, index) in errors.name">{{ value }}</li>
+                            </ul>
+                        </div>
                     </b-form-group>
 
 
@@ -43,12 +49,17 @@
                 form: {
                     name: ''
                 },
+                has_error: false,
+                errors: {},
                 show: true
             }
         },
         methods: {
 
             onSubmit(evt) {
+                this.has_error = false;
+                this.errors = {}
+
                 axios.post(this.$route.meta.api.property_types, {
 
                     name: this.form.name,
@@ -57,8 +68,10 @@
                         this.$router.push({name: 'PropertyTypeIndex'})
                         // console.log(response.data)
                     ))
-                    .catch(error => console.log(error))
-                    .finally(() => this.loading = false)
+                    .catch(error => {
+                        this.has_error = true;
+                        this.errors = error.response.data.errors;
+                    })
             },
             onReset(evt) {
                 evt.preventDefault()
@@ -66,6 +79,8 @@
                 this.form.name= '';
                 // Trick to reset/clear native browser form validation state
                 this.show = false
+                this.has_error = false;
+                this.errors = {}
                 this.$nextTick(() => {
                     this.show = true
                 })

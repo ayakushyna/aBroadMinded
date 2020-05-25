@@ -1,10 +1,9 @@
 <template>
     <div class="container-fluid">
-        <div class="form-group"  v-if="($auth.user().role === 'root')">
-            <router-link :to="{path: $route.fullPath + '/create'}" :name="this.name" class="btn btn-primary">Add new booking</router-link>
-        </div>
-
-        <Table :pageEdit="pageEdit"
+        <Table :name="name"
+               :hasShow=hasShow
+               :pageShow="pageShow"
+               :pageEdit="pageEdit"
                :api="api"
         ></Table>
     </div>
@@ -14,6 +13,9 @@
     export default {
         data(){
             return {
+                name: 'Booking',
+                hasShow:true,
+                pageShow:"BookingShow",
                 pageEdit: 'BookingEdit',
                 api: {
                     get: this.$route.meta.api,

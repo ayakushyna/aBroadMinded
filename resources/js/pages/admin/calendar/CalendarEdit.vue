@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="form-group">
-            <router-link :to="{name: 'PropertyIndex'}" class="btn btn-outline-primary">Back</router-link>
+            <b-button @click="$router.go(-1)" variant="outline-primary">Back</b-button>
         </div>
 
         <div class="panel panel-default">
@@ -9,30 +9,38 @@
             <div class="panel-body">
                 <b-form @submit.prevent="onSubmit" @reset="onReset" v-if="show">
 
-                    <b-form-group id="input-group-properties" label="Property:" label-for="input-properties">
+                    <b-form-group class="col-sm-6" id="input-group-properties" label="Property:" label-for="input-properties">
                         <b-form-select
                             id="input-properties"
                             v-model="form.property_id"
-                            required
-                            class="col-sm-6">
+                            required>
                             <option v-for="property in properties" v-bind:value="property.id">
                                 {{ property.title }}
                             </option>
-                            ></b-form-select>
+                        </b-form-select>
+
+                        <div v-if="errors.property_id">
+                            <ul class="alert alert-danger">
+                                <li v-for="(value, key, index) in errors.property_id">{{ value }}</li>
+                            </ul>
+                        </div>
                     </b-form-group>
 
+                    <b-form-group class="col-sm-6" id="input-group-range" label="Date range:" label-for="input-range">
+                        <el-date-picker
+                            v-model="form.range"
+                            type="daterange"
+                            align="right"
+                            start-placeholder="Start Date"
+                            end-placeholder="End Date">
+                        </el-date-picker>
 
-
-                    <b-form-group id="input-group-range" label="Date range:" label-for="input-range">
-                        <date-picker
-                            mode='range'
-                            color="purple"
-                            v-model='form.range'
-                            :min-date="new Date()"
-                            is-inline
-                        >
-
-                        </date-picker>
+                        <div v-if="errors.start_date || errors.end_date">
+                            <ul class="alert alert-danger">
+                                <li v-for="(value, key, index) in errors.start_date">{{ value }}</li>
+                                <li v-for="(value, key, index) in errors.end_date">{{ value }}</li>
+                            </ul>
+                        </div>
                     </b-form-group>
 
                     <b-button type="submit" variant="primary">Submit</b-button>
@@ -65,6 +73,8 @@
                 },
                 dates: [],
                 properties:[],
+                has_error: false,
+                errors: {},
                 show: true
             }
         },
@@ -96,6 +106,9 @@
                     });
             },
             onSubmit(evt) {
+                this.has_error = false;
+                this.errors = {}
+
                 axios.put(this.$route.meta.api.calendars + '/' + this.$route.params.id, {
                     start_date: this.form.range['start'],
                     end_date: this.form.range['end'],
@@ -105,8 +118,10 @@
                         this.$router.push({name: 'PropertyIndex'})
                         // console.log(response.data)
                     ))
-                    .catch(error => console.log(error))
-                    .finally(() => this.loading = false)
+                    .catch(error => {
+                        this.has_error = true;
+                        this.errors = error.response.data.errors;
+                    })
             },
             onReset(evt) {
                 evt.preventDefault()
@@ -116,6 +131,8 @@
                 this.form.property_id = null;
                 // Trick to reset/clear native browser form validation state
                 this.show = false
+                this.has_error = false;
+                this.errors = {}
                 this.$nextTick(() => {
                     this.show = true
                 })

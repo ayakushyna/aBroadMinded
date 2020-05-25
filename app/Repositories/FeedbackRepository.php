@@ -108,4 +108,29 @@ class FeedbackRepository extends BaseRepository implements FeedbackRepositoryInt
 
         return $query->paginate(5);
     }
+
+    public function getFieldsInfoExcludeProfile(){
+        $fields = $this->model::FIELDS_INFO;
+
+        foreach($fields as $k => $v) {
+            if($fields[$k]['key'] == 'fullname') {
+                unset($fields[$k]);
+            }
+        }
+
+        return array_values($fields);
+    }
+
+    public function getFieldsInfoExcludeProperty()
+    {
+        $fields = $this->model::FIELDS_INFO;
+
+        foreach ($fields as $k => $v) {
+            if ($fields[$k]['key'] == 'property') {
+                unset($fields[$k]);
+            }
+        }
+
+        return array_values($fields);
+    }
 }

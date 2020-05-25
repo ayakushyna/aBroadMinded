@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="form-group">
-            <router-link :to="{name: 'PropertyTypeIndex'}" class="btn btn-outline-primary">Back</router-link>
+            <b-button @click="$router.go(-1)" variant="outline-primary">Back</b-button>
         </div>
 
         <div class="panel panel-default">
@@ -9,17 +9,21 @@
             <div class="panel-body">
                 <b-form @submit.prevent="onSubmit" @reset="onReset" v-if="show">
 
-                    <b-form-group id="input-group-name" label="Name:" label-for="input-name">
+                    <b-form-group class="col-sm-6" id="input-group-name" label="Name:" label-for="input-name">
                         <b-form-input
                             id="input-name"
                             v-model="form.name"
                             type="text"
                             required
                             placeholder="Enter name"
-                            class="col-sm-6">
                             ></b-form-input>
-                    </b-form-group>
 
+                        <div v-if="errors.name">
+                            <ul class="alert alert-danger">
+                                <li v-for="(value, key, index) in errors.name">{{ value }}</li>
+                            </ul>
+                        </div>
+                    </b-form-group>
 
                     <b-button type="submit" variant="primary">Submit</b-button>
                     <b-button type="reset" variant="danger">Reset</b-button>
@@ -43,6 +47,8 @@
                 form: {
                     name: ''
                 },
+                has_error: false,
+                errors: {},
                 show: true
             }
         },
@@ -58,6 +64,9 @@
                     });
             },
             onSubmit(evt) {
+                this.has_error = false;
+                this.errors = {}
+
                 axios.put(this.$route.meta.api.property_types + '/' + this.$route.params.id, {
                     name: this.form.name,
                 })
@@ -65,14 +74,18 @@
                         this.$router.push({name: 'PropertyTypeIndex'})
                         // console.log(response.data)
                     ))
-                    .catch(error => console.log(error))
-                    .finally(() => this.loading = false)
+                    .catch(error => {
+                        this.has_error = true;
+                        this.errors = error.response.data.errors;
+                    })
             },
             onReset(evt) {
                 evt.preventDefault()
                 // Reset our form values
                 this.form.name= '';
                 // Trick to reset/clear native browser form validation state
+                this.has_error = false;
+                this.errors = {}
                 this.show = false
                 this.$nextTick(() => {
                     this.show = true

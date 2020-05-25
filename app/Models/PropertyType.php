@@ -22,7 +22,7 @@ class PropertyType extends Model
 
     const FIELDS_INFO = [
         ['key'=> 'name',   'label' => 'Name',   'comparator' => 'like',       'sortable' => true],
-        ['key'=> 'count',  'label' => 'Count',  'comparator' => ['>=', '<='], 'sortable' => true,  'min' => 0, 'max' => 10],
+        ['key'=> 'count',  'label' => 'Count',  'comparator' => ['>=', '<='], 'sortable' => true],
     ];
     /**
      * @return HasMany

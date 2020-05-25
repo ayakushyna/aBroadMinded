@@ -4,7 +4,8 @@
             <router-link :to="{path: $route.fullPath + '/create'}" :name="this.name" class="btn btn-primary">Add new {{ name }}</router-link>
         </div>
 
-        <Table :pageEdit="pageEdit"
+        <Table :name="name"
+               :pageEdit="pageEdit"
                :api="api"
         ></Table>
     </div>
@@ -15,6 +16,7 @@
     export default {
         data(){
             return {
+                name: 'Property Type',
                 pageEdit: 'PropertyTypeEdit',
                 api: {
                     get: this.$route.meta.api,

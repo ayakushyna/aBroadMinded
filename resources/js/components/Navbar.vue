@@ -9,14 +9,14 @@
         </b-navbar-brand>
 
         <b-navbar-nav justify class="flex-row">
+            <b-nav-item>
+                <router-link class="light ml-5" :to="{ name: 'PropertySearch' }">SEARCH</router-link>
+            </b-nav-item>
             <b-nav-item v-if="!$auth.check()" >
                 <router-link class="light ml-5" :to="{ name: 'Login' }">LOGIN</router-link>
             </b-nav-item>
             <b-nav-item v-if="!$auth.check()" >
                 <router-link class="light ml-5" :to="{ name: 'Register' }">REGISTER</router-link>
-            </b-nav-item>
-            <b-nav-item v-if="$auth.check()" >
-                <router-link class="light ml-5" :to="{ name: 'Register' }">SEARCH</router-link>
             </b-nav-item>
             <b-nav-item v-if="$auth.check()" >
                 <router-link class="light ml-5" style="color: white" :to="{ name: 'ProfileShow', params: {id: $auth.user().id} }">PROFILE</router-link>

@@ -27,7 +27,7 @@ class Feedback extends Model
     const FIELDS_INFO = [
         ['key'=> 'title',    'label' => 'Title',          'comparator' => 'like',       'sortable' => true],
         ['key'=> 'body',     'label' => 'Body',           'comparator' => 'like',       'sortable' => true],
-        ['key'=> 'score',    'label' => 'Score',          'comparator' => ['>=', '<='], 'sortable' => true,  'min' => 0, 'max' => 5],
+        ['key'=> 'score',    'label' => 'Score',          'comparator' => ['>=', '<='], 'sortable' => true,  'min' => 1, 'max' => 5],
         ['key'=> 'fullname', 'label' => 'User',           'comparator' => 'like',       'sortable' => true],
         ['key'=> 'property', 'label' => 'Property Title', 'comparator' => 'like',       'sortable' => true]
     ];
@@ -35,16 +35,8 @@ class Feedback extends Model
     /**
      * @return BelongsTo
      */
-    public function client()
+    public function booking()
     {
-        return $this->belongsTo(Client::class);
-    }
-
-    /**
-     * @return BelongsTo
-     */
-    public function property()
-    {
-        return $this->belongsTo(Property::class);
+        return $this->belongsTo(Booking::class);
     }
 }

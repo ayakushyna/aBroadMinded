@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="form-group">
-            <router-link :to="{name: 'ProfileIndex'}" class="btn btn-outline-primary">Back</router-link>
+            <b-button @click="$router.go(-1)" variant="outline-primary">Back</b-button>
         </div>
 
         <div class="panel panel-default">
@@ -9,82 +9,119 @@
             <div class="panel-body">
                 <b-form @submit.prevent="onSubmit" @reset="onReset" v-if="show">
 
-                    <b-form-group id="input-group-first_name" label="First Name:" label-for="input-first_name">
+                    <b-form-group  class="col-sm-6" id="input-group-first_name" label="First Name:" label-for="input-first_name">
                         <b-form-input
                             id="input-first_name"
                             v-model="form.first_name"
                             type="text"
                             required
                             placeholder="Enter first name"
-                            class="col-sm-6">
                             ></b-form-input>
+
+                        <div v-if="errors.first_name">
+                            <ul class="alert alert-danger">
+                                <li v-for="(value, key, index) in errors.first_name">{{ value }}</li>
+                            </ul>
+                        </div>
                     </b-form-group>
 
-                    <b-form-group id="input-group-last_name" label="Last Name:" label-for="input-last_name">
+                    <b-form-group class="col-sm-6" id="input-group-last_name" label="Last Name:" label-for="input-last_name">
                         <b-form-input
                             id="input-last_name"
                             v-model="form.last_name"
                             type="text"
                             required
                             placeholder="Enter last name"
-                            class="col-sm-6">
                             ></b-form-input>
+
+                        <div v-if="errors.last_name">
+                            <ul class="alert alert-danger">
+                                <li v-for="(value, key, index) in errors.last_name">{{ value }}</li>
+                            </ul>
+                        </div>
                     </b-form-group>
 
-                    <b-form-group id="input-group-gender" label="Gender:" label-for="input-gender">
+                    <b-form-group class="col-sm-6" id="input-group-gender" label="Gender:" label-for="input-gender">
                         <b-form-select
                             id="input-gender"
                             v-model="form.gender"
                             :options="gender"
                             required
-                            class="col-sm-6">
                             ></b-form-select>
+
+                        <div v-if="errors.gender">
+                            <ul class="alert alert-danger">
+                                <li v-for="(value, key, index) in errors.gender">{{ value }}</li>
+                            </ul>
+                        </div>
                     </b-form-group>
 
-                    <b-form-group id="input-group-birthday" label="Birthday:" label-for="input-birthday">
-                        <date-picker
-                            color="purple"
-                            v-model='form.birthday'
-                            :max_date='new Date()'
-                        ></date-picker>
+                    <b-form-group class="col-sm-6" id="input-group-birthday" label="Birthday:" label-for="input-birthday">
+                        <el-date-picker
+                            v-model="form.birthday"
+                            type="date"
+                            required
+                            placeholder="Pick a Date"
+                            format="yyyy/MM/dd"
+                            value-format="yyyy-MM-dd"
+                            :max="new Date()">
+                        </el-date-picker>
+
+                        <div v-if="errors.birthday">
+                            <ul class="alert alert-danger">
+                                <li v-for="(value, key, index) in errors.birthday">{{ value }}</li>
+                            </ul>
+                        </div>
                     </b-form-group>
 
-                    <b-form-group id="input-group-country" label="Country:" label-for="input-country">
+                    <b-form-group class="col-sm-6" id="input-group-country" label="Country:" label-for="input-country">
                         <b-form-select
                             id="input-country"
                             v-model="form.country_id"
                             v-on:change='getStates()'
-                            required
-                            class="col-sm-6">>
+                            required>
                             <option v-for="country in countries" v-bind:value="country.id">
                                 {{ country.name }}
                             </option>
                         </b-form-select>
                     </b-form-group>
 
-                    <b-form-group id="input-group-state" label="State:" label-for="input-state">
+                    <b-form-group class="col-sm-6" id="input-group-state" label="State:" label-for="input-state">
                         <b-form-select
                             id="input-state"
                             v-model="form.state_id"
                             v-on:change='getCities()'
-                            required
-                            class="col-sm-6">>
+                            required>
                             <option v-for="state in states" v-bind:value="state.id">
                                 {{ state.name }}
                             </option>
                         </b-form-select>
                     </b-form-group>
 
-                    <b-form-group id="input-group-city" label="City:" label-for="input-city">
+                    <b-form-group class="col-sm-6" id="input-group-city" label="City:" label-for="input-city">
                         <b-form-select
                             id="input-city"
                             v-model="form.city_id"
-                            required
-                            class="col-sm-6">>
+                            required>
                             <option v-for="city in cities" v-bind:value="city.id">
                                 {{ city.name }}
                             </option>
                         </b-form-select>
+
+                        <div v-if="errors.city_id">
+                            <ul class="alert alert-danger">
+                                <li v-for="(value, key, index) in errors.city_id">{{ value }}</li>
+                            </ul>
+                        </div>
+                    </b-form-group>
+
+                    <b-form-group class="col-sm-6" id="input-group-photo" label="Profile image:" label-for="input-photo" accept=".jpg, .jpeg, .png, .gif">
+                        <div class="col-md-3" v-if="form.photo">
+                            <img :src="'/images/' + form.photo" class="img-responsive" height="140" width="180" alt="Profile image">
+                        </div>
+                        <div>
+                            <input type="file" v-on:change="onImageChange" class="form-control">
+                        </div>
                     </b-form-group>
 
                     <b-button type="submit" variant="primary">Submit</b-button>
@@ -99,23 +136,22 @@
 </template>
 
 <script>
-    import {BRow, BCol, BForm, BFormGroup, BFormSelect, BFormInput ,BButton, BCard} from 'bootstrap-vue'
-
-    import DatePicker from 'v-calendar/lib/components/date-picker.umd'
+    import {BRow, BCol, BForm, BFormGroup, BFormSelect, BFormInput ,BButton, BCard, BFormFile} from 'bootstrap-vue'
     import axios from "axios";
 
     export default {
         data() {
             return {
                 form: {
+                    id: '',
                     first_name: '',
                     last_name: '',
                     birthday: '',
                     gender: '',
+                    photo:null,
                     country_id: null,
                     state_id: null,
                     city_id: null,
-                    user_id: null
                 },
                 state_id: null,
                 city_id: null,
@@ -123,6 +159,8 @@
                 countries: [],
                 states: [],
                 cities:[],
+                has_error: false,
+                errors: {},
                 show: true
             }
         },
@@ -132,6 +170,20 @@
             this.getProfile();
         },
         methods: {
+            onImageChange(e) {
+                let files = e.target.files || e.dataTransfer.files;
+                if (!files.length)
+                    return;
+                this.createImage(files[0]);
+            },
+            createImage(file) {
+                let reader = new FileReader();
+
+                reader.onload = (e) => {
+                    this.form.photo = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            },
             async getGender() {
                 await axios.get(this.$route.meta.api.gender)
                     .then((response) => {
@@ -182,14 +234,15 @@
                     .then((response) => {
                         let items = response.data.items;
 
+                        this.form.id = items.id;
                         this.form.first_name = items.first_name;
                         this.form.last_name = items.last_name;
                         this.form.birthday = items.birthday;
                         this.form.gender = items.gender;
+                        this.form.photo = items.photo;
                         this.form.country_id = items.country_id;
                         this.form.state_id = items.state_id;
                         this.form.city_id = items.city_id;
-                        this.form.user_id = items.user_id;
 
                         this.city_id = items.city_id;
                         if(this.city_id !== null)
@@ -197,21 +250,26 @@
                     })
             },
             onSubmit(evt) {
+                this.has_error = false;
+                this.errors = {}
+
                 axios.put(this.$route.meta.api.profiles + '/' + this.$route.params.id, {
+                    id:  this.form.id,
                     first_name: this.form.first_name,
                     last_name: this.form.last_name,
                     birthday: this.form.birthday,
                     gender: this.form.gender,
+                    photo: this.form.photo,
                     city_id: this.form.city_id ,
-                    user_id: this.form.user_id,
                     active: true
                 })
                     .then(response => (
-                        this.$router.push({name: 'ProfileIndex'})
-                        // console.log(response.data)
+                        this.$router.go(-1)
                     ))
-                    .catch(error => console.log(error))
-                    .finally(() => this.loading = false)
+                    .catch(error => {
+                        this.has_error = true;
+                        this.errors = error.response.data.errors;
+                    })
             },
             onReset(evt) {
                 evt.preventDefault()
@@ -223,17 +281,18 @@
                 this.form.country_id = null;
                 this.form.state_id = null;
                 this.form.city_id = null;
-                this.form.user_id = null;
+                this.form.photo = null;
                 // Trick to reset/clear native browser form validation state
                 this.show = false
+                this.has_error = false;
+                this.errors = {}
                 this.$nextTick(() => {
                     this.show = true
                 })
             }
         },
         components: {
-            BRow, BCol, BForm, BFormGroup, BFormSelect, BFormInput ,BButton, BCard,
-            DatePicker
+            BRow, BCol, BForm, BFormGroup, BFormSelect, BFormInput ,BButton, BCard,BFormFile
         }
     }
 </script>

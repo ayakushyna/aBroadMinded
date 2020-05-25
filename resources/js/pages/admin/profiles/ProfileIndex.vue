@@ -1,10 +1,7 @@
 <template>
     <div class="container-fluid">
-        <div class="form-group" v-if="($auth.user().role === 'root')">
-            <router-link :to="{name: 'UserCreate'}" class="btn btn-primary">Add new {{ name }}</router-link>
-        </div>
-
-        <Table :hasShow="hasShow"
+        <Table :name="name"
+               :hasShow=hasShow
                :pageShow="pageShow"
                :pageEdit="pageEdit"
                :api="api"
@@ -16,6 +13,7 @@
     export default {
         data(){
             return {
+                name: 'Profile',
                 hasShow:true,
                 pageShow: 'ProfileShow',
                 pageEdit: 'ProfileEdit',

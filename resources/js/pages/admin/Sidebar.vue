@@ -6,11 +6,11 @@
                 class="d-flex align-items-stretch">
         <b-nav vartical>
             <b-nav-item >
-                <router-link :to="{ name: 'Dashboard' }">Dashboard</router-link>
+                <router-link :to="{ name: 'Dashboard' }">DASHBOARD</router-link>
             </b-nav-item>
 
             <b-nav-item-dropdown
-                text="Profiles"
+                text="PROFILES"
                 dropright
             >
                 <b-dropdown-item variant="primary">
@@ -23,7 +23,7 @@
             </b-nav-item-dropdown>
 
             <b-nav-item-dropdown
-                text="Properties"
+                text="PROPERTIES"
                 dropright
             >
                 <b-dropdown-item>
@@ -45,7 +45,7 @@
             </b-nav-item-dropdown>
 
             <b-nav-item-dropdown
-                text="Bookings"
+                text="BOOKINGS"
                 dropright
             >
                 <b-dropdown-item>
@@ -58,7 +58,7 @@
             </b-nav-item-dropdown>
 
             <b-nav-item-dropdown
-                text="Feedbacks"
+                text="FEEDBACKS"
                 dropright
             >
                 <b-dropdown-item>

@@ -1,10 +1,7 @@
 <template>
     <div class="container-fluid">
-        <div class="form-group" v-if="($auth.user().role === 'root')">
-            <router-link :to="{path: $route.fullPath + '/create'}" class="btn btn-primary">Add new property</router-link>
-        </div>
-
-        <Table :hasShow="hasShow"
+        <Table :name="name"
+               :hasShow=hasShow
                :pageShow="pageShow"
                :pageEdit="pageEdit"
                :api="api"
@@ -18,6 +15,7 @@
     export default {
         data(){
             return {
+                name: 'Property',
                 hasShow:true,
                 pageShow: 'PropertyShow',
                 pageEdit: 'PropertyEdit',

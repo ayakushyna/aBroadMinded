@@ -31,7 +31,8 @@ class Profile extends Model
         'gender',
         'birthday',
         'active',
-        'city_id'
+        'city_id',
+        'photo'
     ];
 
     const FIELDS_INFO = [

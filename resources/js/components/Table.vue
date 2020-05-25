@@ -1,7 +1,7 @@
 <template>
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3>{{ capitalLetter(name) }} List</h3>
+            <h3>{{ name }} List</h3>
             <b-button class="mb-3" v-b-toggle.collapse-filters> Filters </b-button>
             <b-collapse id="collapse-filters">
                 <b-card class="mb-3" header="Filters">
@@ -17,7 +17,7 @@
         </div>
         <div class="panel-body">
             <BTable striped hover responsive
-                    border fixed
+                    bordered
                     no-local-sorting
                     :items="table.items"
                     :fields="table.primary_fields">
@@ -75,7 +75,6 @@
                                 </b-col>
                             </template>
                         </b-row>
-
                         <b-button size="sm" @click="row.toggleDetails">Hide Details</b-button>
                     </b-card>
                 </template>
@@ -88,7 +87,7 @@
 <script>
     import {
         VBToggle, BCollapse,
-        BTable,
+        BTable, BTd,
         BButton, BButtonGroup,
         BCard,
         BRow,
@@ -103,6 +102,7 @@
 
     export default {
         props: {
+            name: String,
             hasShow: {
                 type: Boolean,
                 default: false
@@ -113,7 +113,6 @@
         },
         data() {
             return {
-                name: "",
                 table:{
                     primary_fields: [],
                     secondary_fields:[],
@@ -129,16 +128,6 @@
             this.fetchData();
         },
         methods: {
-            capitalLetter(str)
-            {
-                str = str.split(" ");
-
-                for (let i = 0, x = str.length; i < x; i++) {
-                    str[i] = str[i][0].toUpperCase() + str[i].substr(1);
-                }
-
-                return str.join(" ");
-            },
             indexOfKey(array, key){
                 for(let i in array) {
                     if(array[i].key === key)
@@ -217,10 +206,20 @@
                         }
                     })
                         .then(response => {
-                            this.name = response.data.name;
-                            console.log(this.name)
                             this.pagination = response.data.pagination;
-                            this.table.items = response.data.items;
+
+                            let items = response.data.items;
+                            for(let i in items){
+                                if(items[i].status === 'cancelled')
+                                    items[i] = {... items[i],  _cellVariants: {status: 'danger'}}
+                                else if(items[i].status === 'awaiting')
+                                    items[i] = {... items[i],  _cellVariants: {status: 'warning'}}
+                                else if(items[i].status === 'confirmed')
+                                    items[i] = {... items[i],  _cellVariants: {status: 'success'}}
+                                else if(items[i].active === false)
+                                    items[i] = {... items[i],  _rowVariant: 'danger'}
+                            }
+                            this.table.items = items;
 
                             let fields = response.data.fields;
                             for(let i in fields){
@@ -262,7 +261,7 @@
         components: {
             Filters,
             BCollapse,
-            BTable,
+            BTable,BTd,
             BButton,BButtonGroup,
             BCard,
             BRow, BCol,

@@ -100,4 +100,43 @@ class BookingRepository extends BaseRepository implements BookingRepositoryInter
 
         return $query->paginate(5);
     }
+
+    public function findById($id)
+    {
+        return DB::table('bookings')
+            ->leftJoin('profiles', 'bookings.profile_id', '=', 'profiles.id')
+            ->leftJoin('properties', 'bookings.property_id', '=', 'properties.id')
+            ->select(
+                'bookings.*',
+                'properties.title as property',
+                DB::raw("CONCAT(profiles.first_name, ' ', profiles.last_name) as fullname"),
+            )
+            ->where('bookings.id', '=', $id)
+            ->first();
+    }
+
+
+    public function getFieldsInfoExcludeProfile(){
+        $fields = $this->model::FIELDS_INFO;
+
+        foreach($fields as $k => $v) {
+            if($fields[$k]['key'] == 'fullname') {
+                unset($fields[$k]);
+            }
+        }
+        return array_values($fields);
+    }
+
+    public function getFieldsInfoExcludeProperty()
+    {
+        $fields = $this->model::FIELDS_INFO;
+
+        foreach ($fields as $k => $v) {
+            if ($fields[$k]['key'] == 'property') {
+                unset($fields[$k]);
+            }
+        }
+
+        return array_values($fields);
+    }
 }

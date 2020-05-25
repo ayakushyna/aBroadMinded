@@ -6,6 +6,7 @@ namespace App\Repositories;
 use App\Models\Profile;
 use App\Repositories\Interfaces\ProfileRepositoryInterface;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileRepository extends BaseRepository implements ProfileRepositoryInterface
 {
@@ -35,7 +36,7 @@ class ProfileRepository extends BaseRepository implements ProfileRepositoryInter
             'profiles.id',
             'profiles.first_name',
             'profiles.last_name'
-        )->get();;
+        )->get();
     }
 
     public function findById($id)

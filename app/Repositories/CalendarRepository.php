@@ -22,4 +22,17 @@ class CalendarRepository extends BaseRepository implements CalendarRepositoryInt
 
         return $query->paginate(5);
     }
+
+    public function getFieldsInfoExcludeProperty()
+    {
+        $fields = $this->model::FIELDS_INFO;
+
+        foreach ($fields as $k => $v) {
+            if ($fields[$k]['key'] == 'property') {
+                unset($fields[$k]);
+            }
+        }
+
+        return array_values($fields);
+    }
 }

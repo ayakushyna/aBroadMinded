@@ -54,10 +54,10 @@ class Property extends Model
         ['key'=> 'city',          'label' => 'City',          'comparator' => 'like',       'sortable' => true],
         ['key'=> 'fullname',      'label' => 'Owner',         'comparator' => 'like',       'sortable' => true],
         ['key'=> 'name',          'label' => 'Property Type', 'comparator' => 'like',       'sortable' => true],
-        ['key'=> 'max_bedrooms',  'label' => 'Max Bedrooms',  'comparator' => ['>=', '<='], 'secondary' => true, 'min' => 0, 'max' => 10],
-        ['key'=> 'max_beds',      'label' => 'Max Beds',      'comparator' => ['>=', '<='], 'secondary' => true, 'min' => 0, 'max' => 10],
-        ['key'=> 'max_guests',    'label' => 'Max Guests',    'comparator' => ['>=', '<='], 'secondary' => true, 'min' => 0, 'max' => 10],
-        ['key'=> 'price',         'label' => 'Price',         'comparator' => ['>=', '<='], 'sortable' => true,  'min' => 0, 'max' => 10000],
+        ['key'=> 'max_bedrooms',  'label' => 'Max Bedrooms',  'comparator' => ['>=', '<='], 'secondary' => true, 'min' => 1, 'max' => 20],
+        ['key'=> 'max_beds',      'label' => 'Max Beds',      'comparator' => ['>=', '<='], 'secondary' => true, 'min' => 1, 'max' => 20],
+        ['key'=> 'max_guests',    'label' => 'Max Guests',    'comparator' => ['>=', '<='], 'secondary' => true, 'min' => 1, 'max' => 20],
+        ['key'=> 'price',         'label' => 'Price',         'comparator' => ['>=', '<='], 'sortable' => true,  'min' => 1, 'max' => 100000],
         ['key'=> 'air_condition', 'label' => 'Air Condition', 'comparator' => '=',          'secondary' => true, 'type' => 'bool'],
         ['key'=> 'children',      'label' => 'Children',      'comparator' => '=',          'secondary' => true, 'type' => 'bool'],
         ['key'=> 'hair_dryer',    'label' => 'Hair Dryer',    'comparator' => '=',          'secondary' => true, 'type' => 'bool'],
@@ -88,7 +88,7 @@ class Property extends Model
     /**
      * @return BelongsTo
      */
-    public function owner()
+    public function profile()
     {
         return $this->belongsTo(Profile::class);
     }
@@ -108,4 +108,10 @@ class Property extends Model
     {
         return $this->hasMany(Booking::class);
     }
+
+    public function images()
+    {
+        return $this->hasMany(PropertyImage::class);
+    }
+
 }
