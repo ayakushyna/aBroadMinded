@@ -11933,14 +11933,19 @@ body {
   /* 3. Box sizing to subtract padding and border from the 100% height of this element when child elements define 100% height */
 }
 
-a,
-a:hover,
-a.dropdown-toggle:link {
-  color: #fff;
+a.nav-link:hover {
+  color: #684ef9;
 }
 
 a.nav-link {
   color: #000;
+}
+
+a,
+a.dropdown-toggle,
+a:hover,
+a.dropdown-toggle:link {
+  color: #fff;
 }
 
 * {

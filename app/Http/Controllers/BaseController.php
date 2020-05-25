@@ -34,7 +34,6 @@ class BaseController extends Controller
         $pagination = $data;
 
         return response()->json([
-            'name' => $this->name,
             'items' => $items,
             'pagination' => $pagination,
             'fields' => $fields,
@@ -55,7 +54,7 @@ class BaseController extends Controller
         app($this->validateRequest);
 
         return response()->json([
-            'items' => $this->baseRepository->create($request->only($this->baseRepository->getModel()->fillable))
+            'items' => $this->baseRepository->create($request->only($this->baseRepository->getModel()->getFillable()))
         ], 200);
     }
 
@@ -73,7 +72,7 @@ class BaseController extends Controller
     {
         app($this->validateRequest);
 
-        return $this->baseRepository->update($request->only($this->baseRepository->getModel()->fillable), $id);
+        return $this->baseRepository->update($request->only($this->baseRepository->getModel()->getFillable()), $id);
     }
 
     public function destroy($id)

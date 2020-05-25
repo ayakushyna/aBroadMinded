@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\RegistrationFormRequest;
+use App\Http\Requests\EmailRequest;
+use App\Http\Requests\NicknameRequest;
+use App\Http\Requests\PasswordRequest;
+use App\Http\Requests\RegistrationRequest;
 use App\Models\User;
+use App\Repositories\Interfaces\ProfileRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -12,26 +16,39 @@ use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    /**
-     * Register a new user
-     * @param RegistrationFormRequest $request
-     * @return JsonResponse
-     */
-    public function register(RegistrationFormRequest $request)
+    public function validateUser(RegistrationRequest $request)
     {
         $validated = $request->validated();
 
-        $nickname = $request->nickname;
-        $email = $request->email;
-        $password = bcrypt($request->password);
+        return  response()->json(['status' => 'success'], 200);
+    }
 
-        DB::connection('pgsql_auth')->table('users')->insert([
-                'nickname' => $nickname ,
-                'email' => $email,
-                'password' => $password]
-        );
+    public function register(Request $request, ProfileRepositoryInterface $profileRepository)
+    {
+        DB::beginTransaction();
+        try
+        {
+            $nickname = $request->input('nickname');
+            $email = $request->input('email');
+            $password = bcrypt($request->input('password'));
 
-        return response()->json(['status' => 'success'], 200);
+            $user = User::create([
+                    'nickname' => $nickname ,
+                    'email' => $email,
+                    'password' => $password]
+            );
+
+            $request->request->add([ 'id' => $user->id]);
+            $request = $request->only($profileRepository->getModel()->getFillable());
+
+            $profileRepository->create($request);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+        return  response()->json(['status' => 'success'], 200);
     }
 
     /**

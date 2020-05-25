@@ -27,8 +27,7 @@ class FeedbackRequest extends FormRequest
             'score' => 'required|integer|min:1|max:5',
             'title' => 'required|string|max:255',
             'body' => 'nullable|string',
-            'profile_id' => 'required|integer|exists:App\Models\Profile,id',
-            'property_id' => 'required|integer|exists:App\Models\Property,id',
+            'booking_id' => 'required|integer|exists:App\Models\Booking,id',
         ];
     }
 }

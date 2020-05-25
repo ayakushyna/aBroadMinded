@@ -3,54 +3,182 @@
         <div class="row justify-content-md-center">
             <div class="col-6">
                 <div class="card card-default">
-                    <div class="card-header">Register</div>
                     <div class="card-body">
-                        <form-wizard @on-complete="onComplete"
+                        <form-wizard @on-complete="register"
                                      shape="tab"
-                                     color="#4A30D1">
+                                     color="#4A30D1"
+                                     title="Registration"
+                                     subtitle="">
                             <tab-content title="Login Data"
-                                         icon="ti-user" :before-change="register">
-                                <div class="alert alert-danger" v-if="has_error && !success">
-                                    <p v-if="error === 'registration_validation_error'">Validation Errors.</p>
-                                    <p v-else>Error, can not register at the moment. If the problem persists, please contact an administrator.</p>
-                                </div>
-                                <form autocomplete="off" v-if="!success" method="post">
-                                    <div class="form-group" v-bind:class="{ 'has-error': has_error && errors.nickname }">
-                                        <label for="nickname">Nickname</label>
-                                        <input type="text" id="nickname" class="form-control" placeholder="Full Name" v-model="nickname">
-                                        <span class="help-block" v-if="has_error && errors.nickname">{{ errors.nickname }}</span>
-                                    </div>
-                                    <div class="form-group" v-bind:class="{ 'has-error': has_error && errors.email }">
-                                        <label for="email">E-mail</label>
-                                        <input type="email" id="email" class="form-control" placeholder="user@example.com" v-model="email">
-                                        <span class="help-block" v-if="has_error && errors.email">{{ errors.email }}</span>
-                                    </div>
-                                    <div class="form-group" v-bind:class="{ 'has-error': has_error && errors.password }">
-                                        <label for="password">Password</label>
-                                        <input type="password" id="password" class="form-control" v-model="password">
-                                        <span class="help-block" v-if="has_error && errors.password">{{ errors.password }}</span>
-                                    </div>
-                                    <div class="form-group" v-bind:class="{ 'has-error': has_error && errors.password }">
-                                        <label for="password_confirmation">Password confirmation</label>
-                                        <input type="password" id="password_confirmation" class="form-control" v-model="password_confirmation">
-                                    </div>
-                                </form>
+                                         icon="ti-user" :before-change="beforeTabChange">
+
+                                    <b-form-group id="input-group-nickname" label="Nickname:" label-for="input-nickname">
+                                        <b-form-input type="text"
+                                               required
+                                               id="input-nickname"
+                                               placeholder="Enter nickname"
+                                               v-model="form1.nickname">
+                                        </b-form-input>
+                                        <div v-if="errors.nickname" class="mt-2">
+                                            <ul class="alert alert-danger">
+                                                <li v-for="(value, key, index) in errors.nickname">{{ value }}</li>
+                                            </ul>
+                                        </div>
+                                    </b-form-group>
+
+                                    <b-form-group id="input-group-email" label="Email:" label-for="input-email">
+                                        <b-form-input type="email"
+                                               required
+                                               id="input-email"
+                                               placeholder="user@example.com"
+                                               v-model="form1.email">
+                                        </b-form-input>
+                                        <div v-if="errors.email">
+                                            <ul class="alert alert-danger">
+                                                <li v-for="(value, key, index) in errors.email">{{ value }}</li>
+                                            </ul>
+                                        </div>
+                                    </b-form-group>
+
+                                    <b-form-group id="input-group-password" label="Password:" label-for="input-password">
+                                        <b-form-input type="password"
+                                               required
+                                               id="input-password"
+                                               placeholder="Enter password"
+                                               v-model="form1.password">
+                                        </b-form-input>
+                                        <div v-if="errors.password">
+                                            <ul class="alert alert-danger">
+                                                <li v-for="(value, key, index) in errors.password">{{ value }}</li>
+                                            </ul>
+                                        </div>
+                                    </b-form-group>
+
+                                    <b-form-group id="input-group-password_confirmation" label="Password confirmation:" label-for="input-password_confirmation">
+                                        <b-form-input type="password"
+                                               required
+                                               id="input-password_confirmation"
+                                               placeholder="Repeat password"
+                                               v-model="form1.password_confirmation">
+                                        </b-form-input>
+                                        <div v-if="errors.password_confirmation">
+                                            <ul class="alert alert-danger">
+                                                <li v-for="(value, key, index) in errors.password_confirmation">{{ value }}</li>
+                                            </ul>
+                                        </div>
+                                    </b-form-group>
+
                             </tab-content>
                             <tab-content title="Personal Info"
-                                         icon="ti-settings">
-                                My second tab content
-                            </tab-content>
-                            <tab-content title="Last step"
-                                         icon="ti-check">
-                                Yuhuuu! This seems pretty damn simple
+                                         icon="ti-settings"
+                                         :before-change="beforeRegister">
+
+                                <div class="d-flex justify-content-between">
+                                    <b-form-group class="mr-1" id="input-group-first_name" label="First Name:" label-for="input-first_name">
+                                        <b-form-input
+                                            id="input-first_name"
+                                            v-model="form2.first_name"
+                                            type="text"
+                                            required
+                                            placeholder="Enter first name"
+                                        ></b-form-input>
+                                        <div v-if="errors.first_name">
+                                            <ul class="alert alert-danger">
+                                                <li v-for="(value, key, index) in errors.first_name">{{ value }}</li>
+                                            </ul>
+                                        </div>
+                                    </b-form-group>
+
+                                    <b-form-group  class="ml-1" id="input-group-last_name" label="Last Name:" label-for="input-last_name">
+                                        <b-form-input
+                                            id="input-last_name"
+                                            v-model="form2.last_name"
+                                            type="text"
+                                            required
+                                            placeholder="Enter last name"
+                                        ></b-form-input>
+                                        <div v-if="errors.last_name">
+                                            <ul class="alert alert-danger">
+                                                <li v-for="(value, key, index) in errors.last_name">{{ value }}</li>
+                                            </ul>
+                                        </div>
+                                    </b-form-group>
+                                </div>
+
+
+                                <b-form-group id="input-group-gender" label="Gender:" label-for="input-gender">
+                                    <b-form-select
+                                        id="input-gender"
+                                        v-model="form2.gender"
+                                        :options="gender"
+                                        required
+                                        class="col-sm-6"
+                                    ></b-form-select>
+                                    <div v-if="errors.м">
+                                        <ul class="alert alert-danger">
+                                            <li v-for="(value, key, index) in errors.gender">{{ value }}</li>
+                                        </ul>
+                                    </div>
+                                </b-form-group>
+
+                                <b-form-group id="input-group-birthday" label="Birthday:" label-for="input-birthday">
+                                    <el-date-picker
+                                        v-model="form2.birthday"
+                                        type="date"
+                                        required
+                                        placeholder="Pick a Date"
+                                        format="yyyy/MM/dd"
+                                        value-format="yyyy-MM-dd"
+                                        :max="new Date()">
+                                    </el-date-picker>
+                                    <div v-if="errors.birthday">
+                                        <ul class="alert alert-danger">
+                                            <li v-for="(value, key, index) in errors.birthday">{{ value }}</li>
+                                        </ul>
+                                    </div>
+                                </b-form-group>
+
+                                <b-form-group  id="input-group-country" label="Country:" label-for="input-country">
+                                    <b-form-select
+                                        id="input-country"
+                                        v-model="form2.country_id"
+                                        v-on:change='getStates()'
+                                        required>
+                                        <option v-for="country in countries" v-bind:value="country.id">
+                                            {{ country.name }}
+                                        </option>
+                                    </b-form-select>
+                                </b-form-group>
+
+                                <b-form-group id="input-group-state" label="State:" label-for="input-state">
+                                    <b-form-select
+                                        id="input-state"
+                                        v-model="form2.state_id"
+                                        v-on:change='getCities()'
+                                        required>
+                                        <option v-for="state in states" v-bind:value="state.id">
+                                            {{ state.name }}
+                                        </option>
+                                    </b-form-select>
+                                </b-form-group>
+
+                                <b-form-group id="input-group-city" label="City:" label-for="input-city">
+                                    <b-form-select
+                                        id="input-city"
+                                        v-model="form2.city_id"
+                                        required>
+                                        <option v-for="city in cities" v-bind:value="city.id">
+                                            {{ city.name }}
+                                        </option>
+                                    </b-form-select>
+                                    <div v-if="errors.city_id">
+                                        <ul class="alert alert-danger">
+                                            <li v-for="(value, key, index) in errors.city_id">{{ value }}</li>
+                                        </ul>
+                                    </div>
+                                </b-form-group>
                             </tab-content>
                         </form-wizard>
-
-                        <b-card class="mt-3" header="Form Data Result">
-                            <pre class="m-0">{{ has_error }} ,{{error}} ,
-{{errors}} ,
-{{success}}</pre>
-                        </b-card>
                     </div>
                 </div>
             </div>
@@ -62,16 +190,34 @@
 
     import {FormWizard, TabContent} from 'vue-form-wizard'
     import 'vue-form-wizard/dist/vue-form-wizard.min.css'
-    import {BCard} from "bootstrap-vue";
+    import {BButton, BCard, BCol, BForm, BFormFile, BFormGroup, BFormInput, BFormSelect, BRow} from "bootstrap-vue";
 
     export default {
         data() {
             return {
-                id: '',
-                nickname: '',
-                email: '',
-                password: '',
-                password_confirmation: '',
+                form1: {
+                    id: '',
+                    nickname: '',
+                    email: '',
+                    password: '',
+                    password_confirmation: '',
+                },
+                form2: {
+                    first_name: '',
+                    last_name: '',
+                    birthday: '',
+                    gender: '',
+                    photo:null,
+                    country_id: null,
+                    state_id: null,
+                    city_id: null,
+                },
+                state_id: null,
+                city_id: null,
+                gender:[],
+                countries: [],
+                states: [],
+                cities:[],
                 has_error: false,
                 error: '',
                 errors: {},
@@ -79,48 +225,107 @@
             }
         },
         methods: {
-            onComplete(){},
-            createProfile(){
-                axios.post(this.$route.meta.api.profiles, {
-                    id: this.form.id,
-                    first_name: '',
-                    last_name: '',
-                    birthday: '',
-                    gender: '',
-                    city_id: '' ,
-                    active: true
-                })
-                    .then(response => {
-                        console.log(response.data)
-                        this.$router.push({name: 'ProfileEdit', params: {id: this.form.id}});
+            async getGender() {
+                await axios.get(this.$route.meta.api.gender)
+                    .then((response) => {
+                        this.gender = response.data.items;
                     })
-                    .catch(errors => {
-                        console.log(errors)
-                    })
-                    .finally(() => this.loading = false);
+            },
+            async getCountries() {
+                await axios.get(this.$route.meta.api.countries)
+                    .then((response) => {
+                        this.countries = response.data.items;
 
+                    })
+            },
+            async getStates() {
+                await axios.get(this.$route.meta.api.countries + '/'+ this.form2.country_id + '/states')
+                    .then((response) => {
+                        this.cities = []
+                        this.states = response.data.items;
+                    })
+            },
+            async getCities() {
+                await axios.get(this.$route.meta.api.states + '/'+ this.form2.state_id + '/cities')
+                    .then((response) => {
+                        this.cities = response.data.items;
+                    })
+            },
+            async validateUser(){
+                this.has_error = false;
+                this.errors = {}
+
+                await axios.post(this.$route.meta.api.validate_user, {
+                    nickname: this.form1.nickname,
+                    email: this.form1.email,
+                    password: this.form1.password,
+                    password_confirmation: this.form1.password_confirmation
+                })
+                .then(response => {})
+                .catch(error => {
+                    this.has_error = true;
+                    this.errors = error.response.data.errors;
+                })
+            },
+            async beforeTabChange()
+            {
+                await this.validateUser();
+                if(!this.has_error){
+                    await this.getCountries();
+                    await this.getGender();
+                }
+                return !this.has_error;
+            },
+            async validateProfile(){
+                this.has_error = false;
+                this.errors = {}
+
+                await axios.post(this.$route.meta.api.validate_profile, {
+                    first_name: this.form2.first_name,
+                    last_name: this.form2.last_name,
+                    birthday: this.form2.birthday,
+                    gender: this.form2.gender,
+                    photo: null,
+                    country_id: this.form2.country_id,
+                    state_id: this.form2.state_id,
+                    city_id: this.form2.city_id,
+                })
+                    .then(response => {})
+                    .catch(error => {
+                        this.has_error = true;
+                        this.errors = error.response.data.errors;
+                    })
+            },
+            async beforeRegister()
+            {
+                await this.validateProfile();
+                return !this.has_error;
             },
             register() {
+                let app = this
                 this.$auth.register({
                     data: {
-                            nickname: this.nickname,
-                            email: this.email,
-                            password: this.password,
-                            password_confirmation: this.password_confirmation
+                            nickname: this.form1.nickname,
+                            email: this.form1.email,
+                            password: this.form1.password,
+                            password_confirmation: this.form1.password_confirmation,
+
+                            first_name: this.form2.first_name,
+                            last_name: this.form2.last_name,
+                            birthday: this.form2.birthday,
+                            gender: this.form2.gender,
+                            photo: null,
+                            country_id: this.form2.country_id,
+                            state_id: this.form2.state_id,
+                            city_id: this.form2.city_id,
 
                     },
                     success: function (res) {
-                        this.success = true;
-                        this.form.id = res.response.data.items.id;
-                        console.log(this.form.id);
-                        return true;
+                        app.$router.push({name: 'Login'})
                     },
-                    error: function (res) {
-                        this.has_error = true
-                        this.error = res.response.data.error
-                        console.log(res.response)
-                        this.errors = res.response.data.errors || {}
-                        return false;
+                    error: function (error) {
+                        app.has_error = true;
+                        app.errors = error.response.data.errors;
                     }
                 })
             }
@@ -128,7 +333,8 @@
         components: {
             BCard,
             FormWizard,
-            TabContent
+            TabContent,
+            BRow, BCol, BForm, BFormGroup, BFormSelect, BFormInput ,BButton, BFormFile
         }
     }
 </script>

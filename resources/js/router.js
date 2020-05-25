@@ -14,8 +14,6 @@ import BookingEdit from "./pages/admin/bookings/BookingEdit";
 import FeedbackEdit from "./pages/admin/feedbacks/FeedbackEdit";
 import CalendarEdit from "./pages/admin/calendar/CalendarEdit";
 import PropertyTypeCreate from "./pages/admin/property_types/PropertyTypeCreate";
-import UserEdit from "./pages/admin/profiles/UserEdit";
-import UserCreate from "./pages/admin/profiles/UserCreate";
 import PropertyTypeIndex from "./pages/admin/property_types/PropertyTypeIndex";
 import FeedbackIndex from "./pages/admin/feedbacks/FeedbackIndex";
 import BookingIndex from "./pages/admin/bookings/BookingIndex";
@@ -24,13 +22,18 @@ import ProfileIndex from "./pages/admin/profiles/ProfileIndex";
 import PropertyTypeEdit from "./pages/admin/property_types/PropertyTypeEdit";
 import ProfileShow from "./pages/admin/profiles/ProfileShow";
 import PropertyShow from "./pages/admin/properties/PropertyShow";
+import PropertySearch from "./pages/admin/properties/PropertySearch";
 import axios from "axios";
+import BookingShow from "./pages/admin/bookings/BookingShow";
 
 //paths
 const paths = {
     profiles: '/profiles',
     properties: '/properties',
+    search: '/search',
     register: '/auth/register',
+    validate_user: '/auth/validate_user',
+    validate_profile: '/profiles/validate_profile',
     users: '/users',
     cities: '/cities',
     states: '/states',
@@ -64,14 +67,22 @@ const routes = [
             else next()
         },
     },{
-        path: '/auth/register',
+        path: '/register',
         name: 'Register',
         component: Register,
         meta: {
-            auth: false
+            auth: false,
+            api: {
+                validate_user: paths.validate_user,
+                validate_profile: paths.validate_profile,
+                cities: paths.cities,
+                states: paths.states,
+                countries: paths.countries,
+                gender: paths.gender
+            }
         }
     }, {
-        path: '/auth/login',
+        path: '/login',
         name: 'Login',
         component: Login,
         meta: {
@@ -87,38 +98,6 @@ const routes = [
         },
         beforeEnter: (to, from, next) => {
             if (Vue.auth.user().role !== 'root' && Vue.auth.user().role !== 'admin') next({ name: 'Home' })
-            else next()
-        },
-    },{
-        path: '/users/create',
-        name: 'UserCreate',
-        component: UserCreate,
-        meta: {
-            auth: true,
-            api: {
-                profiles: paths.profiles,
-                register: paths.register,
-            }
-        },
-        beforeEnter: (to, from, next) => {
-            if (Vue.auth.user().role !== 'root') next({ name: 'Home' })
-            else next()
-        },
-    },{
-        path: '/users/edit/:id',
-        name: 'UserEdit',
-        component: UserEdit,
-        meta: {
-            auth: true,
-            api: {
-                profiles: paths.profiles,
-                register: paths.register,
-            }
-        },
-        beforeEnter: (to, from, next) => {
-            if (Vue.auth.user().id !== to.params.id &&
-                Vue.auth.user().role !== 'root' &&
-                Vue.auth.user().role !== 'admin') next({ name: 'Home' })
             else next()
         },
     },{
@@ -145,10 +124,21 @@ const routes = [
             api: {
                 profiles: paths.profiles,
                 properties:  paths.properties,
-                bookings: paths.bookings
+                bookings: paths.bookings,
+                users: paths.users
             }
         },
     }, {
+        path: '/search',
+        name: 'PropertySearch',
+        component: PropertySearch,
+        meta: {
+            auth: undefined,
+            api:  {
+                search:  paths.search,
+            }
+        }
+    },{
         path: '/properties',
         name: 'PropertyIndex',
         component: PropertyIndex,
@@ -222,20 +212,29 @@ const routes = [
             else next()
         },
     },{
-        path: '/bookings/create',
+        path: '/bookings/:id',
+        name: 'BookingShow',
+        component: BookingShow,
+        meta: {
+            auth: true,
+            api:  {
+                bookings: paths.bookings,
+                feedbacks: paths.feedbacks
+            }
+        },
+        beforeEnter: (to, from, next) => {
+            if (Vue.auth.user().role !== 'root' && Vue.auth.user().role !== 'admin') next({ name: 'Home' })
+            else next()
+        },
+    },{
+        path: '/properties/:id/booking/create',
         name: 'BookingCreate',
         component: BookingCreate,
         meta: {
             auth: true,
             api: {
                 bookings:  paths.bookings,
-                profiles:  paths.profiles,
-                properties: paths.properties,
             }
-        },
-        beforeEnter: (to, from, next) => {
-            if (Vue.auth.user().role !== 'root') next({ name: 'Home' })
-            else next()
         },
     },{
         path: '/bookings/edit/:id',
@@ -245,8 +244,6 @@ const routes = [
             auth: true,
             api: {
                 bookings:  paths.bookings,
-                profiles:  paths.profiles,
-                properties: paths.properties,
             }
         },
         beforeEnter: (to, from, next) => {
@@ -266,20 +263,14 @@ const routes = [
             else next()
         },
     },{
-        path: '/feedbacks/create',
+        path: '/bookings/:id/feedback/create',
         name: 'FeedbackCreate',
         component: FeedbackCreate,
         meta: {
             auth: true,
             api: {
                 feedbacks: paths.feedbacks,
-                profiles: paths.profiles,
-                properties: paths.properties,
             }
-        },
-        beforeEnter: (to, from, next) => {
-            if (Vue.auth.user().role !== 'root') next({ name: 'Home' })
-            else next()
         },
     },{
         path: '/feedbacks/edit/:id',
@@ -289,8 +280,6 @@ const routes = [
             auth: true,
             api: {
                 feedbacks: paths.feedbacks,
-                profiles: paths.profiles,
-                properties: paths.properties,
             }
         },
         beforeEnter: (to, from, next) => {
@@ -298,7 +287,7 @@ const routes = [
             else next()
         },
     },{
-        path: '/calendars/create',
+        path: '/properties/:id/calendar/create',
         name: 'CalendarCreate',
         component: CalendarCreate,
         meta: {

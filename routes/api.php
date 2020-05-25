@@ -16,11 +16,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
     // Below mention routes are public, user can access those without any restriction.
+    // Validate New User
+    Route::post('validate_user', 'Auth\AuthController@validateUser');
     // Create New User
     Route::post('register', 'Auth\AuthController@register');
     // Login User
     Route::post('login', 'Auth\AuthController@login');
-
     // Refresh the JWT Token
     Route::get('refresh', 'Auth\AuthController@refresh');
 
@@ -33,12 +34,20 @@ Route::prefix('auth')->group(function () {
     });
 });
 
+Route::get('countries', 'Api\GeoController@getCountries');
+Route::get('countries/{country}/states', 'Api\GeoController@getStatesByCountry');
+Route::get('states/{state}/country', 'Api\GeoController@getCountryByState');
+Route::get('states/{state}/cities', 'Api\GeoController@getCitiesByState');
+Route::get('cities/{city}/state', 'Api\GeoController@getStateByCity');
+
+Route::post('profiles/validate_profile', 'Api\ProfileController@validateProfile');
+Route::get('profiles/gender', 'Api\ProfileController@getGender');
+
 Route::group(['middleware' => 'auth:api'], function () {
     Route::get('profiles/list', 'Api\ProfileController@getList');
     Route::get('profiles/{profile}/properties', 'Api\ProfileController@getProperties');
     Route::get('profiles/{profile}/bookings', 'Api\ProfileController@getBookings');
     Route::get('profiles/{profile}/feedbacks', 'Api\ProfileController@getFeedbacks');
-    Route::get('profiles/gender', 'Api\ProfileController@getGender');
     Route::apiResource('profiles', 'Api\ProfileController');
 
     Route::get('properties/list', 'Api\PropertyController@getList');
@@ -54,15 +63,14 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::apiResource('bookings', 'Api\BookingController');
     Route::apiResource('feedbacks', 'Api\FeedbackController');
 
-    Route::get('countries', 'Api\GeoController@getCountries');
-    Route::get('countries/{country}/states', 'Api\GeoController@getStatesByCountry');
-    Route::get('states/{state}/country', 'Api\GeoController@getCountryByState');
-    Route::get('states/{state}/cities', 'Api\GeoController@getCitiesByState');
-    Route::get('cities/{city}/state', 'Api\GeoController@getStateByCity');
+    Route::get('users/{user}', 'Api\UserController@show');
+    Route::post('users/{user}/email', 'Api\UserController@updateEmail');
+    Route::post('users/{user}/nickname', 'Api\UserController@updateNickname');
+    Route::post('users/{user}/password', 'Api\UserController@updatePassword');
+    Route::delete('users/{user}', 'Api\UserController@destroy');
 });
 
-
-Route::get('profiles/', 'Api\ProfileController@index');
-Route::get('properties/', 'Api\PropertyController@index');
+Route::get('search', 'Api\PropertyController@getPropertiesWithImages');
+Route::get('properties/{property}', 'Api\PropertyController@show');
 
 
