@@ -27,7 +27,7 @@ class PropertyRequest extends FormRequest
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'address' => 'required|string|max:255',
-            'price' => 'required|integer',
+            'price' => 'required',
             'host_type' => 'required|in:entire place,private room,shared room',
             'air_condition' => 'required|boolean',
             'children' => 'required|boolean',

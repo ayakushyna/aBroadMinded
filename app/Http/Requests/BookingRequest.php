@@ -28,7 +28,7 @@ class BookingRequest extends FormRequest
             'end_date' => 'required|date',
             'adults' => 'required|integer',
             'children' => 'required|integer',
-            'price' => 'required|integer',
+            'price' => 'required',
             'status' => 'required|in:cancelled,awaiting,confirmed',
             'profile_id' => 'required|integer|exists:App\Models\Profile,id',
             'property_id' => 'required|integer|exists:App\Models\Property,id',

@@ -1,12 +1,12 @@
 <template>
     <div class="container">
-        <div class="form-group">
+        <div>
             <b-button @click="$router.go(-1)" variant="outline-primary">Back</b-button>
         </div>
 
-        <div class="panel panel-default">
-            <div class="panel-heading"><h2>Edit booking</h2></div>
-            <div class="panel-body">
+        <b-card class="mt-4">
+            <div><h2>Edit booking</h2></div>
+            <div>
                 <b-form @submit.prevent="onSubmit" @reset="onReset" v-if="show">
                     <b-row>
                         <b-col>
@@ -15,7 +15,9 @@
                                 <el-date-picker
                                     v-model="form.range"
                                     type="daterange"
-                                    align="right"
+                                    :picker-options="datePickerOptions"
+                                    :default-time="['03:00:00', '03:00:00']"
+                                    align="left"
                                     start-placeholder="Start Date"
                                     end-placeholder="End Date">
                                 </el-date-picker>
@@ -24,6 +26,22 @@
                                     <ul class="alert alert-danger">
                                         <li v-for="(value, key, index) in errors.start_date">{{ value }}</li>
                                         <li v-for="(value, key, index) in errors.end_date">{{ value }}</li>
+                                    </ul>
+                                </div>
+                            </b-form-group>
+
+                            <b-form-group id="input-group-status" label="Status:" label-for="input-status">
+                                <b-form-select
+                                    id="input-status"
+                                    v-model="form.status"
+                                    :options="statuses"
+                                    required
+                                    class="col-sm-6">
+                                    ></b-form-select>
+
+                                <div v-if="errors.status">
+                                    <ul class="alert alert-danger">
+                                        <li v-for="(value, key, index) in errors.status">{{ value }}</li>
                                     </ul>
                                 </div>
                             </b-form-group>
@@ -76,8 +94,9 @@
                                     v-model="form.price"
                                     type="number"
                                     required
+                                    step="0.01"
                                     min="1"
-                                    max="1000000"
+                                    max="999999"
                                     placeholder="Enter price"
                                 ></b-form-input>
 
@@ -98,51 +117,89 @@
                     <pre class="m-0">{{ form }}</pre>
                 </b-card>
             </div>
-        </div>
+        </b-card>
     </div>
 </template>
 
 <script>
     import {BRow, BCol, BForm, BFormGroup, BFormSelect, BFormInput,BButton, BCard} from 'bootstrap-vue'
 
-    import DatePicker from 'v-calendar/lib/components/date-picker.umd'
-
     import axios from "axios";
     export default {
         data() {
             return {
                 form: {
-                    range: {
-                        start: '',
-                        end: '',
-                    },
+                    range: [],
                     adults: '',
                     children: '',
                     price: '',
                     profile_id: null,
                     property_id: null,
+                    status: ""
                 },
                 statuses:[],
+                available_dates:[],
+                booked_dates:[],
+                datePickerOptions: {
+                    disabledDate: this.disabledDate
+                },
                 has_error: false,
                 errors: {},
                 show: true
             }
         },
         created() {
+            this.getStatuses();
             this.getBooking();
+            this.getAvailableDates();
+            this.getBookedDates();
         },
         methods: {
+            async getAvailableDates() {
+                await axios.get(this.$route.meta.api.calendars + '/dates/' +  this.form.property_id)
+                    .then((response) => {
+                        this.available_dates = response.data.items;
+                        console.log(this.available_dates)
+                    })
+            },
+            async getBookedDates() {
+                await axios.get(this.$route.meta.api.bookings + '/dates/' +  this.form.property_id)
+                    .then((response) => {
+                        this.booked_dates = response.data.items;
+                        console.log(this.booked_dates)
+                    })
+            },
+            disabledDate (date) {
+                if(date <= new Date())
+                    return true;
+
+                for(const date_range of  this.booked_dates)
+                    if(date >= new Date(date_range.start_date + 'T00:00:00') && date <= new Date(date_range.end_date + 'T23:59:59'))
+                        return true;
+
+                for(const date_range of  this.available_dates)
+                    if(date >= new Date(date_range.start_date + 'T00:00:00') && date <= new Date(date_range.end_date + 'T23:59:59'))
+                        return false;
+
+                return true
+            },
+            async getStatuses() {
+                await axios.get(this.$route.meta.api.bookings + '/statuses')
+                    .then((response) => {
+                        this.statuses = response.data.items;
+                    })
+            },
             async getBooking() {
                 await axios.get(this.$route.meta.api.bookings + '/' + this.$route.params.id)
                     .then((response) => {
                         var items = response.data.items;
-                        this.form.range['start'] = items.start_date;
-                        this.form.range['end'] = items.end_date;
+                        this.form.range.push(items.start_date, items.end_date);
                         this.form.adults = items.adults;
                         this.form.children = items.children;
                         this.form.price = items.price;
                         this.form.profile_id = items.profile_id;
                         this.form.property_id = items.property_id;
+                        this.form.status = items.status
                     });
             },
             onSubmit(evt) {
@@ -150,17 +207,17 @@
                 this.errors = {}
 
                 axios.put(this.$route.meta.api.bookings + '/' + this.$route.params.id, {
-                    start_date: this.form.range['start'],
-                    end_date: this.form.range['end'],
+                    start_date: this.form.range[0],
+                    end_date: this.form.range[1],
                     adults: this.form.adults,
                     children: this.form.children,
                     price: this.form.price,
-                    status: 'awaiting',
+                    status: this.form.status,
                     profile_id: this.form.profile_id,
                     property_id: this.form.property_id,
                 })
                     .then(response => (
-                        this.$router.push({name: 'BookingIndex'})
+                        this.$router.go(-1)
                         // console.log(response.data)
                     ))
                     .catch(error => console.log(error))
@@ -169,8 +226,7 @@
             onReset(evt) {
                 evt.preventDefault()
                 // Reset our form values
-                this.form.range['start'] = '';
-                this.form.range['end'] = '';
+                this.form.range = []
                 this.form.adults = '';
                 this.form.children = '';
                 this.form.price = '';
@@ -185,7 +241,6 @@
         },
         components: {
             BRow, BCol, BForm, BFormGroup, BFormSelect, BFormInput,BButton, BCard,
-            DatePicker
         }
     }
 </script>

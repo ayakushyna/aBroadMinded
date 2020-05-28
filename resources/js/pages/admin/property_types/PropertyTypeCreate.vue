@@ -1,12 +1,12 @@
 <template>
     <div class="container">
-        <div class="form-group">
+        <div>
             <b-button @click="$router.go(-1)" variant="outline-primary">Back</b-button>
         </div>
 
-        <div class="panel panel-default">
-            <div class="panel-heading"><h2>Create new property type</h2></div>
-            <div class="panel-body">
+        <b-card class="mt-4">
+            <div><h2>Create new property type</h2></div>
+            <div>
                 <b-form @submit.prevent="onSubmit" @reset="onReset" v-if="show">
 
                     <b-form-group id="input-group-name" label="Name:" label-for="input-name">
@@ -35,7 +35,7 @@
                 </b-card>
 
             </div>
-        </div>
+        </b-card>
     </div>
 </template>
 
@@ -65,7 +65,7 @@
                     name: this.form.name,
                 })
                     .then(response => (
-                        this.$router.push({name: 'PropertyTypeIndex'})
+                        this.$router.go(-1)
                         // console.log(response.data)
                     ))
                     .catch(error => {

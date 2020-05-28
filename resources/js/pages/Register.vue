@@ -129,7 +129,7 @@
                                         placeholder="Pick a Date"
                                         format="yyyy/MM/dd"
                                         value-format="yyyy-MM-dd"
-                                        :max="new Date()">
+                                        :picker-options="datePickerOptions">
                                     </el-date-picker>
                                     <div v-if="errors.birthday">
                                         <ul class="alert alert-danger">
@@ -218,6 +218,9 @@
                 countries: [],
                 states: [],
                 cities:[],
+                datePickerOptions: {
+                    disabledDate: this.disabledDate
+                },
                 has_error: false,
                 error: '',
                 errors: {},
@@ -225,6 +228,9 @@
             }
         },
         methods: {
+            disabledDate (date) {
+                return date >= new Date()
+            },
             async getGender() {
                 await axios.get(this.$route.meta.api.gender)
                     .then((response) => {

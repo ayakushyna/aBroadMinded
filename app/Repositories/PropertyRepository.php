@@ -5,6 +5,7 @@ namespace App\Repositories;
 
 
 use App\Models\Property;
+use App\Models\PropertyImage;
 use App\Repositories\Interfaces\PropertyRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 
@@ -36,6 +37,32 @@ class PropertyRepository extends BaseRepository implements PropertyRepositoryInt
         $query = $this->applySorting($query, $sortItems);
 
         return $query->paginate(5);
+    }
+
+    public function getPropertiesWithImages(array $filterItems = [],array $sortItems = [])
+    {
+        $profiles_name = $this->getProfilesName();
+        $cities_name = $this->getCitiesName();
+
+        $query = Property::with('images')
+            ->leftJoin('property_types', 'properties.property_type_id', '=', 'property_types.id')
+            ->leftJoinSub($profiles_name, 'profiles_name', function ($join) {
+                $join->on('properties.profile_id', '=', 'profiles_name.id');
+            })
+            ->leftJoinSub($cities_name, 'cities_name', function ($join) {
+                $join->on('properties.city_id', '=', 'cities_name.id');
+            })
+            ->select(
+                'properties.*',
+                'profiles_name.fullname',
+                'property_types.name',
+                'cities_name.city'
+            );
+
+        $query = $this->applyFilter($query, $filterItems);
+        $query = $this->applySorting($query, $sortItems);
+
+        return $query->get();
     }
 
     public function getList(){
@@ -99,7 +126,7 @@ class PropertyRepository extends BaseRepository implements PropertyRepositoryInt
 
     public function findById($id)
     {
-        return DB::table('properties')
+        return Property::with('images')
             ->leftJoin('property_types', 'properties.property_type_id', '=', 'property_types.id')
             ->leftJoin('profiles', 'properties.profile_id', '=', 'profiles.id')
             ->leftJoin('cities','properties.city_id', '=', 'cities.id')
@@ -118,5 +145,17 @@ class PropertyRepository extends BaseRepository implements PropertyRepositoryInt
     public function getHostTypes()
     {
         return $this->model::HOST_TYPES;
+    }
+
+    public function getFieldsInfoExcludeProfile(){
+        $fields = $this->model::FIELDS_INFO;
+
+        foreach($fields as $k => $v) {
+            if($fields[$k]['key'] == 'fullname') {
+                unset($fields[$k]);
+            }
+        }
+
+        return array_values($fields);
     }
 }

@@ -44,18 +44,18 @@
                                 </template>
                             </vue-slider>
 
-                            <date-picker v-else-if="field.type === 'date'"
-                                         color="purple"
-                                         v-model='field.filter.value '
-                                         :disabled="!field.filter.checked"
-                            >
-                                <b-form-input :value="field.filter.value? new Date(field.filter.value).toLocaleDateString(): '' "
-                                              :disabled="!field.filter.checked"
-                                              :placeholder="'Enter ' + field.label + ' filter'"
-                                              autocomplete="off"
-                                              size="sm"
-                                ></b-form-input>
-                            </date-picker>
+                            <el-date-picker
+                                v-else-if="field.type === 'date'"
+                                v-model='field.filter.value'
+                                :disabled="!field.filter.checked"
+                                type="date"
+                                required
+                                placeholder="Pick a Date"
+                                format="yyyy/MM/dd"
+                                value-format="yyyy-MM-dd"
+                                size="mini"
+                                class="mr-0">
+                            </el-date-picker>
 
 
                             <b-input-group-append is-text v-else >
@@ -91,7 +91,6 @@
         BRow,
     } from "bootstrap-vue";
 
-    import DatePicker from 'v-calendar/lib/components/date-picker.umd'
     import 'vue-slider-component/theme/default.css'
     import VueSlider from "vue-slider-component";
 
@@ -105,7 +104,7 @@
             BFormInput, BInputGroup, BInputGroupPrepend, BInputGroupAppend,
             BRow, BCol,
             BButtonGroup,
-            VueSlider,DatePicker
+            VueSlider
         },
     }
 </script>

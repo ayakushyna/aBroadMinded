@@ -15,13 +15,14 @@ class CreateProfilesTable extends Migration
     {
         Schema::create('profiles', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->unique();
-            $table->string('first_name', 256)->nullable();
-            $table->string('last_name', 256)->nullable();
-            $table->enum('gender', ['undefined', 'female', 'male'])->nullable();
-            $table->date('birthday')->nullable();
+            $table->string('first_name', 256);
+            $table->string('last_name', 256);
+            $table->enum('gender', ['undefined', 'female', 'male']);
+            $table->date('birthday');
+            $table->string('photo')->nullable();
             $table->boolean('active')->default(true);
             $table->timestamps();
-            $table->unsignedBigInteger('city_id')->nullable();
+            $table->unsignedBigInteger('city_id');
 
             $table->foreign('city_id')
                 ->references('id')->on('cities')

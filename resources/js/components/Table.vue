@@ -109,7 +109,11 @@
             },
             pageShow: String,
             pageEdit: String,
-            api: Object
+            api: Object,
+            actions: {
+                type: Boolean,
+                default: true
+            },
         },
         data() {
             return {
@@ -128,6 +132,12 @@
             this.fetchData();
         },
         methods: {
+            truncateText(text) {
+                if (text.length > 100) {
+                    return `${text.substr(0, 100)}...`;
+                }
+                return text;
+            },
             indexOfKey(array, key){
                 for(let i in array) {
                     if(array[i].key === key)
@@ -218,6 +228,10 @@
                                     items[i] = {... items[i],  _cellVariants: {status: 'success'}}
                                 else if(items[i].active === false)
                                     items[i] = {... items[i],  _rowVariant: 'danger'}
+                                else if(items[i].description)
+                                    items[i].description = this.truncateText(items[i].description)
+                                else if(items[i].body)
+                                    items[i].body = this.truncateText(items[i].body)
                             }
                             this.table.items = items;
 
@@ -239,8 +253,10 @@
 
                             this.table.secondary_fields = this.fields.filter(field => field.secondary === true);
 
-                            let add_fields = this.table.secondary_fields.length ? ['actions', 'details'] : ['actions'];
-                            this.table.primary_fields = this.fields.filter(field => field.secondary !== true).concat(add_fields);
+                            let details = this.table.secondary_fields.length ? ['details'] : [];
+                            let actions = this.actions? ['actions'] : [];
+
+                            this.table.primary_fields = this.fields.filter(field => field.secondary !== true).concat(actions, details);
 
                             console.log(this.$auth.user());
                         });

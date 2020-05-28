@@ -13,7 +13,6 @@ import locale from 'element-ui/lib/locale/lang/en'
 window.Vue = Vue
 
 import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI, { locale })
 
 // Set Vue router

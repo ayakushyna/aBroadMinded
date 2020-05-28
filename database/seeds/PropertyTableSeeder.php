@@ -7,6 +7,6 @@ class PropertyTableSeeder extends Seeder
 {
     public function run()
     {
-        factory(Property::class, 30)->create();
+        factory(Property::class, 10)->create();
     }
 }

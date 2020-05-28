@@ -13,11 +13,16 @@
         </b-collapse>
 
         <b-row class="d-flex justify-content-center">
-            <b-col class="col-md-4" v-for="(property) in items" :key=i>
+            <b-col class="col-md-4" v-for="(property, i) in items" :key=i>
                 <div class="card mt-4">
-                    <b-img v-if="property.images.length" class="card-img-top" :src="property.images[0].image_path" alt="Property Image"></b-img>
+                    <b-img v-if="property.images.length" :height="200" :width="300" class="card-img-top" :src="'/storage/' + property.images[0].image_path" alt="Property Image"></b-img>
                     <div class="card-body">
-                        <p class="card-text"><strong>{{ property.title }}</strong> <br>
+                        <div class="d-flex justify-content-between">
+                            <strong>{{ property.title }}</strong>
+                            <strong>{{ property.price + '$'}}</strong>
+                         </div>
+                        <p class="card-text">
+                            <br>
                             {{ truncateText(property.description) }}
                         </p>
                     </div>

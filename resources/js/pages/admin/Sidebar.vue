@@ -16,10 +16,6 @@
                 <b-dropdown-item variant="primary">
                     <router-link :to="{ name: 'ProfileIndex' }">Profiles List</router-link>
                 </b-dropdown-item>
-                <b-dropdown-divider v-if="($auth.user().role === 'root')"></b-dropdown-divider>
-                <b-dropdown-item v-if="($auth.user().role === 'root')">
-                    <router-link :to="{ name: 'UserCreate' }">Create User</router-link>
-                </b-dropdown-item>
             </b-nav-item-dropdown>
 
             <b-nav-item-dropdown
@@ -30,12 +26,6 @@
                     <router-link :to="{ name: 'PropertyIndex' }">Properties List</router-link>
                 </b-dropdown-item>
                 <b-dropdown-divider></b-dropdown-divider>
-                <b-dropdown-item  v-if="($auth.user().role === 'root')">
-                    <router-link :to="{ name: 'PropertyCreate' }">Create Property</router-link>
-                </b-dropdown-item>
-                <b-dropdown-item v-if="($auth.user().role === 'root')">
-                    <router-link :to="{ name: 'CalendarCreate' }">Create Calendar</router-link>
-                </b-dropdown-item>
                 <b-dropdown-item>
                     <router-link :to="{ name: 'PropertyTypeIndex' }">Property Types List</router-link>
                 </b-dropdown-item>
@@ -51,10 +41,6 @@
                 <b-dropdown-item>
                     <router-link :to="{ name: 'BookingIndex' }">Bookings List</router-link>
                 </b-dropdown-item>
-                <b-dropdown-divider v-if="($auth.user().role === 'root')"></b-dropdown-divider>
-                <b-dropdown-item v-if="($auth.user().role === 'root')">
-                    <router-link :to="{ name: 'BookingCreate' }">Create Booking</router-link>
-                </b-dropdown-item>
             </b-nav-item-dropdown>
 
             <b-nav-item-dropdown
@@ -63,10 +49,6 @@
             >
                 <b-dropdown-item>
                     <router-link :to="{ name: 'FeedbackIndex' }">Feedbacks List</router-link>
-                </b-dropdown-item>
-                <b-dropdown-divider v-if="($auth.user().role === 'root')"></b-dropdown-divider>
-                <b-dropdown-item v-if="($auth.user().role === 'root')">
-                    <router-link :to="{ name: 'FeedbackCreate' }">Create Feedback</router-link>
                 </b-dropdown-item>
             </b-nav-item-dropdown>
         </b-nav>

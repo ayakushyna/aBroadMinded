@@ -101,6 +101,20 @@ class BookingRepository extends BaseRepository implements BookingRepositoryInter
         return $query->paginate(5);
     }
 
+    public function getDates($id)
+    {
+        return DB::table('bookings')
+            ->select('bookings.start_date', 'bookings.end_date')
+            ->where('property_id', '=', $id)
+            ->where('status', '=', 'confirmed')
+            ->where(function ($query) {
+                $query->select('host_type')
+                    ->from('properties')
+                    ->whereRaw('properties.id = bookings.property_id');
+            }, '=', 'entire place')
+            ->get();
+    }
+
     public function findById($id)
     {
         return DB::table('bookings')
@@ -113,6 +127,11 @@ class BookingRepository extends BaseRepository implements BookingRepositoryInter
             )
             ->where('bookings.id', '=', $id)
             ->first();
+    }
+
+    public function getStatuses()
+    {
+        return $this->model::STATUSES;
     }
 
 

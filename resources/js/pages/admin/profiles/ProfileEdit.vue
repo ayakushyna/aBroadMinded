@@ -1,12 +1,12 @@
 <template>
     <div class="container">
-        <div class="form-group">
+        <div>
             <b-button @click="$router.go(-1)" variant="outline-primary">Back</b-button>
         </div>
 
-        <div class="panel panel-default">
-            <div class="panel-heading"><h2>Edit profile</h2></div>
-            <div class="panel-body">
+        <b-card class="mt-4">
+            <div><h2>Edit profile</h2></div>
+            <div>
                 <b-form @submit.prevent="onSubmit" @reset="onReset" v-if="show">
 
                     <b-form-group  class="col-sm-6" id="input-group-first_name" label="First Name:" label-for="input-first_name">
@@ -115,14 +115,24 @@
                         </div>
                     </b-form-group>
 
-                    <b-form-group class="col-sm-6" id="input-group-photo" label="Profile image:" label-for="input-photo" accept=".jpg, .jpeg, .png, .gif">
-                        <div class="col-md-3" v-if="form.photo">
-                            <img :src="'/images/' + form.photo" class="img-responsive" height="140" width="180" alt="Profile image">
-                        </div>
-                        <div>
-                            <input type="file" v-on:change="onImageChange" class="form-control">
-                        </div>
-                    </b-form-group>
+                    <b-row class="mb-4 ml-2">
+                        <el-upload
+                            action="/"
+                            list-type="picture-card"
+                            accept="image/jpg,image/jpeg,image/gif,image/png"
+                            :on-preview="handlePictureCardPreview"
+                            :on-change="addImage"
+                            :on-remove="removeImage"
+                            :limit="1"
+                            :auto-upload="false"
+                            :file-list="fileList"
+                        >
+                            <i class="el-icon-plus"></i>
+                        </el-upload>
+                        <el-dialog :visible.sync="dialogVisible">
+                            <img width="100%" :src="dialogImageUrl" alt />
+                        </el-dialog>
+                    </b-row>
 
                     <b-button type="submit" variant="primary">Submit</b-button>
                     <b-button type="reset" variant="danger">Reset</b-button>
@@ -131,9 +141,10 @@
                     <pre class="m-0">{{ form }}</pre>
                 </b-card>
             </div>
-        </div>
+        </b-card>
     </div>
 </template>
+
 
 <script>
     import {BRow, BCol, BForm, BFormGroup, BFormSelect, BFormInput ,BButton, BCard, BFormFile} from 'bootstrap-vue'
@@ -153,6 +164,9 @@
                     state_id: null,
                     city_id: null,
                 },
+                dialogImageUrl: "",
+                dialogVisible: false,
+                fileList: [],
                 state_id: null,
                 city_id: null,
                 gender:[],
@@ -170,19 +184,20 @@
             this.getProfile();
         },
         methods: {
-            onImageChange(e) {
-                let files = e.target.files || e.dataTransfer.files;
-                if (!files.length)
-                    return;
-                this.createImage(files[0]);
+            addImage(file) {
+                this.form.photo = file.raw;
             },
-            createImage(file) {
-                let reader = new FileReader();
-
-                reader.onload = (e) => {
-                    this.form.photo = e.target.result;
-                };
-                reader.readAsDataURL(file);
+            removeImage(file) {
+                if(file.hasOwnProperty('id'))
+                    this.axios.delete(this.$route.meta.api.profiles + '/' + this.form.id + '/photo')
+                else{
+                    this.form.photo = null;
+                }
+            },
+            handlePictureCardPreview(file) {
+                console.log(file)
+                this.dialogImageUrl = file.url;
+                this.dialogVisible = true;
             },
             async getGender() {
                 await axios.get(this.$route.meta.api.gender)
@@ -239,7 +254,7 @@
                         this.form.last_name = items.last_name;
                         this.form.birthday = items.birthday;
                         this.form.gender = items.gender;
-                        this.form.photo = items.photo;
+                        this.form.photo = { id: items.id, url: '/storage/' + items.photo};
                         this.form.country_id = items.country_id;
                         this.form.state_id = items.state_id;
                         this.form.city_id = items.city_id;
@@ -253,19 +268,32 @@
                 this.has_error = false;
                 this.errors = {}
 
-                axios.put(this.$route.meta.api.profiles + '/' + this.$route.params.id, {
+                axios.put(this.$route.meta.api.profiles + '/' + this.form.id, {
                     id:  this.form.id,
                     first_name: this.form.first_name,
                     last_name: this.form.last_name,
                     birthday: this.form.birthday,
                     gender: this.form.gender,
-                    photo: this.form.photo,
                     city_id: this.form.city_id ,
                     active: true
                 })
-                    .then(response => (
-                        this.$router.go(-1)
-                    ))
+                    .then(response => {
+                        console.log('photo')
+                        console.log(this.form.photo);
+                        let formData = new FormData();
+                        formData.append(`photo`, this.form.photo);
+
+                        axios.post(this.$route.meta.api.profiles  + '/' + this.form.id + '/photo', formData, {
+                            headers: { "Content-Type": "multipart/form-data" }
+                        })
+                            .then(response => (
+                                this.$router.go(-1)
+                            ))
+                            .catch(error => {
+                                this.has_error = true;
+                                this.errors = error.response.data.errors;
+                            })
+                    })
                     .catch(error => {
                         this.has_error = true;
                         this.errors = error.response.data.errors;

@@ -35,11 +35,13 @@ const paths = {
     validate_user: '/auth/validate_user',
     validate_profile: '/profiles/validate_profile',
     users: '/users',
+    roles: '/roles',
     cities: '/cities',
     states: '/states',
     countries: '/countries',
     gender:'/profiles/gender',
     property_types:'/property_types',
+    property_images:'/property_images',
     host_types:'/properties/host_types',
     bookings: '/bookings',
     feedbacks: '/feedbacks',
@@ -125,7 +127,8 @@ const routes = [
                 profiles: paths.profiles,
                 properties:  paths.properties,
                 bookings: paths.bookings,
-                users: paths.users
+                users: paths.users,
+                roles: paths.roles
             }
         },
     }, {
@@ -163,13 +166,10 @@ const routes = [
                 countries:  paths.countries,
                 profiles:  paths.profiles,
                 property_types: paths.property_types,
+                property_images: paths.property_images,
                 host_types: paths.host_types
             }
-        },
-        beforeEnter: (to, from, next) => {
-            if (Vue.auth.user().role !== 'root') next({ name: 'Home' })
-            else next()
-        },
+        }
     },{
         path: '/properties/edit/:id',
         name: 'PropertyEdit',
@@ -183,6 +183,7 @@ const routes = [
                 countries:  paths.countries,
                 profiles:  paths.profiles,
                 property_types:  paths.property_types,
+                property_images: paths.property_images,
                 host_types: paths.host_types
             }
         },
@@ -221,11 +222,7 @@ const routes = [
                 bookings: paths.bookings,
                 feedbacks: paths.feedbacks
             }
-        },
-        beforeEnter: (to, from, next) => {
-            if (Vue.auth.user().role !== 'root' && Vue.auth.user().role !== 'admin') next({ name: 'Home' })
-            else next()
-        },
+        }
     },{
         path: '/properties/:id/booking/create',
         name: 'BookingCreate',
@@ -234,6 +231,7 @@ const routes = [
             auth: true,
             api: {
                 bookings:  paths.bookings,
+                calendars: paths.calendars
             }
         },
     },{
@@ -244,12 +242,9 @@ const routes = [
             auth: true,
             api: {
                 bookings:  paths.bookings,
+                calendars: paths.calendars
             }
-        },
-        beforeEnter: (to, from, next) => {
-            if (Vue.auth.user().role !== 'root') next({ name: 'Home' })
-            else next()
-        },
+        }
     },{
         path: '/feedbacks',
         name: 'FeedbackIndex',
@@ -282,10 +277,6 @@ const routes = [
                 feedbacks: paths.feedbacks,
             }
         },
-        beforeEnter: (to, from, next) => {
-            if (Vue.auth.user().role !== 'root') next({ name: 'Home' })
-            else next()
-        },
     },{
         path: '/properties/:id/calendar/create',
         name: 'CalendarCreate',
@@ -296,11 +287,7 @@ const routes = [
                 calendars:  paths.calendars,
                 properties: paths.properties,
             }
-        },
-        beforeEnter: (to, from, next) => {
-            if (Vue.auth.user().role !== 'root') next({ name: 'Home' })
-            else next()
-        },
+        }
     },{
         path: '/calendars/edit/:id',
         name: 'CalendarEdit',
@@ -311,11 +298,7 @@ const routes = [
                 calendars:  paths.calendars,
                 properties: paths.properties,
             }
-        },
-        beforeEnter: (to, from, next) => {
-            if (Vue.auth.user().role !== 'root') next({ name: 'Home' })
-            else next()
-        },
+        }
     },{
         path: '/property_types',
         name: 'PropertyTypeIndex',
@@ -358,7 +341,7 @@ const routes = [
         },
     }]
 const router = new VueRouter({
-    history: true,
+    history: false,
     mode: 'history',
     routes,
 })

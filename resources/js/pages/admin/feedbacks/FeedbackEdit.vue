@@ -1,12 +1,12 @@
 <template>
     <div class="container">
-        <div class="form-group">
+        <div>
             <b-button @click="$router.go(-1)" variant="outline-primary">Back</b-button>
         </div>
 
-        <div class="panel panel-default">
-            <div class="panel-heading"><h2>Edit feedback</h2></div>
-            <div class="panel-body">
+        <b-card class="mt-4">
+            <div><h2>Edit feedback</h2></div>
+            <div>
                 <b-form @submit.prevent="onSubmit" @reset="onReset" v-if="show">
 
                     <b-form-group class="col-sm-6" id="input-group-title" label="Title:" label-for="input-title">
@@ -67,7 +67,7 @@
                 </b-card>
 
             </div>
-        </div>
+        </b-card>
     </div>
 </template>
 
@@ -114,7 +114,7 @@
                     score: this.form.score
                 })
                     .then(response => (
-                        this.$router.push({name: 'FeedbackIndex'})
+                        this.$router.go(-1)
                         // console.log(response.data)
                     ))
                     .catch(error => {

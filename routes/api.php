@@ -44,10 +44,13 @@ Route::post('profiles/validate_profile', 'Api\ProfileController@validateProfile'
 Route::get('profiles/gender', 'Api\ProfileController@getGender');
 
 Route::group(['middleware' => 'auth:api'], function () {
+
     Route::get('profiles/list', 'Api\ProfileController@getList');
     Route::get('profiles/{profile}/properties', 'Api\ProfileController@getProperties');
     Route::get('profiles/{profile}/bookings', 'Api\ProfileController@getBookings');
     Route::get('profiles/{profile}/feedbacks', 'Api\ProfileController@getFeedbacks');
+    Route::post('profiles/{profile}/photo', 'Api\ProfileController@updatePhoto');
+    Route::delete('profiles/{profile}/photo', 'Api\ProfileController@deletePhoto');
     Route::apiResource('profiles', 'Api\ProfileController');
 
     Route::get('properties/list', 'Api\PropertyController@getList');
@@ -58,15 +61,25 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('properties/host_types', 'Api\PropertyController@getHostTypes');
     Route::apiResource('properties', 'Api\PropertyController');
 
+    Route::apiResource('property_images', 'Api\PropertyImageController');
+
     Route::apiResource('property_types', 'Api\PropertyTypeController');
+
+    Route::get('calendars/dates/{property}', 'Api\CalendarController@getDates');
     Route::apiResource('calendars', 'Api\CalendarController');
+
+    Route::get('bookings/statuses', 'Api\BookingController@getStatuses');
+    Route::get('bookings/dates/{property}', 'Api\BookingController@getDates');
     Route::apiResource('bookings', 'Api\BookingController');
+
     Route::apiResource('feedbacks', 'Api\FeedbackController');
 
+    Route::get('/roles', 'Api\UserController@getRoles');
     Route::get('users/{user}', 'Api\UserController@show');
     Route::post('users/{user}/email', 'Api\UserController@updateEmail');
     Route::post('users/{user}/nickname', 'Api\UserController@updateNickname');
     Route::post('users/{user}/password', 'Api\UserController@updatePassword');
+    Route::post('users/{user}/role', 'Api\UserController@updateRole');
     Route::delete('users/{user}', 'Api\UserController@destroy');
 });
 

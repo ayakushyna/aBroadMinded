@@ -7,14 +7,14 @@ $font-size-base: 0.9rem;
 $line-height-base: 1.6;
 
 // Colors
-$dark-blue: #4A30D1;
-$blue: #684ef9;
+$dark-blue: #523DCC;
+$blue: #788BFF;
 $indigo: #6574cd;
 $purple: #9561e2;
 $pink: #f66d9b;
-$red: #e3342f;
-$orange: #f6993f;
-$yellow: #ffed4a;
+$red: #EF6F6C;
+$orange: #F0B67F;
+$yellow: #FDE12D;
 $green: #38c172;
 $teal: #4dc0b5;
 $cyan: #71ddf9;
@@ -55,6 +55,7 @@ $colors: map-merge(
 );
 
 // Theme color default definitions
+$--color-primary:$blue !default;
 $primary: $blue !default;
 $secondary: $gray-600 !default;
 $success: $green !default;

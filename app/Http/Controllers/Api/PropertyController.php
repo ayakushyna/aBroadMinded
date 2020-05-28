@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\PropertyRequest;
+use App\Models\PropertyImage;
 use App\Repositories\Interfaces\BookingRepositoryInterface;
 use App\Repositories\Interfaces\CalendarRepositoryInterface;
 use App\Repositories\Interfaces\FeedbackRepositoryInterface;
 use App\Repositories\Interfaces\ProfileRepositoryInterface;
 use App\Repositories\Interfaces\PropertyRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PropertyController extends BaseController
 {
@@ -22,6 +25,18 @@ class PropertyController extends BaseController
     public function __construct(PropertyRepositoryInterface $propertyRepository)
     {
         parent::__construct($propertyRepository);
+    }
+
+    public function getPropertiesWithImages(Request $request){
+        $params = $this->toArray($request);
+        $data = $this->baseRepository->getPropertiesWithImages($params['filters'], $params['sortings']);
+        $fields = $this->baseRepository->getFieldsInfo();
+
+        return response()->json([
+            'items' => $data,
+            'fields' => $fields,
+            'params' => $params,
+        ], 200);
     }
 
     public function getList()
@@ -49,7 +64,7 @@ class PropertyController extends BaseController
         $params = $this->toArray($request);
 
         $data = $bookingRepository->getBookingsByProperty($id, $params['filters'], $params['sortings']);
-        $fields = $bookingRepository->getFieldsInfo();
+        $fields = $bookingRepository->getFieldsInfoExcludeProperty();
 
         $data = $data->toArray();
         $items = $data['data'];
@@ -72,7 +87,7 @@ class PropertyController extends BaseController
         $params = $this->toArray($request);
 
         $data = $feedbackRepository->getFeedbacksByProperty($id, $params['filters'], $params['sortings']);
-        $fields = $feedbackRepository->getFieldsInfo();
+        $fields = $feedbackRepository->getFieldsInfoExcludeProperty();
 
         $data = $data->toArray();
         $items = $data['data'];
@@ -95,7 +110,7 @@ class PropertyController extends BaseController
         $params = $this->toArray($request);
 
         $data = $calendarRepository->getCalendarsByProperty($id, $params['filters'], $params['sortings']);
-        $fields = $calendarRepository->getFieldsInfo();
+        $fields = $calendarRepository->getFieldsInfoExcludeProperty();
 
         $data = $data->toArray();
         $items = $data['data'];

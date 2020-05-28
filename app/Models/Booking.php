@@ -15,6 +15,13 @@ class Booking extends Model
      */
     protected $table = 'bookings';
 
+
+    const STATUSES = [
+        'cancelled',
+        'awaiting',
+        'confirmed'
+    ];
+
     /**
      * @var array
      */

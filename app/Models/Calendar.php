@@ -12,7 +12,7 @@ class Calendar extends Model
      *
      * @var string
      */
-    protected $table = 'calendars';
+    protected $table = 'available_date_ranges';
 
     /**
      * @var array

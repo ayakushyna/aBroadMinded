@@ -72,7 +72,10 @@ class BaseController extends Controller
     {
         app($this->validateRequest);
 
-        return $this->baseRepository->update($request->only($this->baseRepository->getModel()->getFillable()), $id);
+        $this->baseRepository->update($request->only($this->baseRepository->getModel()->getFillable()), $id);
+        return response()->json([
+            'items' => ['id' => $id]
+         ], 200);
     }
 
     public function destroy($id)

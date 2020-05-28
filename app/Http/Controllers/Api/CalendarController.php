@@ -18,4 +18,14 @@ class CalendarController extends BaseController
     {
         parent::__construct($calendarRepository);
     }
+
+    public function getDates($id)
+    {
+        $data = $this->baseRepository->getDates($id);
+
+        return  response()->json(
+            [
+                'items' => $data
+            ], 200);
+    }
 }

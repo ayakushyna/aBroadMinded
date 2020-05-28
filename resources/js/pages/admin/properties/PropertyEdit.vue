@@ -1,12 +1,12 @@
 <template>
     <div class="container">
-        <div class="form-group">
+        <div>
             <b-button @click="$router.go(-1)" variant="outline-primary">Back</b-button>
         </div>
 
-        <div class="panel panel-default">
-            <div class="panel-heading"><h2>Edit property</h2></div>
-            <div class="panel-body">
+        <b-card class="mt-4">
+            <div><h2>Edit property</h2></div>
+            <div>
                 <b-form @submit.prevent="onSubmit" @reset="onReset" v-if="show">
                     <b-row>
                         <b-col>
@@ -102,11 +102,17 @@
                                 </div>
                             </b-form-group>
 
+                        </b-col>
+
+                        <b-col>
                             <b-form-group id="input-group-price" label="Price:" label-for="input-price">
                                 <b-form-input
                                     id="input-price"
                                     v-model="form.price"
                                     type="number"
+                                    min="1"
+                                    max="999999"
+                                    step="0.01"
                                     required
                                     placeholder="Enter price"
                                     class="col-sm-4">
@@ -115,26 +121,6 @@
                                 <div v-if="errors.price">
                                     <ul class="alert alert-danger">
                                         <li v-for="(value, key, index) in errors.price">{{ value }}</li>
-                                    </ul>
-                                </div>
-                            </b-form-group>
-                        </b-col>
-
-                        <b-col>
-                            <b-form-group id="input-group-profile" label="Profile:" label-for="input-profile" class="justify-content-md-left">
-                                <b-form-select
-                                    id="input-profile"
-                                    v-model="form.profile_id"
-                                    required
-                                    class="col-sm-6">
-                                    <option v-for="profile in profiles" v-bind:value="profile.id">
-                                        {{ profile.first_name }} {{ profile.last_name }}
-                                    </option>
-                                </b-form-select>
-
-                                <div v-if="errors.profile_id">
-                                    <ul class="alert alert-danger">
-                                        <li v-for="(value, key, index) in errors.profile_id">{{ value }}</li>
                                     </ul>
                                 </div>
                             </b-form-group>
@@ -253,6 +239,25 @@
                         </b-col>
                     </b-row>
 
+                    <b-row class="mb-4 ml-2">
+                        <el-upload
+                            action="/"
+                            list-type="picture-card"
+                            accept="image/jpg,image/jpeg,image/gif,image/png"
+                            :on-preview="handlePictureCardPreview"
+                            :on-change="addImage"
+                            :on-remove="removeImage"
+                            :limit="10"
+                            :auto-upload="false"
+                            :file-list="fileList"
+                        >
+                            <i class="el-icon-plus"></i>
+                        </el-upload>
+                        <el-dialog :visible.sync="dialogVisible">
+                            <img width="100%" :src="dialogImageUrl" alt />
+                        </el-dialog>
+                    </b-row>
+
                     <b-button type="submit" variant="primary">Submit</b-button>
                     <b-button type="reset" variant="danger">Reset</b-button>
                 </b-form>
@@ -261,7 +266,7 @@
                 </b-card>
 
             </div>
-        </div>
+        </b-card>
     </div>
 </template>
 
@@ -272,7 +277,6 @@
         data() {
             return {
                 form: {
-                    profile_id: null,
                     title: '',
                     description: '',
                     country_id: null,
@@ -288,9 +292,11 @@
                     permissions: [],
                     utilities: []
                 },
-                state_id: '',
+                dialogImageUrl: "",
+                dialogVisible: false,
+                images : [],
+                fileList: [],
                 city_id: '',
-                profiles: [],
                 countries: [],
                 states: [],
                 cities:[],
@@ -302,18 +308,28 @@
             }
         },
         created() {
-            this.getProfiles();
             this.getCountries();
             this.getPropertyTypes();
             this.getHostTypes();
             this.getProperty();
         },
         methods: {
-            async getProfiles() {
-                await axios.get(this.$route.meta.api.profiles+ '/list')
-                    .then((response) => {
-                        this.profiles = response.data.items;
-                    })
+            addImage(file) {
+                this.images.push(file.raw);
+            },
+            removeImage(file) {
+               if(file.hasOwnProperty('id'))
+                    this.axios.delete(this.$route.meta.api.property_images  + '/'+ file.id)
+               else{
+                   let i = this.images.indexOf(file.raw);
+                   this.images.splice(i, 1)
+               }
+
+            },
+            handlePictureCardPreview(file) {
+                console.log(file)
+                this.dialogImageUrl = file.url;
+                this.dialogVisible = true;
             },
             async getCountries() {
                 await axios.get(this.$route.meta.api.countries)
@@ -371,7 +387,6 @@
                     .then((response) => {
                         let items = response.data.items;
 
-                        this.form.profile_id= items.profile_id;
                         this.form.title= items.title;
                         this.form.description= items.description;
                         this.form.address= items.address;
@@ -394,6 +409,10 @@
                             items.wifi? 'wifi': '',
                         ];
 
+                        for(let i in items.images){
+                            this.fileList.push({ id: items.images[i].id, url: '/storage/' + items.images[i].image_path})
+                        }
+
                         this.city_id = items.city_id;
                         if(this.city_id !== null)
                             this.getState(items.city_id);
@@ -404,7 +423,7 @@
                 this.errors = {}
 
                 axios.put(this.$route.meta.api.properties + '/' + this.$route.params.id, {
-                    profile_id: this.form.profile_id,
+                    profile_id: this.$auth.user().id,
                     title: this.form.title,
                     description: this.form.description,
                     city_id: this.form.city_id,
@@ -425,19 +444,34 @@
                     wifi: this.form.utilities.includes('wifi'),
                     active: true
                 })
-                    .then(response => (
-                        this.$router.push({name: 'PropertyIndex'})
-                        // console.log(response.data)
-                    ))
-                    .catch(error => {
-                        this.has_error = true;
-                        this.errors = error.response.data.errors;
+                .then(response => {
+                    let formData = new FormData();
+                    $.each(this.images, function(key, image) {
+                        formData.append(`images[${key}]`, image);
+                    });
+
+                    var property_id = response.data.items.id;
+                    formData.append(`property_id`, property_id);
+
+                    axios.post(this.$route.meta.api.property_images, formData, {
+                        headers: { "Content-Type": "multipart/form-data" }
                     })
+                        .then(response => (
+                            this.$router.go(-1)
+                        ))
+                        .catch(error => {
+                            this.has_error = true;
+                            this.errors = error.response.data.errors;
+                        })
+                })
+                .catch(error => {
+                    this.has_error = true;
+                    this.errors = error.response.data.errors;
+                })
             },
             onReset(evt) {
                 evt.preventDefault()
                 // Reset our form values
-                this.form.profile_id= '';
                 this.form.title= '';
                 this.form.description= '';
                 this.form.state_id= null;
@@ -451,6 +485,7 @@
                 this.form.max_beds= '';
                 this.form.permissions= [];
                 this.form.utilities= [];
+                this.images=[];
                 // Trick to reset/clear native browser form validation state
                 this.show = false
                 this.has_error = false;

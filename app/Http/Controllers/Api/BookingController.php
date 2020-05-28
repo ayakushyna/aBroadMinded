@@ -19,4 +19,24 @@ class BookingController extends BaseController
     {
         parent::__construct($bookingRepository);
     }
+
+    public function getDates($id)
+    {
+        $data = $this->baseRepository->getDates($id);
+
+        return  response()->json(
+            [
+                'items' => $data
+            ], 200);
+    }
+
+    public function getStatuses()
+    {
+        $data = $this->baseRepository->getStatuses();
+
+        return  response()->json(
+            [
+                'items' => $data
+            ], 200);
+    }
 }

@@ -1,36 +1,21 @@
 <template>
     <div class="container">
-        <div class="form-group">
+        <div>
             <b-button @click="$router.go(-1)" variant="outline-primary">Back</b-button>
         </div>
 
-        <div class="panel panel-default">
-            <div class="panel-heading"><h2>Edit calendar</h2></div>
-            <div class="panel-body">
+        <b-card class="mt-4">
+            <div><h2>Edit calendar</h2></div>
+            <div>
                 <b-form @submit.prevent="onSubmit" @reset="onReset" v-if="show">
-
-                    <b-form-group class="col-sm-6" id="input-group-properties" label="Property:" label-for="input-properties">
-                        <b-form-select
-                            id="input-properties"
-                            v-model="form.property_id"
-                            required>
-                            <option v-for="property in properties" v-bind:value="property.id">
-                                {{ property.title }}
-                            </option>
-                        </b-form-select>
-
-                        <div v-if="errors.property_id">
-                            <ul class="alert alert-danger">
-                                <li v-for="(value, key, index) in errors.property_id">{{ value }}</li>
-                            </ul>
-                        </div>
-                    </b-form-group>
 
                     <b-form-group class="col-sm-6" id="input-group-range" label="Date range:" label-for="input-range">
                         <el-date-picker
                             v-model="form.range"
                             type="daterange"
                             align="right"
+                            :default-time="['03:00:00', '03:00:00']"
+                            :picker-options="datePickerOptions"
                             start-placeholder="Start Date"
                             end-placeholder="End Date">
                         </el-date-picker>
@@ -51,28 +36,25 @@
                 </b-card>
 
             </div>
-        </div>
+        </b-card>
     </div>
 </template>
 
 <script>
     import {BRow, BCol, BForm, BFormGroup, BFormSelect, BFormInput,BFormDatepicker,BCalendar ,BButton, BCard} from 'bootstrap-vue'
-    //import Calendar from 'v-calendar/lib/components/calendar.umd'
-    import DatePicker from 'v-calendar/lib/components/date-picker.umd'
 
     import axios from "axios";
     export default {
         data() {
             return {
                 form: {
-                    range: {
-                        start: '',
-                        end: '',
-                    },
-                    property_id: null,
+                    range: [],
                 },
                 dates: [],
                 properties:[],
+                datePickerOptions: {
+                    disabledDate: this.disabledDate
+                },
                 has_error: false,
                 errors: {},
                 show: true
@@ -80,10 +62,12 @@
         },
         created() {
             this.getCalendars();
-            this.getProperties();
             this.getCalendar();
         },
         methods: {
+            disabledDate (date) {
+                return date <= new Date()
+            },
             async getCalendars() {
                 await axios.get(this.$route.meta.api.calendars)
                     .then((response) => {
@@ -100,8 +84,7 @@
                 await axios.get(this.$route.meta.api.calendars + '/' + this.$route.params.id)
                     .then((response) => {
                         var items = response.data.items;
-                        this.form.range['start'] = items.start_date;
-                        this.form.range['end']= items.end_date;
+                        this.form.range.push(items.start_date, items.end_date);
                         this.form.property_id = items.property_id;
                     });
             },
@@ -110,12 +93,12 @@
                 this.errors = {}
 
                 axios.put(this.$route.meta.api.calendars + '/' + this.$route.params.id, {
-                    start_date: this.form.range['start'],
-                    end_date: this.form.range['end'],
-                    property_id: this.form.property_id,
+                    start_date: this.form.range[0],
+                    end_date: this.form.range[1],
+                    property_id: this.$route.params.id,
                 })
                     .then(response => (
-                        this.$router.push({name: 'PropertyIndex'})
+                        this.$router.go(-1)
                         // console.log(response.data)
                     ))
                     .catch(error => {
@@ -126,9 +109,7 @@
             onReset(evt) {
                 evt.preventDefault()
                 // Reset our form values
-                this.form.range['start'] = '';
-                this.form.range['end']= '';
-                this.form.property_id = null;
+                this.form.range = []
                 // Trick to reset/clear native browser form validation state
                 this.show = false
                 this.has_error = false;
@@ -140,7 +121,6 @@
         },
         components: {
             BRow, BCol, BForm, BFormGroup, BFormSelect, BFormInput, BFormDatepicker,BCalendar ,BButton, BCard,
-            DatePicker
         }
     }
 </script>
