@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class EmailRequest extends FormRequest
 {
@@ -24,7 +25,7 @@ class EmailRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email|unique:pgsql_auth.public.users',
+            'email' => 'required|email|unique:pgsql_auth.public.users,nickname|unique:pgsql_auth.public.users,email,'. Auth::user()->id ,
         ];
     }
 }

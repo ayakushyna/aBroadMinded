@@ -25,30 +25,40 @@ class AuthController extends Controller
 
     public function register(Request $request, ProfileRepositoryInterface $profileRepository)
     {
-        DB::beginTransaction();
+        $dboA = DB::connection();
+        $dboB = DB::connection('pgsql_auth');
+
+        $dboA->beginTransaction();
+        $dboB->beginTransaction();
+
         try
         {
             $nickname = $request->input('nickname');
             $email = $request->input('email');
             $password = bcrypt($request->input('password'));
 
-            $user = User::create([
-                    'nickname' => $nickname ,
-                    'email' => $email,
-                    'password' => $password]
-            );
+            $user = new User;
+            $user->nickname = $nickname;
+            $user->email = $email;
+            $user->password = $password;
+            $user->save();
 
             $request->request->add([ 'id' => $user->id]);
             $request = $request->only($profileRepository->getModel()->getFillable());
-
             $profileRepository->create($request);
 
-            DB::commit();
+            $dboA->commit();
+            $dboB->commit();
         } catch (\Exception $e) {
-            DB::rollback();
+            $dboA->rollBack();
+            $dboB->rollBack();
             return response()->json(['error' => $e->getMessage()], 500);
         }
         return  response()->json(['status' => 'success'], 200);
+    }
+
+    public function test(){
+        return DB::select(DB::raw('select current_user;'));
     }
 
     /**
@@ -82,14 +92,19 @@ class AuthController extends Controller
 
         if($user->isRoot()){
             DB::setDefaultConnection('pgsql_root');
+            DB::purge( 'pgsql_guest');
+            DB::connection('pgsql_root');
         }
         else if($user->isAdmin()){
             DB::setDefaultConnection('pgsql_admin');
+            DB::purge( 'pgsql_guest');
+            DB::connection('pgsql_admin');
         }
         else{
             DB::setDefaultConnection('pgsql_user');
+            DB::purge( 'pgsql_guest');
+            DB::connection('pgsql_user');
         }
-
     }
 
     /**

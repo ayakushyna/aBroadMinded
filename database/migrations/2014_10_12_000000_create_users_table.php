@@ -15,11 +15,10 @@ class CreateUsersTable extends Migration
     {
         Schema::connection('pgsql_auth')->create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('nickname');
+            $table->string('nickname')->unique();;
             $table->string('email')->unique();
             $table->string('password');
             $table->enum('role', ['root', 'admin', 'user'])->default('user');
-            $table->rememberToken();
             $table->timestamps();
         });
     }

@@ -14,6 +14,7 @@ class BaseRepository implements BaseRepositoryInterface
 
     protected $model;
     protected array $operators = ["=", "<", ">", "<=", ">=", "<>", "!="];
+    protected array $string_operators = ['like', 'as'];
 
     public function __construct()
     {
@@ -41,10 +42,9 @@ class BaseRepository implements BaseRepositoryInterface
                 else if(in_array($filter['comparator'], $this->operators)){
                     $query = $query->where($filter['key'], $filter['comparator'], $value);
                 }
-                else{
+                else if(in_array($filter['comparator'], $this->string_operators)){
                     $query = $query->where($filter['key'], $filter['comparator'], "%$value%");
                 }
-
             }
         }
         return $query;
@@ -73,25 +73,40 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function findById($id)
     {
-        return $this->model->findOrFail($id);
+        DB::connection()->enableQueryLog();
+        $query = $this->model->findOrFail($id);
+        $queries = DB::getQueryLog();
+        info( $queries );
+        return $query;
     }
 
     public function create(array $data)
     {
-//        dd($this->model, $data);
-        return $this->model->create($data);
+        DB::connection()->enableQueryLog();
+        $result = $this->model->create($data);
+        $queries = DB::getQueryLog();
+        info( $queries );
+        return $result;
     }
 
     public function update(array $data, $id)
     {
+        DB::connection()->enableQueryLog();
         $record = $this->model->findOrFail($id);
 
-        return $record->update($data);
+        $result = $record->update($data);
+        $queries = DB::getQueryLog();
+        info( $queries );
+        return $result;
     }
 
     public function delete($id)
     {
-        return $this->model->destroy($id);
+        DB::connection()->enableQueryLog();
+        $result =  $this->model->destroy($id);
+        $queries = DB::getQueryLog();
+        info( $queries );
+        return $result;
     }
 
     public function getModel()

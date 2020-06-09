@@ -30,9 +30,9 @@ class Profile extends Model
         'last_name',
         'gender',
         'birthday',
-        'active',
         'city_id',
-        'photo'
+        'photo',
+        'contact_info'
     ];
 
     const FIELDS_INFO = [
@@ -41,7 +41,7 @@ class Profile extends Model
         ['key'=> 'gender',      'label' => 'Gender',     'comparator' => 'like', 'sortable' => true],
         ['key'=> 'city',        'label' => 'City',       'comparator' => 'like', 'sortable' => true],
         ['key'=> 'birthday',    'label' => 'Birthday',   'comparator' => '=',    'sortable' => true, 'type' => 'date'],
-        ['key'=> 'active',      'label' => 'Active',     'comparator' => '=',    'sortable' => true, 'type' => 'bool'],
+//        ['key'=> 'active',      'label' => 'Active',     'comparator' => '=',    'sortable' => true, 'type' => 'bool'],
     ];
 
     /**

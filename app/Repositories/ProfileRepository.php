@@ -14,6 +14,7 @@ class ProfileRepository extends BaseRepository implements ProfileRepositoryInter
 
     public function all(array $filterItems = [],array $sortItems = [])
     {
+        DB::connection()->enableQueryLog();
         $cities_name = $this->getCitiesName();
 
         $query = DB::table('profiles')
@@ -28,7 +29,10 @@ class ProfileRepository extends BaseRepository implements ProfileRepositoryInter
         $query = $this->applyFilter($query, $filterItems);
         $query = $this->applySorting($query, $sortItems);
 
-        return $query->paginate(10);
+        $query = $query->paginate(10);
+        $queries = DB::getQueryLog();
+        info( $queries );
+        return $query;
     }
 
     public function getList(){
@@ -41,7 +45,8 @@ class ProfileRepository extends BaseRepository implements ProfileRepositoryInter
 
     public function findById($id)
     {
-        return DB::table('profiles')
+        DB::connection()->enableQueryLog();
+        $query = DB::table('profiles')
             ->leftJoin('cities','profiles.city_id', '=', 'cities.id')
             ->leftJoin('states', 'cities.state_id', '=', 'states.id')
             ->leftJoin('countries', 'states.country_id', '=', 'countries.id')
@@ -51,6 +56,11 @@ class ProfileRepository extends BaseRepository implements ProfileRepositoryInter
             )
             ->where('profiles.id', '=', $id)
             ->first();
+
+
+        $queries = DB::getQueryLog();
+        info( $queries );
+        return $query;
     }
 
     public function getCitiesName()

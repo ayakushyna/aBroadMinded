@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class NicknameRequest extends FormRequest
 {
@@ -24,7 +25,7 @@ class NicknameRequest extends FormRequest
     public function rules()
     {
         return [
-            'nickname' => 'required|string|unique:pgsql_auth.public.users',
+            'nickname' => 'required|string|unique:pgsql_auth.public.users,nickname,' . Auth::user()->id .'|unique:pgsql_auth.public.users,email' ,
         ];
     }
 }

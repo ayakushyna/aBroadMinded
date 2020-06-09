@@ -43,6 +43,8 @@ Route::get('cities/{city}/state', 'Api\GeoController@getStateByCity');
 Route::post('profiles/validate_profile', 'Api\ProfileController@validateProfile');
 Route::get('profiles/gender', 'Api\ProfileController@getGender');
 
+Route::get('test', 'Auth\AuthController@test');
+
 Route::group(['middleware' => 'auth:api'], function () {
 
     Route::get('profiles/list', 'Api\ProfileController@getList');
@@ -54,15 +56,21 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::apiResource('profiles', 'Api\ProfileController');
 
     Route::get('properties/list', 'Api\PropertyController@getList');
+    Route::get('properties/busy/{date}', 'Api\PropertyController@getBusyCount');
     Route::get('properties/{property}/profiles', 'Api\PropertyController@getProfiles');
     Route::get('properties/{property}/bookings', 'Api\PropertyController@getBookings');
     Route::get('properties/{property}/feedbacks', 'Api\PropertyController@getFeedbacks');
     Route::get('properties/{property}/calendars', 'Api\PropertyController@getCalendars');
     Route::get('properties/host_types', 'Api\PropertyController@getHostTypes');
+    Route::get('properties/host_types/count','Api\PropertyController@getGroupByHostTypes');
     Route::apiResource('properties', 'Api\PropertyController');
 
     Route::apiResource('property_images', 'Api\PropertyImageController');
 
+    Route::post('countries/profit_ranking', 'Api\GeoController@getProfitByCountry');
+    Route::post('countries/booking_ranking', 'Api\GeoController@getBookingCountByCountry');
+
+    Route::get('property_types/count','Api\PropertyTypeController@getGroupByPropertyTypes');
     Route::apiResource('property_types', 'Api\PropertyTypeController');
 
     Route::get('calendars/dates/{property}', 'Api\CalendarController@getDates');

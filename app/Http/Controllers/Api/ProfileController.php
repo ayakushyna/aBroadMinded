@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\ProfileRequest;
 use App\Models\Profile;
+use App\Models\User;
 use App\Repositories\Interfaces\BookingRepositoryInterface;
 use App\Repositories\Interfaces\FeedbackRepositoryInterface;
 use App\Repositories\Interfaces\ProfileRepositoryInterface;
 use App\Repositories\Interfaces\PropertyRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
@@ -57,9 +59,9 @@ class ProfileController extends BaseController
                 ->where('id', '=', $id)
                 ->get();
 
-        if(Storage::disk('public')->exists($image->image_path))
+        if(Storage::disk('public')->exists($image))
         {
-            Storage::disk('public')->delete($image->image_path);
+            Storage::disk('public')->delete($image);
         }
     }
 
@@ -149,5 +151,26 @@ class ProfileController extends BaseController
             'params' => $params,
         ], 200);
 
+    }
+
+    public function destroy($id)
+    {
+        $dboA = DB::connection();
+        $dboB = DB::connection('pgsql_auth');
+
+        $dboA->beginTransaction();
+        $dboB->beginTransaction();
+        try{
+            $this->baseRepository->delete($id);
+            User::destroy($id);
+
+            $dboA->commit();
+            $dboB->commit();
+        } catch (\Exception $e) {
+            $dboA->rollBack();
+            $dboB->rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+        return  response()->json(['status' => 'success'], 200);
     }
 }

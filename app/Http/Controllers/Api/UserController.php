@@ -46,7 +46,8 @@ class UserController
 
     public function updatePassword(PasswordRequest $request, $id)
     {
-        return User::findOrFail($id)->update($request->only('password'));
+        $password = bcrypt($request->input('password'));
+        return User::findOrFail($id)->update(['password' => $password]);
     }
 
     public function updateRole(RoleRequest $request, $id)
@@ -57,6 +58,10 @@ class UserController
     public function destroy($id)
     {
        User::destroy($id);
+
+        return response()->json([
+            'status' => 'success'
+        ]);
     }
 
 }

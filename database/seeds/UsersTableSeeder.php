@@ -13,16 +13,16 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         $property_types = [
-            ['nickname' => 'Test1', 'email' => 'test1@gmail.com', 'password' => bcrypt('test1'), 'role' => 'root'],
-            ['nickname' => 'Test2', 'email' => 'test2@gmail.com', 'password' => bcrypt('test2'), 'role' => 'admin'],
-            ['nickname' => 'Test3', 'email' => 'test3@gmail.com', 'password' => bcrypt('test3'), 'role' => 'admin'],
-            ['nickname' => 'Test4', 'email' => 'test4@gmail.com', 'password' => bcrypt('test4'), 'role' => 'user'],
-            ['nickname' => 'Test5', 'email' => 'test5@gmail.com', 'password' => bcrypt('test5'), 'role' => 'user'],
-            ['nickname' => 'Test6', 'email' => 'test6@gmail.com', 'password' => bcrypt('test6'), 'role' => 'user'],
-            ['nickname' => 'Test7', 'email' => 'test7@gmail.com', 'password' => bcrypt('test7'), 'role' => 'user'],
-            ['nickname' => 'Test8', 'email' => 'test8@gmail.com', 'password' => bcrypt('test8'), 'role' => 'user'],
-            ['nickname' => 'Test9', 'email' => 'test9@gmail.com', 'password' => bcrypt('test9'), 'role' => 'user'],
-            ['nickname' => 'Test10', 'email' => 'test10@gmail.com', 'password' => bcrypt('test10'), 'role' => 'user'],
+            ['nickname' => 'nonarush', 'email' => 'nonarush@gmail.com', 'password' => bcrypt('nonarush'), 'role' => 'root'],
+            ['nickname' => 'sambur', 'email' => 'sambur@gmail.com', 'password' => bcrypt('sambur'), 'role' => 'admin'],
+            ['nickname' => 'kozlov', 'email' => 'kozlov@gmail.com', 'password' => bcrypt('kozlov'), 'role' => 'admin'],
+            ['nickname' => 'user4', 'email' => 'user4@gmail.com', 'password' => bcrypt('user4'), 'role' => 'user'],
+            ['nickname' => 'user5', 'email' => 'user5@gmail.com', 'password' => bcrypt('user5'), 'role' => 'user'],
+            ['nickname' => 'user6', 'email' => 'user6@gmail.com', 'password' => bcrypt('user6'), 'role' => 'user'],
+            ['nickname' => 'user7', 'email' => 'user7@gmail.com', 'password' => bcrypt('user7'), 'role' => 'user'],
+            ['nickname' => 'user8', 'email' => 'user8@gmail.com', 'password' => bcrypt('user8'), 'role' => 'user'],
+            ['nickname' => 'user9', 'email' => 'user9@gmail.com', 'password' => bcrypt('user9'), 'role' => 'user'],
+            ['nickname' => 'user10', 'email' => 'user10@gmail.com', 'password' => bcrypt('user10'), 'role' => 'user'],
         ];
 
         DB::connection('pgsql_auth')->table('users')->insert($property_types);

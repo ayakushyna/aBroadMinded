@@ -20,7 +20,7 @@ class CreateProfilesTable extends Migration
             $table->enum('gender', ['undefined', 'female', 'male']);
             $table->date('birthday');
             $table->string('photo')->nullable();
-            $table->boolean('active')->default(true);
+            $table->text('contact_info')->nullable();
             $table->timestamps();
             $table->unsignedBigInteger('city_id');
 

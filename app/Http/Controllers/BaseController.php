@@ -81,5 +81,9 @@ class BaseController extends Controller
     public function destroy($id)
     {
         $this->baseRepository->delete($id);
+
+        return response()->json([
+            'status' => 'success'
+        ]);
     }
 }
