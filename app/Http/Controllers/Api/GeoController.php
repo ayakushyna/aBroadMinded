@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\BaseController;
 use App\Repositories\Interfaces\BaseRepositoryInterface;
 use App\Repositories\Interfaces\GeoRepositoryInterface;
+use Illuminate\Http\Request;
 
 class GeoController
 {
@@ -60,6 +61,30 @@ class GeoController
     public function getCitiesByState($id)
     {
         $data = $this->geoRepository->getCitiesByState($id);
+
+        return response()->json(
+            [
+                'items' => $data
+            ], 200);
+    }
+
+    public function getProfitByCountry(Request $request)
+    {
+        $start_date = $request->get('start_date');
+        $end_date = $request->get('end_date');
+        $data = $this->geoRepository->getProfitByCountry($start_date, $end_date);
+
+        return response()->json(
+            [
+                'items' => $data
+            ], 200);
+    }
+
+    public function getBookingCountByCountry(Request $request)
+    {
+        $start_date = $request->get('start_date');
+        $end_date = $request->get('end_date');
+        $data = $this->geoRepository->getBookingCountByCountry($start_date, $end_date);
 
         return response()->json(
             [

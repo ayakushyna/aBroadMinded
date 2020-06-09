@@ -40,7 +40,6 @@ class PropertyRequest extends FormRequest
             'max_bedrooms' => 'required|int',
             'max_beds' => 'required|int',
             'max_guests' => 'required|int',
-            'active' => 'required|boolean',
             'profile_id' => 'required|integer|exists:App\Models\Profile,id',
             'city_id' => 'required|integer|exists:App\Models\City,id',
             'property_type_id' => 'required|integer|exists:App\Models\PropertyType,id',

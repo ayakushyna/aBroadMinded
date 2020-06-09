@@ -40,7 +40,6 @@ class Property extends Model
         'max_bedrooms',
         'max_beds',
         'max_guests',
-        'active',
         'city_id',
         'profile_id',
         'property_type_id',
@@ -54,8 +53,9 @@ class Property extends Model
         ['key'=> 'city',          'label' => 'City',          'comparator' => 'like',       'sortable' => true],
         ['key'=> 'fullname',      'label' => 'Owner',         'comparator' => 'like',       'sortable' => true],
         ['key'=> 'name',          'label' => 'Property Type', 'comparator' => 'like',       'sortable' => true],
-        ['key'=> 'max_bedrooms',  'label' => 'Max Bedrooms',  'comparator' => ['>=', '<='], 'secondary' => true, 'min' => 1, 'max' => 20],
-        ['key'=> 'max_beds',      'label' => 'Max Beds',      'comparator' => ['>=', '<='], 'secondary' => true, 'min' => 1, 'max' => 20],
+        ['key'=> 'score',         'label' => 'Score',         'comparator' => ['>=', '<='], 'sortable' => true,  'min' => 0, 'max' => 5],
+        ['key'=> 'max_bedrooms',  'label' => 'Bedrooms',      'comparator' => ['>=', '<='], 'secondary' => true, 'min' => 1, 'max' => 20],
+        ['key'=> 'max_beds',      'label' => 'Beds',          'comparator' => ['>=', '<='], 'secondary' => true, 'min' => 1, 'max' => 20],
         ['key'=> 'max_guests',    'label' => 'Max Guests',    'comparator' => ['>=', '<='], 'secondary' => true, 'min' => 1, 'max' => 20],
         ['key'=> 'price',         'label' => 'Price',         'comparator' => ['>=', '<='], 'sortable' => true,  'min' => 1, 'max' => 100000],
         ['key'=> 'air_condition', 'label' => 'Air Condition', 'comparator' => '=',          'secondary' => true, 'type' => 'bool'],
@@ -66,7 +66,8 @@ class Property extends Model
         ['key'=> 'smoking',       'label' => 'Smoking',       'comparator' => '=',          'secondary' => true, 'type' => 'bool'],
         ['key'=> 'tv',            'label' => 'TV',            'comparator' => '=',          'secondary' => true, 'type' => 'bool'],
         ['key'=> 'wifi',          'label' => 'Wi-Fi',         'comparator' => '=',          'secondary' => true, 'type' => 'bool'],
-        ['key'=> 'active',        'label' => 'Active',        'comparator' => '=',          'sortable' => true, 'type' => 'bool'],
+//        ['key'=> 'active',        'label' => 'Active',        'comparator' => '=',          'sortable' => true, 'type' => 'bool'],
+        ['key'=> 'date_range',    'label' => 'Date Range',    'comparator' => 'check_dates','type' => 'date_range'],
     ];
 
     /**

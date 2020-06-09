@@ -31,7 +31,6 @@ class CreatePropertiesTable extends Migration
             $table->unsignedTinyInteger('max_bedrooms');
             $table->unsignedTinyInteger('max_beds');
             $table->unsignedTinyInteger('max_guests');
-            $table->boolean('active')->default(true);
             $table->timestamps();
             $table->unsignedBigInteger('city_id');
             $table->unsignedBigInteger('profile_id');

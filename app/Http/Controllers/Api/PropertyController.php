@@ -49,10 +49,29 @@ class PropertyController extends BaseController
             ], 200);
     }
 
+    public function getBusyCount($date)
+    {
+        $data = $this->baseRepository->getBusyCount($date);
+
+        return  response()->json(
+            [
+                'items' => $data
+            ], 200);
+    }
+
     public function getHostTypes()
     {
         $data = $this->baseRepository->getHostTypes();
 
+        return  response()->json(
+            [
+                'items' => $data
+            ], 200);
+    }
+
+    public function getGroupByHostTypes()
+    {
+        $data = $this->baseRepository->getGroupByHostTypes();
         return  response()->json(
             [
                 'items' => $data

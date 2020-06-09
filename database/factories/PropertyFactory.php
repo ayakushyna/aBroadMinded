@@ -11,12 +11,15 @@ use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Support\Facades\DB;
 
 $factory->define(Property::class, function (Faker $faker) {
-    $cities_ids = DB::table('cities')->pluck('id')->toArray();;
-    $profiles_ids = DB::table('profiles')->pluck('id')->toArray();;
-    $property_types_ids = DB::table('property_types')->pluck('id')->toArray();;
+    $cities_ids = DB::table('cities')->pluck('id')->toArray();
+    $profiles_ids = DB::table('profiles')->pluck('id')->toArray();
+    $property_types_ids = DB::table('property_types')->pluck('id')->toArray();
+
+    $titles = ['Super cosy property', 'Great place', 'Beautiful view',
+        'Fantastic property', 'Awesome views', 'Stunning space', 'Lovely place', 'Modern apt', 'Renovation property'];
 
     return [
-        'title' => $faker->word,
+        'title' => $faker->randomElement($titles),
         'description' => $faker->text,
         'address' => $faker->streetAddress,
         'price'=> $faker->numberBetween(1, 1000),

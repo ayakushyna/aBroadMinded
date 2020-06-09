@@ -8,6 +8,7 @@ use App\Models\City;
 use App\Models\Country;
 use App\Models\State;
 use App\Repositories\Interfaces\GeoRepositoryInterface;
+use Illuminate\Support\Facades\DB;
 use PHPUnit\Framework\Constraint\Count;
 
 class GeoRepository implements GeoRepositoryInterface
@@ -46,5 +47,15 @@ class GeoRepository implements GeoRepositoryInterface
     public function getCitiesByState($id)
     {
         return $this->state->find($id)->cities;
+    }
+
+    public function getProfitByCountry($start_date, $end_date)
+    {
+        return DB::select(DB::raw("select * from ranking(0,'$start_date'::date, '$end_date'::date)"));
+    }
+
+    public function getBookingCountByCountry($start_date, $end_date)
+    {
+        return DB::select(DB::raw("select * from ranking(1,'$start_date'::date, '$end_date'::date)"));
     }
 }

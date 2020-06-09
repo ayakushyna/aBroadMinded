@@ -14,12 +14,7 @@ class PropertyTypeRepository extends BaseRepository implements PropertyTypeRepos
 
     public function all(array $filterItems = [],array $sortItems = [])
     {
-        $query = DB::table('property_types')
-            ->leftJoin('properties', 'properties.property_type_id', '=', 'property_types.id')
-            ->select(
-                'property_types.*',
-                DB::raw("COUNT(properties.id)"))
-            ->groupBy('property_types.id');
+        $query = $this->getGroupByPropertyTypes();
 
         $query = $this->checkCountFilter($query, $filterItems);
 
@@ -27,6 +22,16 @@ class PropertyTypeRepository extends BaseRepository implements PropertyTypeRepos
         $query = $this->applySorting($query, $sortItems);
 
         return $query->paginate(10);
+    }
+
+    public function getGroupByPropertyTypes()
+    {
+        return DB::table('property_types')
+            ->leftJoin('properties', 'properties.property_type_id', '=', 'property_types.id')
+            ->select(
+                'property_types.*',
+                DB::raw("COUNT(properties.id)"))
+            ->groupBy('property_types.id');
     }
 
     public function checkCountFilter($query = null, array &$filterItems = [])
