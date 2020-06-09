@@ -9,111 +9,134 @@
             <div>
                 <b-form @submit.prevent="onSubmit" @reset="onReset" v-if="show">
 
-                    <b-form-group  class="col-sm-6" id="input-group-first_name" label="First Name:" label-for="input-first_name">
-                        <b-form-input
-                            id="input-first_name"
-                            v-model="form.first_name"
-                            type="text"
-                            required
-                            placeholder="Enter first name"
+                    <div class="row">
+                        <b-form-group class="col-sm-6" id="input-group-first_name" label="First Name:"
+                                      label-for="input-first_name">
+                            <b-form-input
+                                id="input-first_name"
+                                v-model="form.first_name"
+                                type="text"
+                                required
+                                placeholder="Enter first name"
                             ></b-form-input>
 
-                        <div v-if="errors.first_name">
-                            <ul class="alert alert-danger">
-                                <li v-for="(value, key, index) in errors.first_name">{{ value }}</li>
-                            </ul>
-                        </div>
-                    </b-form-group>
+                            <div v-if="errors.first_name">
+                                <ul class="alert alert-danger">
+                                    <li v-for="(value, key, index) in errors.first_name">{{ value }}</li>
+                                </ul>
+                            </div>
+                        </b-form-group>
 
-                    <b-form-group class="col-sm-6" id="input-group-last_name" label="Last Name:" label-for="input-last_name">
-                        <b-form-input
-                            id="input-last_name"
-                            v-model="form.last_name"
-                            type="text"
-                            required
-                            placeholder="Enter last name"
+                        <b-form-group class="col-sm-6" id="input-group-last_name" label="Last Name:"
+                                      label-for="input-last_name">
+                            <b-form-input
+                                id="input-last_name"
+                                v-model="form.last_name"
+                                type="text"
+                                required
+                                placeholder="Enter last name"
                             ></b-form-input>
 
-                        <div v-if="errors.last_name">
-                            <ul class="alert alert-danger">
-                                <li v-for="(value, key, index) in errors.last_name">{{ value }}</li>
-                            </ul>
-                        </div>
-                    </b-form-group>
+                            <div v-if="errors.last_name">
+                                <ul class="alert alert-danger">
+                                    <li v-for="(value, key, index) in errors.last_name">{{ value }}</li>
+                                </ul>
+                            </div>
+                        </b-form-group>
 
-                    <b-form-group class="col-sm-6" id="input-group-gender" label="Gender:" label-for="input-gender">
-                        <b-form-select
-                            id="input-gender"
-                            v-model="form.gender"
-                            :options="gender"
-                            required
+                        <b-form-group class="col-sm-6" id="input-group-gender" label="Gender:" label-for="input-gender">
+                            <b-form-select
+                                id="input-gender"
+                                v-model="form.gender"
+                                :options="gender"
+                                required
                             ></b-form-select>
 
-                        <div v-if="errors.gender">
-                            <ul class="alert alert-danger">
-                                <li v-for="(value, key, index) in errors.gender">{{ value }}</li>
-                            </ul>
-                        </div>
-                    </b-form-group>
+                            <div v-if="errors.gender">
+                                <ul class="alert alert-danger">
+                                    <li v-for="(value, key, index) in errors.gender">{{ value }}</li>
+                                </ul>
+                            </div>
+                        </b-form-group>
 
-                    <b-form-group class="col-sm-6" id="input-group-birthday" label="Birthday:" label-for="input-birthday">
-                        <el-date-picker
-                            v-model="form.birthday"
-                            type="date"
-                            required
-                            placeholder="Pick a Date"
-                            format="yyyy/MM/dd"
-                            value-format="yyyy-MM-dd"
-                            :max="new Date()">
-                        </el-date-picker>
+                        <b-form-group class="col-sm-6" id="input-group-birthday" label="Birthday:"
+                                      label-for="input-birthday">
+                            <el-date-picker
+                                v-model="form.birthday"
+                                type="date"
+                                required
+                                placeholder="Pick a Date"
+                                format="yyyy/MM/dd"
+                                value-format="yyyy-MM-dd"
+                                :picker-options="datePickerOptions">
+                            </el-date-picker>
 
-                        <div v-if="errors.birthday">
-                            <ul class="alert alert-danger">
-                                <li v-for="(value, key, index) in errors.birthday">{{ value }}</li>
-                            </ul>
-                        </div>
-                    </b-form-group>
+                            <div v-if="errors.birthday">
+                                <ul class="alert alert-danger">
+                                    <li v-for="(value, key, index) in errors.birthday">{{ value }}</li>
+                                </ul>
+                            </div>
+                        </b-form-group>
 
-                    <b-form-group class="col-sm-6" id="input-group-country" label="Country:" label-for="input-country">
-                        <b-form-select
-                            id="input-country"
-                            v-model="form.country_id"
-                            v-on:change='getStates()'
-                            required>
-                            <option v-for="country in countries" v-bind:value="country.id">
-                                {{ country.name }}
-                            </option>
-                        </b-form-select>
-                    </b-form-group>
+                        <b-form-group class="col-sm-4" id="input-group-country" label="Country:"
+                                      label-for="input-country">
+                            <b-form-select
+                                id="input-country"
+                                v-model="form.country_id"
+                                v-on:change='getStates()'
+                                required>
+                                <option v-for="country in countries" v-bind:value="country.id">
+                                    {{ country.name }}
+                                </option>
+                            </b-form-select>
+                        </b-form-group>
 
-                    <b-form-group class="col-sm-6" id="input-group-state" label="State:" label-for="input-state">
-                        <b-form-select
-                            id="input-state"
-                            v-model="form.state_id"
-                            v-on:change='getCities()'
-                            required>
-                            <option v-for="state in states" v-bind:value="state.id">
-                                {{ state.name }}
-                            </option>
-                        </b-form-select>
-                    </b-form-group>
+                        <b-form-group class="col-sm-4" id="input-group-state" label="State:" label-for="input-state">
+                            <b-form-select
+                                id="input-state"
+                                v-model="form.state_id"
+                                v-on:change='getCities()'
+                                required>
+                                <option v-for="state in states" v-bind:value="state.id">
+                                    {{ state.name }}
+                                </option>
+                            </b-form-select>
+                        </b-form-group>
 
-                    <b-form-group class="col-sm-6" id="input-group-city" label="City:" label-for="input-city">
-                        <b-form-select
-                            id="input-city"
-                            v-model="form.city_id"
-                            required>
-                            <option v-for="city in cities" v-bind:value="city.id">
-                                {{ city.name }}
-                            </option>
-                        </b-form-select>
+                        <b-form-group class="col-sm-4" id="input-group-city" label="City:" label-for="input-city">
+                            <b-form-select
+                                id="input-city"
+                                v-model="form.city_id"
+                                required>
+                                <option v-for="city in cities" v-bind:value="city.id">
+                                    {{ city.name }}
+                                </option>
+                            </b-form-select>
 
-                        <div v-if="errors.city_id">
-                            <ul class="alert alert-danger">
-                                <li v-for="(value, key, index) in errors.city_id">{{ value }}</li>
-                            </ul>
-                        </div>
-                    </b-form-group>
+                            <div v-if="errors.city_id">
+                                <ul class="alert alert-danger">
+                                    <li v-for="(value, key, index) in errors.city_id">{{ value }}</li>
+                                </ul>
+                            </div>
+                        </b-form-group>
+
+                        <b-form-group class="col-sm-6" id="input-group-contact_info" label="Contact Info:" label-for="input-contact_info">
+                            <b-form-textarea
+                                id="input-contact_info"
+                                v-model="form.contact_info"
+                                placeholder="Enter your contact info..."
+                                rows="4"
+                                max-rows="3"
+                            ></b-form-textarea>
+
+                            <div v-if="errors.contact_info">
+                                <ul class="alert alert-danger">
+                                    <li v-for="(value, key, index) in errors.contact_info">{{ value }}</li>
+                                </ul>
+                            </div>
+                        </b-form-group>
+
+                    </div>
 
                     <b-row class="mb-4 ml-2">
                         <el-upload
@@ -130,16 +153,13 @@
                             <i class="el-icon-plus"></i>
                         </el-upload>
                         <el-dialog :visible.sync="dialogVisible">
-                            <img width="100%" :src="dialogImageUrl" alt />
+                            <img width="100%" :src="dialogImageUrl" alt/>
                         </el-dialog>
                     </b-row>
 
                     <b-button type="submit" variant="primary">Submit</b-button>
                     <b-button type="reset" variant="danger">Reset</b-button>
                 </b-form>
-                <b-card class="mt-3" header="Form Data Result">
-                    <pre class="m-0">{{ form }}</pre>
-                </b-card>
             </div>
         </b-card>
     </div>
@@ -147,7 +167,7 @@
 
 
 <script>
-    import {BRow, BCol, BForm, BFormGroup, BFormSelect, BFormInput ,BButton, BCard, BFormFile} from 'bootstrap-vue'
+    import {BRow, BCol, BForm, BFormGroup, BFormSelect, BFormInput, BButton, BCard, BFormFile, BFormTextarea} from 'bootstrap-vue'
     import axios from "axios";
 
     export default {
@@ -159,7 +179,8 @@
                     last_name: '',
                     birthday: '',
                     gender: '',
-                    photo:null,
+                    photo: [],
+                    contact_info: '',
                     country_id: null,
                     state_id: null,
                     city_id: null,
@@ -169,10 +190,13 @@
                 fileList: [],
                 state_id: null,
                 city_id: null,
-                gender:[],
+                gender: [],
                 countries: [],
                 states: [],
-                cities:[],
+                cities: [],
+                datePickerOptions: {
+                    disabledDate: this.disabledDate
+                },
                 has_error: false,
                 errors: {},
                 show: true
@@ -184,14 +208,19 @@
             this.getProfile();
         },
         methods: {
+            disabledDate (date) {
+                var limit = new Date();
+                limit.setFullYear(limit.getFullYear() - 18);
+                return date >= limit
+            },
             addImage(file) {
                 this.form.photo = file.raw;
             },
             removeImage(file) {
-                if(file.hasOwnProperty('id'))
+                if (file.hasOwnProperty('id'))
                     this.axios.delete(this.$route.meta.api.profiles + '/' + this.form.id + '/photo')
-                else{
-                    this.form.photo = null;
+                else {
+                    this.form.photo = [];
                 }
             },
             handlePictureCardPreview(file) {
@@ -213,14 +242,14 @@
                     })
             },
             async getStates() {
-                await axios.get(this.$route.meta.api.countries + '/'+ this.form.country_id + '/states')
+                await axios.get(this.$route.meta.api.countries + '/' + this.form.country_id + '/states')
                     .then((response) => {
                         this.cities = []
                         this.states = response.data.items;
                     })
             },
             async getCities() {
-                await axios.get(this.$route.meta.api.states + '/'+ this.form.state_id + '/cities')
+                await axios.get(this.$route.meta.api.states + '/' + this.form.state_id + '/cities')
                     .then((response) => {
                         this.cities = response.data.items;
                     })
@@ -234,7 +263,7 @@
                         this.form.state_id = this.state_id;
                         this.getCities();
 
-                        this.form.city_id= this.city_id;
+                        this.form.city_id = this.city_id;
                     })
             },
             async getState(city) {
@@ -245,7 +274,7 @@
                     })
             },
             async getProfile() {
-                await axios.get(this.$route.meta.api.profiles + '/'+ this.$route.params.id)
+                await axios.get(this.$route.meta.api.profiles + '/' + this.$route.params.id)
                     .then((response) => {
                         let items = response.data.items;
 
@@ -254,13 +283,18 @@
                         this.form.last_name = items.last_name;
                         this.form.birthday = items.birthday;
                         this.form.gender = items.gender;
-                        this.form.photo = { id: items.id, url: '/storage/' + items.photo};
+                        this.form.contact_info = items.contact_info;
                         this.form.country_id = items.country_id;
                         this.form.state_id = items.state_id;
                         this.form.city_id = items.city_id;
 
+                        if(items.photo){
+                            this.fileList.push({ id: items.id, url: '/storage/' + items.photo})
+                        }
+
+
                         this.city_id = items.city_id;
-                        if(this.city_id !== null)
+                        if (this.city_id !== null)
                             this.getState(items.city_id);
                     })
             },
@@ -269,22 +303,19 @@
                 this.errors = {}
 
                 axios.put(this.$route.meta.api.profiles + '/' + this.form.id, {
-                    id:  this.form.id,
                     first_name: this.form.first_name,
                     last_name: this.form.last_name,
                     birthday: this.form.birthday,
                     gender: this.form.gender,
-                    city_id: this.form.city_id ,
-                    active: true
+                    contact_info: this.form.contact_info,
+                    city_id: this.form.city_id,
                 })
                     .then(response => {
-                        console.log('photo')
-                        console.log(this.form.photo);
                         let formData = new FormData();
                         formData.append(`photo`, this.form.photo);
 
-                        axios.post(this.$route.meta.api.profiles  + '/' + this.form.id + '/photo', formData, {
-                            headers: { "Content-Type": "multipart/form-data" }
+                        axios.post(this.$route.meta.api.profiles + '/' + this.form.id + '/photo', formData, {
+                            headers: {"Content-Type": "multipart/form-data"}
                         })
                             .then(response => (
                                 this.$router.go(-1)
@@ -310,6 +341,7 @@
                 this.form.state_id = null;
                 this.form.city_id = null;
                 this.form.photo = null;
+                this.form.contact_info = '';
                 // Trick to reset/clear native browser form validation state
                 this.show = false
                 this.has_error = false;
@@ -320,7 +352,13 @@
             }
         },
         components: {
-            BRow, BCol, BForm, BFormGroup, BFormSelect, BFormInput ,BButton, BCard,BFormFile
+            BRow, BCol, BForm, BFormGroup, BFormSelect, BFormInput, BButton, BCard, BFormFile, BFormTextarea
         }
     }
 </script>
+
+<style>
+    .el-date-editor {
+        width:100% !important;
+    }
+</style>

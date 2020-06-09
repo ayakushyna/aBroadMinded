@@ -8,7 +8,7 @@
                 <navbar></navbar>
             </div>
 
-            <div class="p-sm-5 min-vh-100 align-self-stretch" >
+            <div class="p-sm-5 align-self-stretch main-content">
                     <transition>
                         <router-view :key="$route.fullPath"> </router-view>
                     </transition>
@@ -35,3 +35,10 @@
         }
     }
 </script>
+
+<style scoped>
+
+    .main-content {
+        min-height: calc(100vh - 120px - 55px - 16px);
+    }
+</style>

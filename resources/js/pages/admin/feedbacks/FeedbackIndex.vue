@@ -1,6 +1,8 @@
 <template>
     <div class="container-fluid">
         <Table :name="name"
+               :hasEdit=hasEdit
+               :hasDelete=hasDelete
                :pageEdit="pageEdit"
                :api="api"
         ></Table>
@@ -12,6 +14,8 @@
         data(){
             return {
                 name: 'Feedback',
+                hasEdit:true,
+                hasDelete:true,
                 pageEdit: 'FeedbackEdit',
                 api: {
                     get: this.$route.meta.api,

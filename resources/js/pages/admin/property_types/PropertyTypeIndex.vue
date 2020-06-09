@@ -5,6 +5,9 @@
         </div>
 
         <Table :name="name"
+               :hasShow=hasShow
+               :hasEdit=hasEdit
+               :hasDelete=hasDelete
                :pageEdit="pageEdit"
                :api="api"
         ></Table>
@@ -17,6 +20,8 @@
         data(){
             return {
                 name: 'Property Type',
+                hasEdit:true,
+                hasDelete:true,
                 pageEdit: 'PropertyTypeEdit',
                 api: {
                     get: this.$route.meta.api,

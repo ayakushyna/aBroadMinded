@@ -177,6 +177,22 @@
                                         </ul>
                                     </div>
                                 </b-form-group>
+
+                                <b-form-group class="col-sm-6" id="input-group-contact_info" label="Contact Info:" label-for="input-contact_info">
+                                    <b-form-textarea
+                                        id="input-contact_info"
+                                        v-model="form2.contact_info"
+                                        placeholder="Enter your contact info..."
+                                        rows="4"
+                                        max-rows="3"
+                                    ></b-form-textarea>
+
+                                    <div v-if="errors.contact_info">
+                                        <ul class="alert alert-danger">
+                                            <li v-for="(value, key, index) in errors.contact_info">{{ value }}</li>
+                                        </ul>
+                                    </div>
+                                </b-form-group>
                             </tab-content>
                         </form-wizard>
                     </div>
@@ -190,7 +206,7 @@
 
     import {FormWizard, TabContent} from 'vue-form-wizard'
     import 'vue-form-wizard/dist/vue-form-wizard.min.css'
-    import {BButton, BCard, BCol, BForm, BFormFile, BFormGroup, BFormInput, BFormSelect, BRow} from "bootstrap-vue";
+    import {BButton, BCard, BCol, BForm, BFormFile, BFormGroup, BFormInput, BFormSelect, BRow, BFormTextarea} from "bootstrap-vue";
 
     export default {
         data() {
@@ -208,6 +224,7 @@
                     birthday: '',
                     gender: '',
                     photo:null,
+                    contact_info:null,
                     country_id: null,
                     state_id: null,
                     city_id: null,
@@ -229,7 +246,9 @@
         },
         methods: {
             disabledDate (date) {
-                return date >= new Date()
+                var limit = new Date();
+                limit.setFullYear(limit.getFullYear() - 18);
+                return date >= limit
             },
             async getGender() {
                 await axios.get(this.$route.meta.api.gender)
@@ -292,6 +311,7 @@
                     birthday: this.form2.birthday,
                     gender: this.form2.gender,
                     photo: null,
+                    contact_info: this.form2.contact_info,
                     country_id: this.form2.country_id,
                     state_id: this.form2.state_id,
                     city_id: this.form2.city_id,
@@ -321,6 +341,7 @@
                             birthday: this.form2.birthday,
                             gender: this.form2.gender,
                             photo: null,
+                            contact_info: this.form2.contact_info,
                             country_id: this.form2.country_id,
                             state_id: this.form2.state_id,
                             city_id: this.form2.city_id,
@@ -340,7 +361,7 @@
             BCard,
             FormWizard,
             TabContent,
-            BRow, BCol, BForm, BFormGroup, BFormSelect, BFormInput ,BButton, BFormFile
+            BRow, BCol, BForm, BFormGroup, BFormSelect, BFormInput ,BButton, BFormFile, BFormTextarea
         }
     }
 </script>

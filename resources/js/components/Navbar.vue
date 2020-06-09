@@ -1,10 +1,10 @@
 <template>
-    <b-navbar toggleable variant="primary" >
+    <b-navbar toggleable variant="primary" style="max-height: 55px; height: 55px">
         <b-navbar-toggle v-if="($auth.check() && ($auth.user().role === 'admin' || $auth.user().role === 'root'))" class="mr-2" target="sidebar"></b-navbar-toggle>
 
         <b-navbar-brand>
             <router-link class="light" :to="{ name: 'Home' }">
-                HOME
+                <h3><b>aBroadMinded</b></h3>
             </router-link>
         </b-navbar-brand>
 

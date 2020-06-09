@@ -1,12 +1,12 @@
 <template>
-    <footer>
+    <footer style="max-height: 120px; height: 120px">
         <div class="container">
             <b-row>
                 <div class="col-lg-3  col-md-6 col-sm-6">
                     <div class="m-3">
-                        <h6>About Agency</h6>
+                        <h6>About</h6>
                         <p>
-                            The world has become so fast paced
+                            Made by Anastasiia Yakushyna
                         </p>
                     </div>
                 </div>
@@ -16,14 +16,7 @@
                         <b-row>
                             <b-col>
                                 <ul>
-                                    <li><a href="#">Home</a></li>
-                                    <li><a href="#">Services</a></li>
-                                </ul>
-                            </b-col>
-                            <b-col>
-                                <ul>
-                                    <li><a href="#">Blog</a></li>
-                                    <li><a href="#">Contact</a></li>
+                                    <li><router-link class="light" :to="{ name: 'Home' }">Home </router-link></li>
                                 </ul>
                             </b-col>
                         </b-row>

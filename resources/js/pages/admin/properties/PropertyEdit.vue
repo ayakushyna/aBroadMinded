@@ -261,9 +261,6 @@
                     <b-button type="submit" variant="primary">Submit</b-button>
                     <b-button type="reset" variant="danger">Reset</b-button>
                 </b-form>
-                <b-card class="mt-3" header="Form Data Result">
-                    <pre class="m-0">{{ form }}</pre>
-                </b-card>
 
             </div>
         </b-card>
@@ -423,7 +420,6 @@
                 this.errors = {}
 
                 axios.put(this.$route.meta.api.properties + '/' + this.$route.params.id, {
-                    profile_id: this.$auth.user().id,
                     title: this.form.title,
                     description: this.form.description,
                     city_id: this.form.city_id,
@@ -442,7 +438,6 @@
                     hair_dryer: this.form.utilities.includes('hair_dryer'),
                     tv: this.form.utilities.includes('tv'),
                     wifi: this.form.utilities.includes('wifi'),
-                    active: true
                 })
                 .then(response => {
                     let formData = new FormData();

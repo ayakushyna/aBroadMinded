@@ -17,7 +17,9 @@
                             :default-time="['03:00:00', '03:00:00']"
                             :picker-options="datePickerOptions"
                             start-placeholder="Start Date"
-                            end-placeholder="End Date">
+                            end-placeholder="End Date"
+                            format="yyyy/MM/dd"
+                            value-format="yyyy-MM-dd">
                         </el-date-picker>
 
                         <div v-if="errors.start_date || errors.end_date">
@@ -31,9 +33,6 @@
                     <b-button type="submit" variant="primary">Submit</b-button>
                     <b-button type="reset" variant="danger">Reset</b-button>
                 </b-form>
-                <b-card class="mt-3" header="Form Data Result">
-                    <pre class="m-0">{{ form }}</pre>
-                </b-card>
 
             </div>
         </b-card>

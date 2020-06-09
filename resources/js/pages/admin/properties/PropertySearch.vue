@@ -1,6 +1,44 @@
 <template>
     <div class="container">
-        <b-button class="mb-3" v-b-toggle.collapse-filters> Filters </b-button>
+        <div class="d-flex justify-content-between">
+            <b-button class="mb-3" v-b-toggle.collapse-filters> Filters </b-button>
+
+            <div >
+                <b-button
+                          class="text-nowrap"
+                          @click="onSort(sort_fields[0])">
+                    By title
+
+                    <b-icon :icon="!sort_fields[0].sorting.sorted? 'blank' : sort_fields[0].sorting.direction? 'arrow-down':'arrow-up'"
+                            aria-hidden="true"
+                            variant="outline-light">
+                    </b-icon>
+                </b-button>
+
+                <b-button
+                          @click="onSort(sort_fields[1])">
+                    By price
+
+                    <b-icon :icon="!sort_fields[1].sorting.sorted? 'blank' : sort_fields[1].sorting.direction? 'arrow-down':'arrow-up'"
+                            aria-hidden="true"
+                            variant="outline-light">
+                    </b-icon>
+                </b-button>
+
+                <b-button
+                          class="text-nowrap"
+                          @click="onSort(sort_fields[2])">
+                    By score
+
+                    <b-icon :icon="!sort_fields[2].sorting.sorted? 'blank' : sort_fields[2].sorting.direction? 'arrow-down':'arrow-up'"
+                            aria-hidden="true"
+                            variant="outline-light">
+                    </b-icon>
+                </b-button>
+
+            </div>
+
+        </div>
         <b-collapse id="collapse-filters">
             <b-card class="mb-3" header="Filters">
                 <Filters :fields="fields"></Filters>
@@ -15,12 +53,21 @@
         <b-row class="d-flex justify-content-center">
             <b-col class="col-md-4" v-for="(property, i) in items" :key=i>
                 <div class="card mt-4">
-                    <b-img v-if="property.images.length" :height="200" :width="300" class="card-img-top" :src="'/storage/' + property.images[0].image_path" alt="Property Image"></b-img>
+                    <b-img v-if="property.images" :height="200" :width="300" class="card-img-top" :src="'/storage/' + property.images[0].image_path" alt="Property Image"></b-img>
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <strong>{{ property.title }}</strong>
                             <strong>{{ property.price + '$'}}</strong>
                          </div>
+                        <b-form-rating
+                            id="input-score"
+                            v-model="property.score"
+                            color="#FDE12D"
+                            inline
+                            no-border
+                            size="lg"
+                            readonly
+                        ></b-form-rating>
                         <p class="card-text">
                             <br>
                             {{ truncateText(property.description) }}
@@ -39,17 +86,22 @@
         BCollapse,
         BButton,
         BCard,
-        BRow, BCol, BImg, VBToggle
+        BRow, BCol, BImg, BIcon, VBToggle, BIconBlank,
+        BIconArrowUp,BIconArrowDown, BFormRating
     } from "bootstrap-vue";
     import Filters from "../../../components/Filters";
 
     export default {
         data() {
             return {
-                pagination: [],
                 fields:[],
                 filters: [],
                 sortings: [],
+                sort_fields: [
+                    {key: 'title', sortable: true, sorting: {sorted: false, direction: true}},
+                    {key: 'price', sortable: true, sorting: {sorted: false, direction: true}},
+                    {key: 'score', sortable: true, sorting: {sorted: false, direction: true}},
+                ],
                 items: [],
                 propertyDialogVisible: false,
                 currentProperty: '',
@@ -60,9 +112,12 @@
         },
         methods: {
             truncateText(text) {
-                if (text.length > 50) {
-                    return `${text.substr(0, 50)}...`;
+                if(text){
+                    if (text.length > 50) {
+                        return `${text.substr(0, 100)}...`;
+                    }
                 }
+
                 return text;
             },
             indexOfKey(array, key){
@@ -113,7 +168,7 @@
                     }
 
                     console.log(this.sortings)
-                    this.fetchData(this.pagination.current_page);
+                    this.fetchData();
                 }
 
             },
@@ -130,28 +185,27 @@
                 this.fetchData(1);
 
             },
-            fetchData(page) {
-                console.log(this.$route.meta.api.search + '?page='  )
+            fetchData() {
                 try {
-                    if (typeof page === 'undefined') {
-                        page = 1;
-                    }
-
-                    this.axios.get(this.$route.meta.api.search + '?page=' + page, {
+                    this.axios.get(this.$route.meta.api.search, {
                         params: {
                             filters: JSON.stringify(this.filters),
                             sortings: JSON.stringify(this.sortings),
                         }
                     })
                         .then(response => {
-                            this.pagination = response.data.pagination;
                             this.items = response.data.items;
 
                             let fields = response.data.fields;
                             for(let i in fields){
-                                if(Array.isArray(fields[i].comparator)){
+                                if(fields[i].comparator === 'check_dates'){
+                                    fields[i] = {...fields[i], filter: {checked:false , value:["", ""]}}
+                                }
+                                else if(Array.isArray(fields[i].comparator)){
                                     fields[i] = {...fields[i], filter: {checked:false , value:[fields[i].min, fields[i].max]}, sorting: {sorted: false, direction: true}}
                                 }
+                                else if (fields[i].type === 'bool')
+                                    fields[i] = {...fields[i], filter: {checked:false , value:false}, sorting: {sorted: false, direction: true}}
                                 else
                                     fields[i] = {...fields[i], filter: {checked:false , value:""}, sorting: {sorted: false, direction: true}}
                             }
@@ -174,7 +228,8 @@
             BCollapse,
             BButton,
             BCard,
-            BRow, BCol,BImg
+            BRow, BCol,BImg, BIcon, BIconBlank,
+            BIconArrowUp,BIconArrowDown,BFormRating
         },
         directives: {
             BToggle: VBToggle

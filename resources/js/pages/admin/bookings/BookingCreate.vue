@@ -20,7 +20,9 @@
                                     :picker-options="datePickerOptions"
                                     :default-time="['03:00:00', '03:00:00']"
                                     start-placeholder="Start Date"
-                                    end-placeholder="End Date">
+                                    end-placeholder="End Date"
+                                    format="yyyy/MM/dd"
+                                    value-format="yyyy-MM-dd">
                                 </el-date-picker>
 
                                 <div v-if="errors.start_date || errors.end_date">
@@ -95,12 +97,13 @@
                         </b-col>
                     </b-row>
 
+                    <div class="card-body alert alert-danger" v-if="errors.server">
+                        <p> Cannot make a reservation on these days</p>
+                    </div>
+
                     <b-button type="submit" variant="primary">Submit</b-button>
                     <b-button type="reset" variant="danger">Reset</b-button>
                 </b-form>
-                <b-card class="mt-3" header="Form Data Result">
-                    <pre class="m-0">{{ form }}</pre>
-                </b-card>
             </div>
         </b-card>
     </div>
@@ -127,6 +130,7 @@
                 },
                 has_error: false,
                 errors: {},
+                error:'',
                 show: true,
             }
         },
@@ -166,6 +170,7 @@
             onSubmit(evt) {
                 this.has_error = false;
                 this.errors = {}
+                this.error = ''
 
                 axios.post(this.$route.meta.api.bookings, {
                     start_date: this.form.range[0],
@@ -184,6 +189,9 @@
                     .catch(error => {
                         this.has_error = true;
                         this.errors = error.response.data.errors;
+                        if(error.response.data.error){
+                            this.errors = { ...this.errors, server: error.response.data.error }
+                        }
                     })
             },
             onReset(evt) {

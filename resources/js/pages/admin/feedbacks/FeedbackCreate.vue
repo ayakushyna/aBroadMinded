@@ -45,7 +45,7 @@
                     <b-form-rating
                         id="input-score"
                         v-model="form.score"
-                        color="yellow"
+                        color="#FDE12D"
                         inline
                         no-border
                         size="lg"
@@ -61,9 +61,6 @@
                 <b-button type="submit" variant="primary">Submit</b-button>
                 <b-button type="reset" variant="danger">Reset</b-button>
             </b-form>
-                <b-card class="mt-3" header="Form Data Result">
-                    <pre class="m-0">{{ form }}</pre>
-                </b-card>
 
             </div>
         </b-card>

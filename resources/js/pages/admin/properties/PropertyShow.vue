@@ -13,7 +13,20 @@
                         </header>
                         <b-row>
                             <b-col>
-                                <b-img v-if="images.length" class="card-img-top" :src="'/storage/' + images[0].image_path" alt="Property Image"></b-img>
+                                <b-carousel
+                                    id="carousel-fade"
+                                    style="text-shadow: 0px 0px 2px #000"
+                                    :interval="4000"
+                                    fade
+                                    controls
+                                    indicators
+                                >
+                                    <b-carousel-slide
+                                        v-for="(image, index) in images"
+                                        :key="index"
+                                        :img-src="'/storage/' + image.image_path"
+                                    ></b-carousel-slide>
+                                </b-carousel>
                             </b-col>
                             <b-col>
                                 <dl>
@@ -23,7 +36,7 @@
                                     <dd>{{address}}, {{ city }}</dd>
                                     <dt>Owner:</dt>
                                     <dd>
-                                        <router-link class="nav-link"  :to="{name: 'ProfileShow', params: {id: profile_id}}"> {{ fullname }} </router-link>
+                                        <router-link class="nav-link p-0"  :to="{name: 'ProfileShow', params: {id: profile_id}}"> {{ fullname }} </router-link>
                                     </dd>
                                     <dt>Property Type:</dt>
                                     <dd>{{ property_type }}</dd>
@@ -39,6 +52,18 @@
                                     <dd>{{ max_bedrooms }}</dd>
                                     <dt>Beds:</dt>
                                     <dd>{{ max_beds }}</dd>
+                                    <dt>Score:</dt>
+                                    <dd>
+                                        <b-form-rating
+                                            id="input-score"
+                                            v-model="score"
+                                            color="#FDE12D"
+                                            inline
+                                            no-border
+                                            size="lg"
+                                            readonly
+                                        ></b-form-rating>
+                                    </dd>
                                 </dl>
                             </b-col>
                         </b-row>
@@ -86,8 +111,9 @@
                             active-nav-item-class="primary">
                         <b-tab title="Feedbacks" active>
                             <Table name="Feedback"
+                                   :hasEdit="isAdmin"
                                    pageEdit="FeedbackEdit"
-                                   :actions="isAdmin || isSelf"
+                                   :hasDelete="isAdmin"
                                    :api="{ get: this.$route.meta.api.properties + '/'+ this.$route.params.id + '/feedbacks' ,
                                            delete: this.$route.meta.api.feedbacks }"
                             ></Table>
@@ -96,8 +122,9 @@
                             <Table name="Booking"
                                    :hasShow=true
                                    pageShow="BookingShow"
+                                   :hasEdit="isAdmin || isSelf"
                                    pageEdit="BookingEdit"
-                                   :actions="isAdmin || isSelf"
+                                   :hasDelete="isAdmin || isSelf"
                                    :api="{ get: this.$route.meta.api.properties + '/'+ this.$route.params.id + '/bookings' ,
                                            delete: this.$route.meta.api.bookings }"
                             ></Table>
@@ -108,8 +135,9 @@
                             </div>
 
                             <Table name="Calendar"
+                                   :hasEdit="isAdmin || isSelf"
                                    pageEdit="CalendarEdit"
-                                   :actions="isAdmin || isSelf"
+                                   :hasDelete="isAdmin || isSelf"
                                    :api="{ get: this.$route.meta.api.properties + '/'+ this.$route.params.id + '/calendars' ,
                                            delete: this.$route.meta.api.calendars }"
                             ></Table>
@@ -124,9 +152,9 @@
 <script>
     import {
         VBToggle,
-        BCollapse,
+        BCollapse,BCarousel,BCarouselSlide,
         BTabs, BTab,
-        BButton,
+        BButton, BFormRating,
         BCard,
         BRow, BCol, BFormCheckboxGroup, BFormCheckbox, BFormGroup, BImg,
     } from 'bootstrap-vue'
@@ -151,6 +179,7 @@
                 max_guests: '',
                 max_bedrooms: '',
                 max_beds: '',
+                score: 0,
                 permissions: [],
                 utilities: [],
                 images: []
@@ -180,12 +209,14 @@
                             this.title= items.title;
                             this.description= items.description;
                             this.address= items.address;
+                            this.city = items.city;
                             this.property_type= items.name;
                             this.host_type= items.host_type;
                             this.price= items.price;
                             this.max_guests= items.max_guests;
                             this.max_bedrooms= items.max_bedrooms;
                             this.max_beds= items.max_beds;
+                            this.score = items.score;
                             this.permissions= [
                                 items.children? 'children': '',
                                 items.parties? 'parties': '',
@@ -206,9 +237,9 @@
             }
         },
         components: {
-            BCollapse,
+            BCollapse, BCarousel,BCarouselSlide,
             BTabs, BTab,
-            BButton,
+            BButton, BFormRating,
             BCard,
             BRow, BCol,
             Table,BImg,

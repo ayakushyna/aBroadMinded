@@ -5,16 +5,19 @@
             <div class="card">
                 <div class="card-body">
                     <div class="card-two">
+                        <div :class="status==='confirmed'?' alert alert-success': status === 'awaiting'? ' alert alert-warning': 'alert alert-danger'">
+                            {{ status }}
+                        </div>
                         <b-row>
                             <b-col>
                                 <dl>
                                     <dt>Property:</dt>
                                     <dd>
-                                        <router-link class="nav-link" :to="{name: 'PropertyShow', params: {id: property_id}}"> {{ property }} </router-link>
+                                        <router-link class="nav-link p-0" :to="{name: 'PropertyShow', params: {id: property_id}}"> {{ property }} </router-link>
                                     </dd>
                                     <dt>Client:</dt>
                                     <dd>
-                                        <router-link class="nav-link"  :to="{name: 'ProfileShow', params: {id: profile_id}}"> {{ fullname }} </router-link>
+                                        <router-link class="nav-link p-0"  :to="{name: 'ProfileShow', params: {id: profile_id}}"> {{ fullname }} </router-link>
                                     </dd>
                                     <dt>Date range:</dt>
                                     <dd>{{ range['start'] }} - {{range['end']}}</dd>
@@ -33,8 +36,40 @@
                             </b-col>
                         </b-row>
 
+                        <b-row class="card card-body m-5" v-if="feedback">
+                            <div class="d-flex flex-row-reverse">
+                                <b-button variant="warning" v-if="isAdmin || isSelf" :to="{name: 'FeedbackEdit', params: {id: feedback.id}}"> Edit Feedback</b-button>
+                            </div>
+                            <b-col>
+                                <dl>
+                                    <dt>Title:</dt>
+                                    <dd>
+                                        {{ feedback.title }}
+                                    </dd>
+                                    <dt>Body:</dt>
+                                    <dd>
+                                        {{ feedback.body }}
+                                    </dd>
+                                    <dt>Score:</dt>
+                                    <dd>
+                                        <b-form-rating
+                                            class="col-sm-3"
+                                            v-model="feedback.score"
+                                            color="#FDE12D"
+                                            inline
+                                            no-border
+                                            size="lg"
+                                            readonly
+                                        ></b-form-rating>
+                                    </dd>
+                                </dl>
+                            </b-col>
+                        </b-row>
+
+
+
                         <b-row class="m-1" >
-                            <b-button variant="warning" v-b-toggle.collapse-feedback >Leave Feedback</b-button>
+                            <b-button variant="warning" v-if="canLeaveFeedback" v-b-toggle.collapse-feedback >Leave Feedback</b-button>
                         </b-row>
 
                         <b-collapse id="collapse-feedback">
@@ -76,9 +111,6 @@
                                     <b-button type="submit" variant="primary">Submit</b-button>
                                     <b-button type="reset" variant="danger">Reset</b-button>
                                 </b-form>
-                                <b-card class="mt-3" header="Form Data Result">
-                                    <pre class="m-0">{{ form }}</pre>
-                                </b-card>
                             </b-card>
                         </b-collapse>
                     </div>
@@ -123,6 +155,8 @@
                 fullname: '',
                 property_id: '',
                 property: '',
+                status: '',
+                feedback: null,
                 statuses:[],
                 show: true
             }
@@ -137,6 +171,12 @@
             isSelf: function() {
                 return this.$auth.user().id === this.profile_id;
             },
+            canLeaveFeedback: function(){
+                return this.$auth.user().id === this.profile_id &&
+                    !this.feedback &&
+                    new Date(this.range['end']) < new Date() &&
+                    this.status === 'confirmed';
+            }
         },
         methods: {
             onSubmit(evt) {
@@ -147,7 +187,7 @@
                     score: this.form.score
                 })
                     .then(response => (
-                        this.$router.push({name: 'FeedbackIndex'})
+                        this.$router.go(-1)
                         // console.log(response.data)
                     ))
                     .catch(error => console.log(error))
@@ -180,6 +220,8 @@
                             this.fullname = items.fullname;
                             this.property_id = items.property_id;
                             this.property = items.property;
+                            this.status = items.status;
+                            this.feedback = items.feedback;
                         });
                 } catch (err) {
                     debugger;

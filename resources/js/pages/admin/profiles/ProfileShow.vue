@@ -9,7 +9,8 @@
                 <div class="card-body container">
                     <b-row >
                         <b-col>
-                            <b-img thumbnail fluid v-if="photo" :src="'/storage/' + photo" alt="Profile photo"></b-img>
+<!--                            <b-img thumbnail  v-if="photo" :src="'/storage/' + photo" alt="Profile photo"></b-img>-->
+                            <div class="thumbnail-container" :style="{ 'background-image': 'url(/storage/' + photo + ')' }"></div>
                         </b-col>
                         <b-col>
                             <header>
@@ -26,6 +27,12 @@
                                 </dl>
                             </div>
                         </b-col>
+                    </b-row>
+
+                    <b-row class="container mt-4">
+                        <b-card title="Contact Info" class="container-fluid">
+                            {{ contact_info }}
+                        </b-card>
                     </b-row>
                 </div>
             </b-card>
@@ -45,8 +52,9 @@
                             <Table name="Property"
                                    :hasShow="true"
                                    pageShow="PropertyShow"
+                                   :hasEdit="isAdmin || isSelf"
                                    pageEdit="PropertyEdit"
-                                   :actions="isAdmin || isSelf"
+                                   :hasDelete="isAdmin || isSelf"
                                    :api="{ get: this.$route.meta.api.profiles + '/'+ this.$route.params.id + '/properties' ,
                                            delete: this.$route.meta.api.properties }"
                             ></Table>
@@ -55,16 +63,18 @@
                             <Table name="Booking"
                                    :hasShow="true"
                                    pageShow="BookingShow"
+                                   :hasEdit="isAdmin || isSelf"
                                    pageEdit="BookingEdit"
-                                   :actions="isAdmin || isSelf"
+                                   :hasDelete="isAdmin || isSelf"
                                    :api="{ get: this.$route.meta.api.profiles + '/'+ this.$route.params.id + '/bookings' ,
                                            delete: this.$route.meta.api.bookings }"
                             ></Table>
                         </b-tab>
                         <b-tab title="Feedbacks" v-if="isAdmin || isSelf">
                             <Table  name="Feedback"
+                                    :hasEdit="isAdmin || isSelf"
                                     pageEdit="FeedbackEdit"
-                                    :actions="isAdmin || isSelf"
+                                    :hasDelete="isAdmin || isSelf"
                                     :api="{ get: this.$route.meta.api.profiles + '/'+ this.$route.params.id + '/feedbacks' ,
                                            delete: this.$route.meta.api.feedbacks }"
                             ></Table>
@@ -91,13 +101,11 @@
                                                 class="col-sm-4"
                                                 ></b-form-input>
 
-                                            <b-input-group-append v-if="!show.nickname">
-                                                <b-button  variant="outline-dark" @click="show.nickname = !show.nickname">
+                                            <b-input-group-append>
+                                                <b-button  variant="outline-dark" v-show="!show.nickname" @click="show.nickname = !show.nickname">
                                                     <b-icon icon="pencil" aria-label="Edit"></b-icon>
                                                 </b-button>
-                                            </b-input-group-append>
 
-                                            <b-input-group-append v-else>
                                                 <b-button type="submit" v-show="show.nickname" variant="primary">
                                                     <b-icon icon="check" aria-label="Submit"></b-icon>
                                                 </b-button>
@@ -131,13 +139,11 @@
                                                 class="col-sm-4"
                                                 ></b-form-input>
 
-                                            <b-input-group-append v-if="!show.email">
-                                                <b-button  variant="outline-dark" @click="show.email = !show.email">
+                                            <b-input-group-append>
+                                                <b-button  variant="outline-dark" v-show="!show.email" @click="show.email = !show.email">
                                                     <b-icon icon="pencil" aria-label="Edit"></b-icon>
                                                 </b-button>
-                                            </b-input-group-append>
 
-                                            <b-input-group-append v-else>
                                                 <b-button type="submit" v-show="show.email" variant="primary">
                                                     <b-icon icon="check" aria-label="Submit"></b-icon>
                                                 </b-button>
@@ -229,10 +235,6 @@
                                         </div>
                                     </b-form>
 
-
-                                    <b-card class="mt-3" header="Form Data Result">
-                                        <pre class="m-0">{{ form }}</pre>
-                                    </b-card>
                                 </div>
                             </div>
                         </b-tab>
@@ -290,6 +292,7 @@
                 gender: "",
                 birthday: "",
                 city: "",
+                contact_info: "",
                 roles: [],
                 photo: null,
                 has_error: false,
@@ -402,6 +405,7 @@
                             this.gender = items.gender;
                             this.city = items.city;
                             this.photo = items.photo;
+                            this.contact_info = items.contact_info;
 
                             this.getUser();
 
@@ -427,5 +431,13 @@
 </script>
 
 <style scoped>
-
+    .thumbnail-container {
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        width: 20rem;
+        height: 20rem;
+        border: 4px solid #eee;
+        border-radius: 50%;
+    }
 </style>

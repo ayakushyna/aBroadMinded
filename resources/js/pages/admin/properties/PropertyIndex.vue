@@ -2,6 +2,8 @@
     <div class="container-fluid">
         <Table :name="name"
                :hasShow=hasShow
+               :hasEdit=hasEdit
+               :hasDelete=hasDelete
                :pageShow="pageShow"
                :pageEdit="pageEdit"
                :api="api"
@@ -17,6 +19,8 @@
             return {
                 name: 'Property',
                 hasShow:true,
+                hasEdit:true,
+                hasDelete:true,
                 pageShow: 'PropertyShow',
                 pageEdit: 'PropertyEdit',
                 api: {

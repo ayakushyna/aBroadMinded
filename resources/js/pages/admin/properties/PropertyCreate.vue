@@ -260,10 +260,6 @@
                     <b-button type="submit" variant="primary">Submit</b-button>
                     <b-button type="reset" variant="danger">Reset</b-button>
                 </b-form>
-                <b-card class="mt-3" header="Form Data Result">
-                    <pre class="m-0">{{ form }}</pre>
-                    <pre class="m-0">{{ images }}</pre>
-                </b-card>
 
             </div>
         </b-card>
@@ -384,7 +380,6 @@
                     hair_dryer: this.form.utilities.includes('hair_dryer'),
                     tv: this.form.utilities.includes('tv'),
                     wifi: this.form.utilities.includes('wifi'),
-                    active: true
                 })
                 .then(response => {
                     console.log(response.data.items.id)

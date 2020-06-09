@@ -15,12 +15,12 @@
             </b-collapse>
 
         </div>
-        <div class="panel-body">
+        <div class="panel-body" v-if="items">
             <BTable striped hover responsive
                     bordered
                     no-local-sorting
-                    :items="table.items"
-                    :fields="table.primary_fields">
+                    :items="items"
+                    :fields="primary_fields">
 
                 <template v-slot:head()="scope">
                     <b-button block
@@ -43,11 +43,11 @@
                             <b-icon icon="eye-fill" aria-label="Show"></b-icon>
                         </b-button>
 
-                        <b-button  variant="outline-dark" :to="{name: pageEdit, params: {id: row.item.id}}">
+                        <b-button  v-if="hasEdit" variant="outline-dark" :to="{name: pageEdit, params: {id: row.item.id}}">
                             <b-icon icon="pencil" aria-label="Edit"></b-icon>
                         </b-button>
 
-                        <b-button  variant="outline-danger" @click="deleteItem(row.item.id)">
+                        <b-button  v-if="hasDelete" variant="outline-danger" @click="deleteItem(row.item.id)">
                             <b-icon icon="trash-fill" aria-label="Delete"></b-icon>
                         </b-button>
                     </b-button-group>
@@ -60,14 +60,14 @@
                     </b-button>
                 </template>
 
-                <template v-slot:row-details="row" v-if="table.secondary_fields.length">
+                <template v-slot:row-details="row" v-if="secondary_fields.length">
                     <b-card>
                         <b-row >
                             <template v-for="i in [0,1,2]">
                                 <b-col class="mb-2" >
-                                    <b-row v-for="(field,index) in table.secondary_fields" v-bind:key="field.key">
-                                        <template v-if="index < (table.secondary_fields.length/3) * (i+1)
-                                                    && index >= (table.secondary_fields.length/3) * i">
+                                    <b-row v-for="(field,index) in secondary_fields" v-bind:key="field.key">
+                                        <template v-if="index < (secondary_fields.length/3) * (i+1)
+                                                    && index >= (secondary_fields.length/3) * i">
                                             <b-col sm="4" class="text-sm-right"><b>{{ field.label }}:</b></b-col>
                                             <b-col sm="3">{{ row.item[field.key] }}</b-col>
                                         </template>
@@ -97,31 +97,34 @@
         BIconCaretUpFill, BIconCaretDownFill,
         BIconArrowUp, BIconArrowDown, BIconBlank, BIconEyeFill,
     } from 'bootstrap-vue'
+    import axios from "axios";
 
     import Filters from "./Filters";
 
     export default {
         props: {
             name: String,
+            hasEdit: {
+                type: Boolean,
+                default: false
+            },
             hasShow: {
+                type: Boolean,
+                default: false
+            },
+            hasDelete: {
                 type: Boolean,
                 default: false
             },
             pageShow: String,
             pageEdit: String,
             api: Object,
-            actions: {
-                type: Boolean,
-                default: true
-            },
         },
         data() {
             return {
-                table:{
-                    primary_fields: [],
-                    secondary_fields:[],
-                    items: [],
-                },
+                items: null,
+                primary_fields: null,
+                secondary_fields: null,
                 pagination: [],
                 fields:[],
                 filters: [],
@@ -209,7 +212,7 @@
                         page = 1;
                     }
 
-                    this.axios.get(this.api.get + '?page=' + page, {
+                    axios.get(this.api.get + '?page=' + page, {
                         params: {
                             filters: JSON.stringify(this.filters),
                             sortings: JSON.stringify(this.sortings),
@@ -233,30 +236,33 @@
                                 else if(items[i].body)
                                     items[i].body = this.truncateText(items[i].body)
                             }
-                            this.table.items = items;
+
+                            this.items = items;
 
                             let fields = response.data.fields;
                             for(let i in fields){
-                                if(Array.isArray(fields[i].comparator)){
+                                if(fields[i].comparator === 'check_dates'){
+                                    fields[i] = {...fields[i], filter: {checked:false , value:["", ""]}}
+                                }
+                                else if(Array.isArray(fields[i].comparator)){
                                     fields[i] = {...fields[i], filter: {checked:false , value:[fields[i].min, fields[i].max]}, sorting: {sorted: false, direction: true}}
                                 }
+                                else if (fields[i].type === 'bool')
+                                    fields[i] = {...fields[i], filter: {checked:false , value:false}, sorting: {sorted: false, direction: true}}
                                 else
                                     fields[i] = {...fields[i], filter: {checked:false , value:""}, sorting: {sorted: false, direction: true}}
                             }
                             this.fields = fields;
 
-                            console.log(fields)
-                            console.log(this.table.items)
-
                             this.setFilters(response.data.params.filters);
                             this.setSortings(response.data.params.sortings);
 
-                            this.table.secondary_fields = this.fields.filter(field => field.secondary === true);
+                            this.secondary_fields = this.fields.filter(field => field.secondary === true);
 
-                            let details = this.table.secondary_fields.length ? ['details'] : [];
-                            let actions = this.actions? ['actions'] : [];
+                            let details = this.secondary_fields.length ? ['details'] : [];
+                            let actions = this.hasShow || this.hasEdit|| this.hasDelete ? ['actions']: [];
 
-                            this.table.primary_fields = this.fields.filter(field => field.secondary !== true).concat(actions, details);
+                            this.primary_fields = this.fields.filter(field => field.sortable === true).concat(actions, details);
 
                             console.log(this.$auth.user());
                         });
@@ -265,12 +271,19 @@
                 }
             },
 
-            async deleteItem(id) {
-                this.axios
-                    .delete(this.api.delete  + '/'+ id)
+            deleteItem(id) {
+                var app = this;
+                axios.delete(this.api.delete  + '/'+ id)
                     .then(response => {
-                        let i = this.table.items.map(item => item.id).indexOf(id);
-                        this.table.items.splice(i, 1)
+                        console.log('deleting')
+                        let i = this.items.map(item => item.id).indexOf(id);
+                        console.log(this.items)
+                        this.items.splice(i, 1)
+
+                        this.$nextTick(() => {
+
+                            console.log(this.items)
+                        })
                     });
             }
         },

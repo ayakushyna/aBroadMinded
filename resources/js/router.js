@@ -63,6 +63,14 @@ const routes = [
         component: Dashboard,
         meta: {
             auth: true,
+            api: {
+                property_types: paths.property_types,
+                properties: paths.properties,
+                profiles: paths.profiles,
+                cities: paths.cities,
+                states: paths.states,
+                countries: paths.countries,
+            }
         },
         beforeEnter: (to, from, next) => {
             if (Vue.auth.user().role !== 'root' && Vue.auth.user().role !== 'admin') next({ name: 'Home' })
