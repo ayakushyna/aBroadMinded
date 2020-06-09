@@ -19,7 +19,7 @@ class CreateFeedbacksTable extends Migration
             $table->string('title', 256);
             $table->text('body')->nullable();
             $table->timestamps();
-            $table->unsignedBigInteger('booking_id');
+            $table->unsignedBigInteger('booking_id')->unique();
 
             $table->foreign('booking_id')
                 ->references('id')->on('bookings')

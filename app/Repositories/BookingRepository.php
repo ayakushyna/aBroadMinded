@@ -117,7 +117,7 @@ class BookingRepository extends BaseRepository implements BookingRepositoryInter
 
     public function findById($id)
     {
-        return DB::table('bookings')
+        return Booking::with('feedback')
             ->leftJoin('profiles', 'bookings.profile_id', '=', 'profiles.id')
             ->leftJoin('properties', 'bookings.property_id', '=', 'properties.id')
             ->select(

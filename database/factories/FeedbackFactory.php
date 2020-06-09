@@ -10,10 +10,13 @@ use Illuminate\Support\Facades\DB;
 $factory->define(Feedback::class, function (Faker $faker) {
     $bookings_ids = DB::table('bookings')->pluck('id')->toArray();
 
+    $titles = ['Awful property', 'Bad property',  'Fine property',  'Cool property', 'Awesome property',];
+    $score = $faker->numberBetween(1,5);
+
     return [
-        'score'=> $faker->numberBetween(1,5),
-        'title'=> $faker->word,
+        'score'=> $score,
+        'title'=> $titles[$score - 1],
         'body'=> $faker->text,
-        'booking_id' => $faker->randomElement($bookings_ids),
+        'booking_id' => $faker->unique()->randomElement($bookings_ids),
     ];
 });

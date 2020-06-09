@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Support\Facades\DB;
 
 $factory->define(Booking::class, function (Faker $faker) {
-    $properties_ids = DB::table('properties')->pluck('id')->toArray();;
-    $profiles_ids = DB::table('profiles')->pluck('id')->toArray();;
+    $properties_ids = DB::table('properties')->pluck('id')->toArray();
+    $profiles_ids = DB::table('profiles')->pluck('id')->toArray();
 
-    $start = $faker->date();
+    $start = $faker->dateTimeBetween($startDate  = '2019-06-01' , $end_date = '2019-07-01');
     $end = $faker->dateTimeInInterval($startDate  = $start , $interval = '+ 5 days');
 
     return [

@@ -8,6 +8,6 @@ class BookingTableSeeder  extends Seeder
 {
     public function run()
     {
-        factory(Booking::class, 10)->create();
+        factory(Booking::class, 20)->create();
     }
 }
